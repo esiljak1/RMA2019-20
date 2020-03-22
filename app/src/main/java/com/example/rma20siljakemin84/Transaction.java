@@ -1,6 +1,8 @@
 package com.example.rma20siljakemin84;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Transaction {
     private Date date;
@@ -10,6 +12,42 @@ public class Transaction {
     private String itemDescription;
     private int transactionInterval;
     private Date endDate;
+
+    public Transaction(Date date, double amount, String title, Type type, String itemDescription, int transactionInterval, Date endDate) {
+        this.date = date;
+        this.amount = amount;
+        this.title = title;
+        this.type = type;
+        this.itemDescription = itemDescription;
+        this.transactionInterval = transactionInterval;
+        this.endDate = endDate;
+    }
+    public List<Transaction> napuni(){
+        List<Transaction> ret = new ArrayList<>();
+
+        //Individual payments
+        ret.add(new Transaction(new Date(2020, 3, 22), 150, "Transaction 1", Type.INDIVIDUALPAYMENT, "A very nice jacket", 0, null));
+        ret.add(new Transaction(new Date(2020, 1, 7), 79.90, "Transaction 2", Type.INDIVIDUALPAYMENT, "Steam wallet", 0, null));
+        ret.add(new Transaction(new Date(2020, 1, 30), 100, "Transaction 3", Type.INDIVIDUALPAYMENT, "4GB DDR4 RAM", 0, null));
+        ret.add(new Transaction(new Date(2019, 11, 25), 35, "Tranasction 4", Type.INDIVIDUALPAYMENT, "A very cool hat", 0, null));
+
+        //Regular payments
+        ret.add(new Transaction(new Date(2019, 1, 15), 50, "Transaction 5", Type.REGULARPAYMENT, "Electricity bill", 30, new Date(2021, 1, 15)));
+        ret.add(new Transaction(new Date(2019, 2, 1), 100, "Tranaction 6", Type.REGULARPAYMENT, "Heating bill", 30, new Date(2024, 2, 1)));
+        ret.add(new Transaction(new Date(2018, 12, 10), 35, "Tranaction 7", Type.REGULARPAYMENT, "Water bill", 30, new Date(2028, 12, 10)));
+        ret.add(new Transaction(new Date(2020, 1, 3), 50, "Tranaction 8", Type.REGULARPAYMENT, "Gym subscription", 30, new Date(2021, 1, 3)));
+
+        //Purchase
+        //in progress
+
+        //Individual income
+        // in progress
+
+        //Regular income
+        //in progress
+
+        return ret;
+    }
 
     public Date getDate() {
         return date;
@@ -32,6 +70,7 @@ public class Transaction {
     }
 
     public void setTitle(String title) {
+        if(title.length() <= 3 || title.length() >= 15) throw new IllegalArgumentException("Title must be between 3 and 15 characters long");
         this.title = title;
     }
 
