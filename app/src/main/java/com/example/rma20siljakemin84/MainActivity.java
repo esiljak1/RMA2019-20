@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private Button button;
 
     private List<Transaction> transactions = new ArrayList<>();
+    private TransactionListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
         textView4 = (TextView)findViewById(R.id.textView4);
         textView5 = (TextView)findViewById(R.id.textView5);
         button = (Button)findViewById(R.id.button);
+
+        adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
+        listView.setAdapter(adapter);
 
     }
 }
