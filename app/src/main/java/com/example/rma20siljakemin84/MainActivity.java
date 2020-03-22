@@ -21,7 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private List<Transaction> transactions = new ArrayList<>();
     private TransactionListAdapter adapter;
     private List<String> sorts = new ArrayList<>();
-    private ArrayAdapter spinAdapter;
+    private List<Type> filters = new ArrayList<>();
+    private ArrayAdapter spinSortAdapter, spinFilterAdapter;
 
     private void setSorts(){
         sorts.add("Price - Ascending");
@@ -30,6 +31,13 @@ public class MainActivity extends AppCompatActivity {
         sorts.add("Title - Descending");
         sorts.add("Date - Ascending");
         sorts.add("Date - Descending");
+    }
+    private void setFilters(){
+        filters.add(Type.INDIVIDUALPAYMENT);
+        filters.add(Type.REGULARPAYMENT);
+        filters.add(Type.PURCHASE);
+        filters.add(Type.INDIVIDUALINCOME);
+        filters.add(Type.REGULARINCOME);
     }
 
     @Override
@@ -49,8 +57,11 @@ public class MainActivity extends AppCompatActivity {
         transactions = Transaction.napuni();
         setSorts();
 
-        spinAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, sorts);
-        spinnerSort.setAdapter(spinAdapter);
+        spinSortAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, sorts);
+        spinnerSort.setAdapter(spinSortAdapter);
+
+        spinFilterAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, filters);
+        spinnerFilter.setAdapter(spinFilterAdapter);
 
         adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
         listView.setAdapter(adapter);
