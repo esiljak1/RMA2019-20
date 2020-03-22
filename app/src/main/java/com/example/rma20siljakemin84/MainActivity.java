@@ -1,6 +1,7 @@
 package com.example.rma20siljakemin84;
 
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -19,6 +20,17 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Transaction> transactions = new ArrayList<>();
     private TransactionListAdapter adapter;
+    private List<String> sorts = new ArrayList<>();
+    private ArrayAdapter spinAdapter;
+
+    private void setSorts(){
+        sorts.add("Price - Ascending");
+        sorts.add("Price - Descending");
+        sorts.add("Title - Ascending");
+        sorts.add("Title - Descending");
+        sorts.add("Date - Ascending");
+        sorts.add("Date - Descending");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
         textView5 = (TextView)findViewById(R.id.textView5);
         button = (Button)findViewById(R.id.button);
         transactions = Transaction.napuni();
+        setSorts();
+
+        spinAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, sorts);
+        spinnerSort.setAdapter(spinAdapter);
 
         adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
         listView.setAdapter(adapter);
