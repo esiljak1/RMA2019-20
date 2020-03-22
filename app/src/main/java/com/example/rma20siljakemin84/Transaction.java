@@ -22,7 +22,7 @@ public class Transaction {
         this.transactionInterval = transactionInterval;
         this.endDate = endDate;
     }
-    public List<Transaction> napuni(){
+    public static List<Transaction> napuni(){
         List<Transaction> ret = new ArrayList<>();
 
         //Individual payments

@@ -15,13 +15,13 @@
 
     <TextView
         android:id="@+id/title"
-        android:textSize="20dp"
-        android:layout_width="77dp"
+        android:layout_width="165dp"
         android:layout_height="60dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:layout_weight="1"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textSize="20dp" />
 
     <TextView
         android:id="@+id/amount"
