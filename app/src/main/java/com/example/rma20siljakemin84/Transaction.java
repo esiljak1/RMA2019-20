@@ -29,22 +29,31 @@ public class Transaction {
         ret.add(new Transaction(new Date(2020, 3, 22), 150, "Transaction 1", Type.INDIVIDUALPAYMENT, "A very nice jacket", 0, null));
         ret.add(new Transaction(new Date(2020, 1, 7), 79.90, "Transaction 2", Type.INDIVIDUALPAYMENT, "Steam wallet", 0, null));
         ret.add(new Transaction(new Date(2020, 1, 30), 100, "Transaction 3", Type.INDIVIDUALPAYMENT, "4GB DDR4 RAM", 0, null));
-        ret.add(new Transaction(new Date(2019, 11, 25), 35, "Tranasction 4", Type.INDIVIDUALPAYMENT, "A very cool hat", 0, null));
+        ret.add(new Transaction(new Date(2019, 11, 25), 35, "Transaction 4", Type.INDIVIDUALPAYMENT, "A very cool hat", 0, null));
 
         //Regular payments
         ret.add(new Transaction(new Date(2019, 1, 15), 50, "Transaction 5", Type.REGULARPAYMENT, "Electricity bill", 30, new Date(2021, 1, 15)));
-        ret.add(new Transaction(new Date(2019, 2, 1), 100, "Tranaction 6", Type.REGULARPAYMENT, "Heating bill", 30, new Date(2024, 2, 1)));
-        ret.add(new Transaction(new Date(2018, 12, 10), 35, "Tranaction 7", Type.REGULARPAYMENT, "Water bill", 30, new Date(2028, 12, 10)));
-        ret.add(new Transaction(new Date(2020, 1, 3), 50, "Tranaction 8", Type.REGULARPAYMENT, "Gym subscription", 30, new Date(2021, 1, 3)));
+        ret.add(new Transaction(new Date(2019, 2, 1), 100, "Transaction 6", Type.REGULARPAYMENT, "Heating bill", 30, new Date(2024, 2, 1)));
+        ret.add(new Transaction(new Date(2018, 12, 10), 35, "Transaction 7", Type.REGULARPAYMENT, "Water bill", 30, new Date(2028, 12, 10)));
+        ret.add(new Transaction(new Date(2020, 1, 3), 50, "Transaction 8", Type.REGULARPAYMENT, "Gym subscription", 30, new Date(2021, 1, 3)));
 
         //Purchase
-        //in progress
+        ret.add(new Transaction(new Date(2020, 1, 2), 25, "Transaction 9", Type.PURCHASE, "Sunglasses", 0, null));
+        ret.add(new Transaction(new Date(2019, 8, 16), 250, "Transaction 10", Type.PURCHASE, "A spoon", 0, null));
+        ret.add(new Transaction(new Date(2020, 2, 15), 5, "Transaction 11", Type.PURCHASE, "A plate", 0, null));
+        ret.add(new Transaction(new Date(2020, 1, 7), 120, "Transaction 12", Type.PURCHASE, "Sports shoes", 0, null));
 
         //Individual income
-        // in progress
+        ret.add(new Transaction(new Date(2020, 2, 1), 250, "Transaction 13", Type.INDIVIDUALINCOME, null, 0, null));
+        ret.add(new Transaction(new Date(2020, 1, 6), 500, "Transaction 14", Type.INDIVIDUALINCOME, null, 0, null));
+        ret.add(new Transaction(new Date(2019, 12, 1), 1500, "Transaction 15", Type.INDIVIDUALINCOME, null, 0, null));
+        ret.add(new Transaction(new Date(2020, 3, 1), 500, "Transaction 16", Type.INDIVIDUALINCOME, null, 0, null));
 
         //Regular income
-        //in progress
+        ret.add(new Transaction(new Date(2019, 1, 7), 100, "Transaction 17", Type.REGULARINCOME, null, 365, new Date(2025, 1, 7)));
+        ret.add(new Transaction(new Date(2019, 5, 15), 50, "Transaction 18", Type.REGULARINCOME, null, 16, new Date(2020, 5, 15)));
+        ret.add(new Transaction(new Date(2020, 4, 1), 2000, "Transaction 19", Type.REGULARINCOME, null, 30, new Date(2021, 4, 1)));
+        ret.add(new Transaction(new Date(2019, 9, 9), 10, "Transaction 20", Type.REGULARINCOME, null, 7, new Date(2021, 9, 9)));
 
         return ret;
     }
