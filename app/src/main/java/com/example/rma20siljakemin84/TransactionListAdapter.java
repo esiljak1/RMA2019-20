@@ -47,5 +47,10 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> {
 
         return newView;
     }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
 }
 

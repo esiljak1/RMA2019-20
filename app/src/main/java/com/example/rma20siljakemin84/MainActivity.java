@@ -1,8 +1,10 @@
 package com.example.rma20siljakemin84;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spinnerSort, spinnerFilter;
     private TextView textView, textView2, textView3, textView4, textDate;
     private Button button;
+    private ImageButton leftBtn, rightBtn;
 
     private List<Transaction> transactions = new ArrayList<>();
     private TransactionListAdapter adapter;
@@ -27,6 +30,26 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter spinSortAdapter;
     private TypeListAdapter spinFilterAdapter;
     private Date date = new Date(2020, 2, 21);
+    private SimpleDateFormat format = new SimpleDateFormat("MMMM, yyyy");
+
+    private ImageButton.OnClickListener listenerLeft =
+            new ImageButton.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    date.setMonth(date.getMonth() - 1);
+                    textDate.setText(format.format(date));
+                    filter();
+                }
+            };
+    private ImageButton.OnClickListener listenerRight =
+            new ImageButton.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    date.setMonth(date.getMonth() + 1);
+                    textDate.setText(format.format(date));
+                    filter();
+                }
+            };
 
     private void setSorts(){
         sorts.add("Price - Ascending");
@@ -43,6 +66,17 @@ public class MainActivity extends AppCompatActivity {
         filters.add(Type.INDIVIDUALINCOME);
         filters.add(Type.REGULARINCOME);
     }
+    private void filter(){
+        transactions = Transaction.napuni();
+        ArrayList<Transaction> temp = new ArrayList<>();
+        for(Transaction t : transactions){
+            if(t.getDate().getMonth() == date.getMonth() && t.getDate().getYear() == date.getYear()){
+                temp.add(t);
+            }
+        }transactions = temp;
+        adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
+        listView.setAdapter(adapter);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +92,10 @@ public class MainActivity extends AppCompatActivity {
         textView4 = (TextView)findViewById(R.id.textView4);
         textDate = (TextView)findViewById(R.id.textDate);
         button = (Button)findViewById(R.id.button);
+        leftBtn = (ImageButton)findViewById(R.id.leftBtn);
+        rightBtn = (ImageButton)findViewById(R.id.rightBtn);
         transactions = Transaction.napuni();
+        textDate.setText(format.format(date));
         setSorts();
         setFilters();
 
@@ -71,8 +108,8 @@ public class MainActivity extends AppCompatActivity {
         adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
         listView.setAdapter(adapter);
 
-        date.setYear(date.getYear() - 1900);
-        SimpleDateFormat format = new SimpleDateFormat("MMMM, yyyy");
-        textDate.setText(format.format(date));
+        leftBtn.setOnClickListener(listenerLeft);
+        rightBtn.setOnClickListener(listenerRight);
+
     }
 }
