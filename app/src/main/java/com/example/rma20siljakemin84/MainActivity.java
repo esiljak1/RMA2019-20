@@ -22,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private TransactionListAdapter adapter;
     private List<String> sorts = new ArrayList<>();
     private List<Type> filters = new ArrayList<>();
-    private ArrayAdapter spinSortAdapter, spinFilterAdapter;
+    private ArrayAdapter spinSortAdapter;
+    private TypeListAdapter spinFilterAdapter;
 
     private void setSorts(){
         sorts.add("Price - Ascending");
@@ -56,11 +57,12 @@ public class MainActivity extends AppCompatActivity {
         button = (Button)findViewById(R.id.button);
         transactions = Transaction.napuni();
         setSorts();
+        setFilters();
 
         spinSortAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, sorts);
         spinnerSort.setAdapter(spinSortAdapter);
 
-        spinFilterAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, filters);
+        spinFilterAdapter = new TypeListAdapter(this, R.layout.type_element, filters);
         spinnerFilter.setAdapter(spinFilterAdapter);
 
         adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
