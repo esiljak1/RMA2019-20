@@ -9,13 +9,15 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private Spinner spinnerSort, spinnerFilter;
-    private TextView textView, textView2, textView3, textView4, textView5;
+    private TextView textView, textView2, textView3, textView4, textDate;
     private Button button;
 
     private List<Transaction> transactions = new ArrayList<>();
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Type> filters = new ArrayList<>();
     private ArrayAdapter spinSortAdapter;
     private TypeListAdapter spinFilterAdapter;
+    private Date date = new Date(2020, 2, 21);
 
     private void setSorts(){
         sorts.add("Price - Ascending");
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         textView2 = (TextView)findViewById(R.id.textView2);
         textView3 = (TextView)findViewById(R.id.textView3);
         textView4 = (TextView)findViewById(R.id.textView4);
-        textView5 = (TextView)findViewById(R.id.textView5);
+        textDate = (TextView)findViewById(R.id.textDate);
         button = (Button)findViewById(R.id.button);
         transactions = Transaction.napuni();
         setSorts();
@@ -68,5 +71,8 @@ public class MainActivity extends AppCompatActivity {
         adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
         listView.setAdapter(adapter);
 
+        date.setYear(date.getYear() - 1900);
+        SimpleDateFormat format = new SimpleDateFormat("MMMM, yyyy");
+        textDate.setText(format.format(date));
     }
 }

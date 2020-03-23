@@ -88,7 +88,7 @@
         app:layout_constraintVertical_bias="0.258" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/textDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mjesec"
@@ -112,7 +112,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/spinnerSort"
-        app:layout_constraintEnd_toStartOf="@+id/textView5"
+        app:layout_constraintEnd_toStartOf="@+id/textDate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerFilter"
         app:srcCompat="@drawable/abc_vector_test" />
@@ -124,7 +124,7 @@
         android:scaleX="-1"
         app:layout_constraintBottom_toTopOf="@+id/spinnerSort"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintStart_toEndOf="@+id/textDate"
         app:layout_constraintTop_toBottomOf="@+id/spinnerFilter"
         app:srcCompat="@drawable/abc_vector_test" />
 
