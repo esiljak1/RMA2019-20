@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private Button button;
     private ImageButton leftBtn, rightBtn;
 
+    private Account account = new Account();
     private List<Transaction> transactions = new ArrayList<>();
     private TransactionListAdapter adapter;
     private List<String> sorts = new ArrayList<>();
@@ -81,6 +82,20 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent editTransactionIntent = new Intent(MainActivity.this, EditTransactionActivity.class);
+                    Transaction t = adapter.getItem(position);
+                    Date temp = new Date(t.getDate().getYear() - 1900, t.getDate().getMonth(), t.getDate().getDay());
+                    editTransactionIntent.putExtra("date", new SimpleDateFormat("dd.MM.yyyy").format(temp));
+                    editTransactionIntent.putExtra("amount", t.getAmount() + "");
+                    editTransactionIntent.putExtra("title", t.getTitle());
+                    editTransactionIntent.putExtra("type", t.getType());
+                    editTransactionIntent.putExtra("description", t.getItemDescription());
+                    editTransactionIntent.putExtra("interval", t.getTransactionInterval() + "");
+                    editTransactionIntent.putExtra("global", account.getTotalLimit() + "");
+                    editTransactionIntent.putExtra("month", account.getMonthLimit() + "");
+                    if(t.getEndDate() != null) {
+                        temp = new Date(t.getEndDate().getYear() - 1900, t.getEndDate().getMonth(), t.getEndDate().getDay());
+                        editTransactionIntent.putExtra("endDate", new SimpleDateFormat("dd.MM.yyyy").format(temp));
+                    }
                     MainActivity.this.startActivity(editTransactionIntent);
                 }
             };
@@ -184,6 +199,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setTitle("RMA Spirala");
 
+        account.setMonthLimit(2000);
+        account.setTotalLimit(10000);
         listView = (ListView)findViewById(R.id.listView);
         spinnerSort = (Spinner)findViewById(R.id.spinnerSort);
         spinnerFilter = (Spinner)findViewById(R.id.spinnerFilter);
@@ -201,6 +218,8 @@ public class MainActivity extends AppCompatActivity {
         getTransactionsForCurrentDate();
         setSorts();
         setFilters();
+        textView3.setText(account.getTotalLimit() + "");
+        textView4.setText(account.getMonthLimit() + "");
 
         spinSortAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, sorts);
         spinnerSort.setAdapter(spinSortAdapter);

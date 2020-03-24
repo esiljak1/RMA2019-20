@@ -211,7 +211,7 @@
         android:text="GA:"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/saveBtn"
-        app:layout_constraintHorizontal_bias="0.124"
+        app:layout_constraintHorizontal_bias="0.293"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView12"
         app:layout_constraintVertical_bias="0.456" />
@@ -223,13 +223,13 @@
         android:text="L:"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/saveBtn"
-        app:layout_constraintHorizontal_bias="0.114"
+        app:layout_constraintHorizontal_bias="0.284"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView17"
         app:layout_constraintVertical_bias="0.232" />
 
     <TextView
-        android:id="@+id/textView19"
+        android:id="@+id/globalEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="100"
@@ -241,7 +241,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/textView20"
+        android:id="@+id/monthEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="100"
