@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     date.setMonth(date.getMonth() - 1);
                     textDate.setText(format.format(date));
-                    filter();
+                    getTransactionsForCurrentDate();
                 }
             };
     private ImageButton.OnClickListener listenerRight =
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     date.setMonth(date.getMonth() + 1);
                     textDate.setText(format.format(date));
-                    filter();
+                    getTransactionsForCurrentDate();
                 }
             };
     private Spinner.OnItemSelectedListener listenerSort =
@@ -58,6 +58,17 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     sort(sorts.get(position));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            };
+    private Spinner.OnItemSelectedListener listenerFilter =
+            new Spinner.OnItemSelectedListener(){
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    filter(filters.get(position));
                 }
 
                 @Override
@@ -80,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         filters.add(Type.INDIVIDUALINCOME);
         filters.add(Type.REGULARINCOME);
     }
-    private void filter(){
+    private void getTransactionsForCurrentDate(){
         transactions = Transaction.napuni();
         ArrayList<Transaction> temp = new ArrayList<>();
         for(Transaction t : transactions){
@@ -146,11 +157,23 @@ public class MainActivity extends AppCompatActivity {
         }adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
         listView.setAdapter(adapter);
     }
+    private void filter(Type type){
+        getTransactionsForCurrentDate();
+        ArrayList<Transaction> temp = new ArrayList<>();
+        for(Transaction t : transactions){
+            if(t.getType().equals(type)){
+                temp.add(t);
+            }
+        }transactions = temp;
+        adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
+        listView.setAdapter(adapter);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("RMA Spirala");
 
         listView = (ListView)findViewById(R.id.listView);
         spinnerSort = (Spinner)findViewById(R.id.spinnerSort);
@@ -166,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
         transactions = Transaction.napuni();
         date.setYear(date.getYear() - 1900);
         textDate.setText(format.format(date));
-        filter();
+        getTransactionsForCurrentDate();
         setSorts();
         setFilters();
 
@@ -182,8 +205,10 @@ public class MainActivity extends AppCompatActivity {
         leftBtn.setOnClickListener(listenerLeft);
         rightBtn.setOnClickListener(listenerRight);
 
-        spinnerFilter.setSelection(spinFilterAdapter.getCount());
+        //spinnerFilter.setSelection(spinFilterAdapter.getCount());
         spinnerSort.setOnItemSelectedListener(listenerSort);
+        spinnerFilter.setOnItemSelectedListener(listenerFilter);
+        sort(sorts.get(0));
 
     }
 }
