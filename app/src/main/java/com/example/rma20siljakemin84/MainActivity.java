@@ -182,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
         leftBtn.setOnClickListener(listenerLeft);
         rightBtn.setOnClickListener(listenerRight);
 
+        spinnerFilter.setSelection(spinFilterAdapter.getCount());
         spinnerSort.setOnItemSelectedListener(listenerSort);
 
     }

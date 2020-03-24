@@ -37,12 +37,22 @@ public class TypeListAdapter extends ArrayAdapter<Type> {
         }
         Type type = getItem(position);
 
-        TextView textType = (TextView) newView.findViewById(R.id.textType);
+        TextView textType = (TextView) newView.findViewById(R.id.textView5);
         ImageView img = (ImageView) newView.findViewById(R.id.img);
 
         textType.setText(type.toString());
         img.setImageResource(R.drawable.blank);
 
         return newView;
+    }
+
+    @Override
+    public int getCount() {
+        return super.getCount() - 1;
+    }
+
+    @Override
+    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        return getView(position, convertView, parent);
     }
 }
