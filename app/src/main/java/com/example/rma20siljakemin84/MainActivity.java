@@ -2,6 +2,7 @@ package com.example.rma20siljakemin84;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -13,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -50,6 +53,17 @@ public class MainActivity extends AppCompatActivity {
                     filter();
                 }
             };
+    private Spinner.OnItemSelectedListener listenerSort =
+            new Spinner.OnItemSelectedListener(){
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    sort(sorts.get(position));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            };
 
     private void setSorts(){
         sorts.add("Price - Ascending");
@@ -75,6 +89,61 @@ public class MainActivity extends AppCompatActivity {
             }
         }transactions = temp;
         adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
+        listView.setAdapter(adapter);
+    }
+    private void sort(String s){
+        String[] temp = s.split("-");
+        Comparator<Transaction> comparator;
+        if(temp[0].equals("Price ")){
+            if(temp[1].equals(" Ascending")){
+                comparator = new Comparator<Transaction>() {
+                    @Override
+                    public int compare(Transaction o1, Transaction o2) {
+                        return Double.compare(o1.getAmount(), o2.getAmount());
+                    }
+                };
+            }else{
+                comparator = new Comparator<Transaction>() {
+                    @Override
+                    public int compare(Transaction o1, Transaction o2) {
+                        return Double.compare(o2.getAmount(), o1.getAmount());
+                    }
+                };
+            }Collections.sort(transactions, comparator);
+        }else if(temp[0].equals("Title")){
+            if(temp[1].equals(" Ascending")){
+                comparator = new Comparator<Transaction>() {
+                    @Override
+                    public int compare(Transaction o1, Transaction o2) {
+                        return o1.getTitle().compareTo(o2.getTitle());
+                    }
+                };
+            }else{
+                comparator = new Comparator<Transaction>() {
+                    @Override
+                    public int compare(Transaction o1, Transaction o2) {
+                        return o2.getTitle().compareTo(o1.getTitle());
+                    }
+                };
+
+            }Collections.sort(transactions, comparator);
+        }else{
+            if(temp[1].equals(" Ascending")){
+                comparator = new Comparator<Transaction>() {
+                    @Override
+                    public int compare(Transaction o1, Transaction o2) {
+                        return o1.getDate().compareTo(o2.getDate());
+                    }
+                };
+            }else{
+                comparator = new Comparator<Transaction>() {
+                    @Override
+                    public int compare(Transaction o1, Transaction o2) {
+                        return o2.getDate().compareTo(o1.getDate());
+                    }
+                };
+            }Collections.sort(transactions, comparator);
+        }adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
         listView.setAdapter(adapter);
     }
 
@@ -112,6 +181,8 @@ public class MainActivity extends AppCompatActivity {
 
         leftBtn.setOnClickListener(listenerLeft);
         rightBtn.setOnClickListener(listenerRight);
+
+        spinnerSort.setOnItemSelectedListener(listenerSort);
 
     }
 }
