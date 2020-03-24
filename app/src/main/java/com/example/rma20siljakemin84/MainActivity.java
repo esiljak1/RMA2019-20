@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         transactions = Transaction.napuni();
         ArrayList<Transaction> temp = new ArrayList<>();
         for(Transaction t : transactions){
-            if(t.getDate().getMonth() == date.getMonth() && t.getDate().getYear() == date.getYear()){
+            if(t.getDate().getMonth() == date.getMonth() && t.getDate().getYear() - 1900 == date.getYear()){
                 temp.add(t);
             }
         }transactions = temp;
@@ -95,7 +95,9 @@ public class MainActivity extends AppCompatActivity {
         leftBtn = (ImageButton)findViewById(R.id.leftBtn);
         rightBtn = (ImageButton)findViewById(R.id.rightBtn);
         transactions = Transaction.napuni();
+        date.setYear(date.getYear() - 1900);
         textDate.setText(format.format(date));
+        filter();
         setSorts();
         setFilters();
 
