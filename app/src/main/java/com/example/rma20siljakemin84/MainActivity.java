@@ -1,5 +1,6 @@
 package com.example.rma20siljakemin84;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -73,6 +74,14 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
+                }
+            };
+    private ListView.OnItemClickListener itemClickListener =
+            new ListView.OnItemClickListener(){
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent editTransactionIntent = new Intent(MainActivity.this, EditTransactionActivity.class);
+                    MainActivity.this.startActivity(editTransactionIntent);
                 }
             };
 
@@ -205,10 +214,11 @@ public class MainActivity extends AppCompatActivity {
         leftBtn.setOnClickListener(listenerLeft);
         rightBtn.setOnClickListener(listenerRight);
 
-        //spinnerFilter.setSelection(spinFilterAdapter.getCount());
         spinnerSort.setOnItemSelectedListener(listenerSort);
         spinnerFilter.setOnItemSelectedListener(listenerFilter);
         sort(sorts.get(0));
+
+        listView.setOnItemClickListener(itemClickListener);
 
     }
 }
