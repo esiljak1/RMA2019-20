@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private Date date = new Date(2020, 2, 21);
     private SimpleDateFormat format = new SimpleDateFormat("MMMM, yyyy");
 
+    private List<Transaction> availableTransactions = new ArrayList<>();
+
     private ImageButton.OnClickListener listenerLeft =
             new ImageButton.OnClickListener(){
                 @Override
@@ -122,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         filters.add(Type.REGULARINCOME);
     }
     private void getTransactionsForCurrentDate(){
-        transactions = Transaction.napuni();
+        transactions = new ArrayList<>(availableTransactions);
         ArrayList<Transaction> temp = new ArrayList<>();
         for(Transaction t : transactions){
             if(t.getDate().getMonth() == date.getMonth() && t.getDate().getYear() - 1900 == date.getYear()){
@@ -221,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
         leftBtn = (ImageButton)findViewById(R.id.leftBtn);
         rightBtn = (ImageButton)findViewById(R.id.rightBtn);
         transactions = Transaction.napuni();
+        availableTransactions = Transaction.napuni();
         date.setYear(date.getYear() - 1900);
         textDate.setText(format.format(date));
         getTransactionsForCurrentDate();
