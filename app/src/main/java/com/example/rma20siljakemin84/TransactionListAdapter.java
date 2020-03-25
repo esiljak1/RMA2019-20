@@ -43,7 +43,17 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> {
 
         title.setText(instance.getTitle());
         amount.setText(instance.getAmount() + "");
-        icon.setImageResource(R.drawable.blank);
+        if(instance.getType().equals(Type.REGULARPAYMENT)){
+            icon.setImageResource(R.drawable.regular_payment);
+        }else if(instance.getType().equals(Type.REGULARINCOME)){
+            icon.setImageResource(R.drawable.regular_income);
+        }else if(instance.getType().equals(Type.PURCHASE)){
+            icon.setImageResource(R.drawable.purchase);
+        }else if(instance.getType().equals(Type.INDIVIDUALINCOME)){
+            icon.setImageResource(R.drawable.individual_income);
+        }else{
+            icon.setImageResource(R.drawable.individual_payment);
+        }
 
         return newView;
     }

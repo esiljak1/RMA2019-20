@@ -41,7 +41,19 @@ public class TypeListAdapter extends ArrayAdapter<Type> {
         ImageView img = (ImageView) newView.findViewById(R.id.img);
 
         textType.setText(type.toString());
-        if(!type.equals(Type.Dummy)) img.setImageResource(R.drawable.blank);
+        if(!type.equals(Type.Dummy)){
+            if(type.equals(Type.REGULARPAYMENT)){
+                img.setImageResource(R.drawable.regular_payment);
+            }else if(type.equals(Type.REGULARINCOME)){
+                img.setImageResource(R.drawable.regular_income);
+            }else if(type.equals(Type.PURCHASE)){
+                img.setImageResource(R.drawable.purchase);
+            }else if(type.equals(Type.INDIVIDUALINCOME)){
+                img.setImageResource(R.drawable.individual_income);
+            }else{
+                img.setImageResource(R.drawable.individual_payment);
+            }
+        }
 
         return newView;
     }
