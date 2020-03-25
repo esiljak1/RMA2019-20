@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class EditTransactionActivity extends AppCompatActivity {
     private EditText date, amount, title, description, interval, endDate;
@@ -33,7 +34,12 @@ public class EditTransactionActivity extends AppCompatActivity {
                 public void onFocusChange(View v, boolean hasFocus) {
                     String datum = ((EditText) v).getText().toString();
                     try {
-                        new SimpleDateFormat("dd.MM.yyyy").parse(datum);
+                        Date temp = new SimpleDateFormat("dd.MM.yyyy").parse(datum);
+                        if(v.getId() == R.id.endDate){
+                            if(temp.compareTo(new SimpleDateFormat("dd.MM.yyyy").parse(date.getText().toString())) < 0){
+                                throw new ParseException("poruka", 0);
+                            }
+                        }
                         ((EditText) v).getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
                     } catch (ParseException e) {
                         ((EditText) v).getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
