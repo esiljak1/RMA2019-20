@@ -40,6 +40,19 @@ public class EditTransactionActivity extends AppCompatActivity {
                     }
                 }
             };
+    private EditText.OnFocusChangeListener amountListener =
+            new EditText.OnFocusChangeListener(){
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    String number = ((EditText) v).getText().toString();
+                    try{
+                        Double.parseDouble(number);
+                        ((EditText) v).getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
+                    }catch(Exception ex){
+                        ((EditText) v).getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+                    }
+                }
+            };
 
     private void napuniSpinner(){
         list.add(Type.INDIVIDUALPAYMENT);
@@ -98,6 +111,8 @@ public class EditTransactionActivity extends AppCompatActivity {
 
         date.setOnFocusChangeListener(dateListener);
         endDate.setOnFocusChangeListener(dateListener);
+        amount.setOnFocusChangeListener(amountListener);
+
 
     }
 }
