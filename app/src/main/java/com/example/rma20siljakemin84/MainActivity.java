@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
                     date.setMonth(date.getMonth() - 1);
                     textDate.setText(format.format(date));
                     getTransactionsForCurrentDate();
+                    sort((String) spinnerSort.getSelectedItem());
+                    filter((Type) spinnerFilter.getSelectedItem());
                 }
             };
     private ImageButton.OnClickListener listenerRight =
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
                     date.setMonth(date.getMonth() + 1);
                     textDate.setText(format.format(date));
                     getTransactionsForCurrentDate();
+                    sort((String) spinnerSort.getSelectedItem());
+                    filter((Type)spinnerFilter.getSelectedItem());
                 }
             };
     private Spinner.OnItemSelectedListener listenerSort =
@@ -101,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
             };
 
     private void setSorts(){
+        sorts.add("Sort by");
         sorts.add("Price - Ascending");
         sorts.add("Price - Descending");
         sorts.add("Title - Ascending");
@@ -109,11 +114,13 @@ public class MainActivity extends AppCompatActivity {
         sorts.add("Date - Descending");
     }
     private void setFilters(){
+        filters.add(Type.Dummy);
         filters.add(Type.INDIVIDUALPAYMENT);
         filters.add(Type.REGULARPAYMENT);
         filters.add(Type.PURCHASE);
         filters.add(Type.INDIVIDUALINCOME);
         filters.add(Type.REGULARINCOME);
+        filters.add(Type.INDIVIDUALINCOME);
     }
     private void getTransactionsForCurrentDate(){
         transactions = Transaction.napuni();
@@ -127,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
     }
     private void sort(String s){
+        if(s.equals("Sort by")) return;
         String[] temp = s.split("-");
         Comparator<Transaction> comparator;
         if(temp[0].equals("Price ")){
@@ -183,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void filter(Type type){
         getTransactionsForCurrentDate();
+        if(type.equals(Type.Dummy)) return;
         ArrayList<Transaction> temp = new ArrayList<>();
         for(Transaction t : transactions){
             if(t.getType().equals(type)){
@@ -234,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
         rightBtn.setOnClickListener(listenerRight);
 
         spinnerSort.setOnItemSelectedListener(listenerSort);
+        //spinnerFilter.setSelection(spinFilterAdapter.getCount());
         spinnerFilter.setOnItemSelectedListener(listenerFilter);
         sort(sorts.get(0));
 

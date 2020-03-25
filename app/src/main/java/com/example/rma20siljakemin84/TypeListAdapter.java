@@ -41,14 +41,14 @@ public class TypeListAdapter extends ArrayAdapter<Type> {
         ImageView img = (ImageView) newView.findViewById(R.id.img);
 
         textType.setText(type.toString());
-        img.setImageResource(R.drawable.blank);
+        if(!type.equals(Type.Dummy)) img.setImageResource(R.drawable.blank);
 
         return newView;
     }
 
     @Override
     public int getCount() {
-        return super.getCount();
+        return super.getCount() - 1;
     }
 
     @Override
