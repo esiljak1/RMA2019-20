@@ -13,25 +13,29 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class EditTransactionActivity extends AppCompatActivity {
     private EditText date, amount, title, description, interval, endDate;
-    private Button saveBtn, cancelBtn, deleteBtn;
+    private Button saveBtn, closeBtn, deleteBtn;
     private Spinner spinnerType;
     private TextView globalEdit, monthEdit;
 
     private ArrayList<Type> list = new ArrayList<>();
     private ArrayAdapter<Type> adapter;
 
-    private EditText.OnFocusChangeListener listener =
+    private EditText.OnFocusChangeListener dateListener =
             new EditText.OnFocusChangeListener(){
 
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    if(hasFocus){
-                        ((EditText) v).getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_ATOP);
-                    }else{
+                    String datum = ((EditText) v).getText().toString();
+                    try {
+                        new SimpleDateFormat("dd.MM.yyyy").parse(datum);
+                        ((EditText) v).getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
+                    } catch (ParseException e) {
                         ((EditText) v).getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
                     }
                 }
@@ -61,7 +65,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         interval = (EditText) findViewById(R.id.interval);
         endDate = (EditText) findViewById(R.id.endDate);
         saveBtn = (Button) findViewById(R.id.saveBtn);
-        cancelBtn = (Button) findViewById(R.id.cancelBtn);
+        closeBtn = (Button) findViewById(R.id.closeBtn);
         deleteBtn = (Button) findViewById(R.id.deleteBtn);
         spinnerType = (Spinner) findViewById(R.id.spinnerType);
         spinnerType.setAdapter(adapter);
@@ -92,7 +96,8 @@ public class EditTransactionActivity extends AppCompatActivity {
         globalEdit.setText(receivedIntent.getStringExtra("global"));
         monthEdit.setText(receivedIntent.getStringExtra("month"));
 
-        date.setOnFocusChangeListener(listener);
+        date.setOnFocusChangeListener(dateListener);
+        endDate.setOnFocusChangeListener(dateListener);
 
     }
 }
