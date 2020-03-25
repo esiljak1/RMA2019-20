@@ -1,7 +1,10 @@
 package com.example.rma20siljakemin84;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,12 +17,25 @@ import java.util.ArrayList;
 
 public class EditTransactionActivity extends AppCompatActivity {
     private EditText date, amount, title, description, interval, endDate;
-    private Button saveBtn, cancelBtn;
+    private Button saveBtn, cancelBtn, deleteBtn;
     private Spinner spinnerType;
     private TextView globalEdit, monthEdit;
 
     private ArrayList<Type> list = new ArrayList<>();
     private ArrayAdapter<Type> adapter;
+
+    private EditText.OnFocusChangeListener listener =
+            new EditText.OnFocusChangeListener(){
+
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if(hasFocus){
+                        ((EditText) v).getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_ATOP);
+                    }else{
+                        ((EditText) v).getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+                    }
+                }
+            };
 
     private void napuniSpinner(){
         list.add(Type.INDIVIDUALPAYMENT);
@@ -46,6 +62,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         endDate = (EditText) findViewById(R.id.endDate);
         saveBtn = (Button) findViewById(R.id.saveBtn);
         cancelBtn = (Button) findViewById(R.id.cancelBtn);
+        deleteBtn = (Button) findViewById(R.id.deleteBtn);
         spinnerType = (Spinner) findViewById(R.id.spinnerType);
         spinnerType.setAdapter(adapter);
         globalEdit = (TextView) findViewById(R.id.globalEdit);
@@ -62,7 +79,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         }else{
             description.setEnabled(false);
         }
-        if(receivedIntent.getStringExtra("interval") != null){
+        if(receivedIntent.getStringExtra("interval") != null && !receivedIntent.getStringExtra("interval").equals("0")){
             interval.setText(receivedIntent.getStringExtra("interval"));
         }else{
             interval.setEnabled(false);
@@ -74,6 +91,8 @@ public class EditTransactionActivity extends AppCompatActivity {
         }
         globalEdit.setText(receivedIntent.getStringExtra("global"));
         monthEdit.setText(receivedIntent.getStringExtra("month"));
+
+        date.setOnFocusChangeListener(listener);
 
     }
 }

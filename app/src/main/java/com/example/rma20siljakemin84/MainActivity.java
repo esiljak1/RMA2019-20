@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
         filters.add(Type.PURCHASE);
         filters.add(Type.INDIVIDUALINCOME);
         filters.add(Type.REGULARINCOME);
-        filters.add(Type.INDIVIDUALINCOME);
     }
     private void getTransactionsForCurrentDate(){
         transactions = Transaction.napuni();

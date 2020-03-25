@@ -48,7 +48,7 @@ public class TypeListAdapter extends ArrayAdapter<Type> {
 
     @Override
     public int getCount() {
-        return super.getCount() - 1;
+        return super.getCount();
     }
 
     @Override
