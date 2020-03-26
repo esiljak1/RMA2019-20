@@ -9,14 +9,13 @@ public class TransactionPresenter implements ITransactionPresenter {
     private MainActivity view;
     private TransactionModel model;
 
+    private ArrayList<TransactionModel> currentDateTransactions = new ArrayList<>();
+
     public TransactionPresenter(MainActivity view) {
         this.view = view;
         this.model = new TransactionModel();
     }
 
-    public static ArrayList<TransactionModel> getTransactions(){
-        return TransactionModel.napuni();
-    }
     public Date getDate() {
         return model.getDate();
     }
@@ -73,16 +72,15 @@ public class TransactionPresenter implements ITransactionPresenter {
         model.setEndDate(endDate);
     }
 
-    public static ArrayList<TransactionModel> getTransactionsForCurrentDate(Date date, ArrayList<TransactionModel> availableTransactionModels){
-        ArrayList<TransactionModel> transactionModel = new ArrayList<>();
-        for(TransactionModel t : availableTransactionModels){
+    public void transactionsForCurrentDate(Date date){
+        currentDateTransactions = new ArrayList<>();
+        for(TransactionModel t : model.getTransactions()){
             if(t.getDate().getMonth() == date.getMonth() && t.getDate().getYear() - 1900 == date.getYear()){
-                transactionModel.add(t);
+                currentDateTransactions.add(t);
             }
         }
-        return transactionModel;
     }
-    public static void sort(ArrayList<TransactionModel> transactionModel, String s) {
+    public void sort(String s) {
         if (s.equals("Sort by")) return;
         String[] temp = s.split("-");
         Comparator<TransactionModel> comparator;
@@ -102,7 +100,7 @@ public class TransactionPresenter implements ITransactionPresenter {
                     }
                 };
             }
-            Collections.sort(transactionModel, comparator);
+            Collections.sort(currentDateTransactions, comparator);
         } else if (temp[0].equals("Title")) {
             if (temp[1].equals(" Ascending")) {
                 comparator = new Comparator<TransactionModel>() {
@@ -120,7 +118,7 @@ public class TransactionPresenter implements ITransactionPresenter {
                 };
 
             }
-            Collections.sort(transactionModel, comparator);
+            Collections.sort(currentDateTransactions, comparator);
         } else {
             if (temp[1].equals(" Ascending")) {
                 comparator = new Comparator<TransactionModel>() {
@@ -137,18 +135,31 @@ public class TransactionPresenter implements ITransactionPresenter {
                     }
                 };
             }
-            Collections.sort(transactionModel, comparator);
+            Collections.sort(currentDateTransactions, comparator);
         }
     }
-    public static ArrayList<TransactionModel> filter(ArrayList<TransactionModel> availableTransactionModels, Date date, Type type){
-        ArrayList<TransactionModel> tmp = getTransactionsForCurrentDate(date, availableTransactionModels);
-        if(type.equals(Type.Dummy)) return tmp;
+    public  void filter(Date date, Type type){
+        transactionsForCurrentDate(date);
+        if(type.equals(Type.Dummy)) return;
         ArrayList<TransactionModel> temp = new ArrayList<>();
-        for(TransactionModel t : tmp){
+        for(TransactionModel t : currentDateTransactions){
             if(t.getType().equals(type)){
                 temp.add(t);
             }
         }
-        return temp;
+    }
+    public void addTransaction(Date date, double amount, String title, Type type, String itemDescription, int transactionInterval, Date endDate){
+    }
+    public void updateTransaction(TransactionModel oldTransaction, TransactionModel newTransaction){
+        model.removeTransaction(oldTransaction);
+        model.addTransaction(newTransaction);
+    }
+
+    public ArrayList<TransactionModel> getCurrentDateTransactions() {
+        return currentDateTransactions;
+    }
+
+    public void setCurrentDateTransactions(ArrayList<TransactionModel> currentDateTransactions) {
+        this.currentDateTransactions = currentDateTransactions;
     }
 }

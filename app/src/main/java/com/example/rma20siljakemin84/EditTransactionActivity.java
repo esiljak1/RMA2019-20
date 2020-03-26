@@ -26,6 +26,11 @@ public class EditTransactionActivity extends AppCompatActivity {
 
     private ArrayList<Type> list = new ArrayList<>();
     private ArrayAdapter<Type> adapter;
+    private boolean allGood = true;
+
+    private TransactionModel transaction;
+    private TransactionModel oldValue;
+    private TransactionPresenter presenter = new TransactionPresenter(new MainActivity());
 
     private EditText.OnFocusChangeListener dateListener =
             new EditText.OnFocusChangeListener(){
@@ -41,8 +46,10 @@ public class EditTransactionActivity extends AppCompatActivity {
                             }
                         }
                         ((EditText) v).getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
+                        allGood = true;
                     } catch (ParseException e) {
                         ((EditText) v).getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+                        allGood = false;
                     }
                 }
             };
@@ -52,8 +59,10 @@ public class EditTransactionActivity extends AppCompatActivity {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if(v != null && !((EditText) v).getText().toString().trim().isEmpty()){
                         ((EditText) v).getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
+                        allGood = true;
                     }else{
                         ((EditText) v).getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+                        allGood = false;
                     }
                 }
             };
@@ -64,8 +73,28 @@ public class EditTransactionActivity extends AppCompatActivity {
                     int duzina = ((EditText) v).getText().toString().length();
                     if(duzina > 3 && duzina < 15){
                         ((EditText) v).getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
+                        allGood = true;
                     }else{
                         ((EditText) v).getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+                        allGood = false;
+                    }
+                }
+            };
+    private Button.OnClickListener saveListener =
+            new Button.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    if(allGood){
+                        try {
+                            transaction = new TransactionModel(new SimpleDateFormat("dd.MM.yyyy").parse(date.getText().toString()),
+                                    Double.parseDouble(amount.getText().toString()), title.getText().toString(), (Type) spinnerType.getSelectedItem(),
+                                    description.isEnabled() ? description.getText().toString() : null,
+                                    interval.isEnabled() ? Integer.parseInt(interval.getText().toString()) : null,
+                                    endDate.isEnabled() ? new SimpleDateFormat("dd.MM.yyyy").parse(endDate.getText().toString()) : null);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        presenter.updateTransaction(oldValue, transaction);
                     }
                 }
             };
@@ -107,6 +136,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         amount.setText(receivedIntent.getStringExtra("amount"));
         title.setText(receivedIntent.getStringExtra("title"));
         spinnerType.setSelection(list.indexOf(receivedIntent.getSerializableExtra("type")));
+        oldValue = receivedIntent.getParcelableExtra("oldVal");
         if(receivedIntent.getStringExtra("description") != null){
             description.setText(receivedIntent.getStringExtra("description"));
         }else{
@@ -132,5 +162,12 @@ public class EditTransactionActivity extends AppCompatActivity {
         title.setOnFocusChangeListener(titleListener);
         description.setOnFocusChangeListener(emptyListener);
 
+    }
+    public TransactionModel getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(TransactionModel transaction) {
+        this.transaction = transaction;
     }
 }
