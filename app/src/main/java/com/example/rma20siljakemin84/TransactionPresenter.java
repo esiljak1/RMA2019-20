@@ -146,7 +146,7 @@ public class TransactionPresenter implements ITransactionPresenter {
             if(t.getType().equals(type)){
                 temp.add(t);
             }
-        }
+        }currentDateTransactions = temp;
     }
     public void addTransaction(Date date, double amount, String title, Type type, String itemDescription, int transactionInterval, Date endDate){
     }

@@ -153,10 +153,8 @@ public class MainActivity extends AppCompatActivity {
         button = (Button)findViewById(R.id.button);
         leftBtn = (ImageButton)findViewById(R.id.leftBtn);
         rightBtn = (ImageButton)findViewById(R.id.rightBtn);
-        //availableTransactionModels = TransactionPresenter.getTransactions();
         date.setYear(date.getYear() - 1900);
         textDate.setText(format.format(date));
-        //transactionModel = TransactionPresenter.getTransactionsForCurrentDate(date, availableTransactionModels);
         setSorts();
         setFilters();
         textView3.setText(account.getTotalLimit() + "");
