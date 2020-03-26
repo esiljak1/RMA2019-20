@@ -1,5 +1,6 @@
 package com.example.rma20siljakemin84;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.ParseException;
@@ -32,6 +34,8 @@ public class EditTransactionActivity extends AppCompatActivity {
     private TransactionModel transaction;
     private TransactionPresenter presenter = new TransactionPresenter(new MainActivity());
     private int id;
+
+    private double oldAmount = 0;
 
     private EditText.OnFocusChangeListener dateListener =
             new EditText.OnFocusChangeListener(){
@@ -80,29 +84,32 @@ public class EditTransactionActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if(saveTest()){
-                        try {
-                            Date temp = new SimpleDateFormat("dd.MM.yyyy").parse(date.getText().toString());
-                            Calendar cal = Calendar.getInstance(), end = null;
-                            cal.set(Calendar.DAY_OF_MONTH, temp.getDate());
-                            cal.set(Calendar.MONTH, temp.getMonth());
-                            cal.set(Calendar.YEAR, temp.getYear() + 1900);
-                            if(endDate.isEnabled()){
-                                temp = new SimpleDateFormat("dd.MM.yyyy").parse(endDate.getText().toString());
-                                end.set(Calendar.DAY_OF_MONTH, temp.getDay());
-                                end.set(Calendar.MONTH, temp.getMonth());
-                                end.set(Calendar.YEAR, temp.getYear() + 1900);
-                            }
-                            transaction = new TransactionModel(cal, Double.parseDouble(amount.getText().toString()), title.getText().toString(), (Type) spinnerType.getSelectedItem(),
-                                    description.isEnabled() ? description.getText().toString() : null,
-                                    interval.isEnabled() ? Integer.parseInt(interval.getText().toString()) : 0, end);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        transaction.setId(id);
-                        presenter.updateTransaction(transaction);
+                        checkIfOver();
+                    }else{
+                        new AlertDialog.Builder(EditTransactionActivity.this).setTitle("Wrong credentials").setMessage("Please fill in fields with correct data").show();
                     }
                 }
             };
+
+    private void changeTransaction() throws ParseException {
+        Date temp = new SimpleDateFormat("dd.MM.yyyy").parse(date.getText().toString());
+        Calendar cal = Calendar.getInstance(), end = null;
+        cal.set(Calendar.DAY_OF_MONTH, temp.getDate());
+        cal.set(Calendar.MONTH, temp.getMonth());
+        cal.set(Calendar.YEAR, temp.getYear() + 1900);
+        if(endDate.isEnabled()){
+            temp = new SimpleDateFormat("dd.MM.yyyy").parse(endDate.getText().toString());
+            end.set(Calendar.DAY_OF_MONTH, temp.getDay());
+            end.set(Calendar.MONTH, temp.getMonth());
+            end.set(Calendar.YEAR, temp.getYear() + 1900);
+        }
+        transaction = new TransactionModel(cal, Double.parseDouble(amount.getText().toString()), title.getText().toString(), (Type) spinnerType.getSelectedItem(),
+                description.isEnabled() ? description.getText().toString() : null,
+                interval.isEnabled() ? Integer.parseInt(interval.getText().toString()) : 0, end);
+        transaction.setId(id);
+        presenter.updateTransaction(transaction);
+    }
+
     private Spinner.OnItemSelectedListener spinnerListener =
             new Spinner.OnItemSelectedListener(){
                 @Override
@@ -126,6 +133,33 @@ public class EditTransactionActivity extends AppCompatActivity {
                 }
             };
 
+    private void checkIfOver(){
+        final double iznos = Double.parseDouble(amount.getText().toString()) - oldAmount, mjesecno = Double.parseDouble(monthEdit.getText().toString()),
+                    ukupno = Double.parseDouble(globalEdit.getText().toString());
+        if(mjesecno - iznos < 0 || ukupno - iznos < 0){
+            new AlertDialog.Builder(this).setTitle("Over the limit").setMessage("Are you sure you want to do this?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                changeTransaction();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            }).show();
+        }else{
+            try {
+                changeTransaction();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     private boolean exceptionTest(EditText text){
         try{
             if(text.isEnabled()) {
@@ -176,6 +210,7 @@ public class EditTransactionActivity extends AppCompatActivity {
 
         date.setText(receivedIntent.getStringExtra("date"));
         amount.setText(receivedIntent.getStringExtra("amount"));
+        oldAmount = Double.parseDouble(amount.getText().toString());
         title.setText(receivedIntent.getStringExtra("title"));
         spinnerType.setSelection(list.indexOf(receivedIntent.getSerializableExtra("type")));
         if(receivedIntent.getStringExtra("description") != null){
