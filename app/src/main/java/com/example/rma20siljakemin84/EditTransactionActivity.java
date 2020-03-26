@@ -29,8 +29,8 @@ public class EditTransactionActivity extends AppCompatActivity {
     private boolean allGood = true;
 
     private TransactionModel transaction;
-    private TransactionModel oldValue;
     private TransactionPresenter presenter = new TransactionPresenter(new MainActivity());
+    private int id;
 
     private EditText.OnFocusChangeListener dateListener =
             new EditText.OnFocusChangeListener(){
@@ -86,15 +86,20 @@ public class EditTransactionActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if(allGood){
                         try {
-                            transaction = new TransactionModel(new SimpleDateFormat("dd.MM.yyyy").parse(date.getText().toString()),
-                                    Double.parseDouble(amount.getText().toString()), title.getText().toString(), (Type) spinnerType.getSelectedItem(),
+                            Date temp = new SimpleDateFormat("dd.MM.yyyy").parse(date.getText().toString()), tmp = null;
+                            temp.setYear(temp.getYear() + 1900);
+                            if(endDate.isEnabled()){
+                                tmp = new SimpleDateFormat("dd.MM.yyyy").parse(endDate.getText().toString());
+                                tmp.setYear(tmp.getYear() + 1900);
+                            }
+                            transaction = new TransactionModel(temp, Double.parseDouble(amount.getText().toString()), title.getText().toString(), (Type) spinnerType.getSelectedItem(),
                                     description.isEnabled() ? description.getText().toString() : null,
-                                    interval.isEnabled() ? Integer.parseInt(interval.getText().toString()) : null,
-                                    endDate.isEnabled() ? new SimpleDateFormat("dd.MM.yyyy").parse(endDate.getText().toString()) : null);
+                                    interval.isEnabled() ? Integer.parseInt(interval.getText().toString()) : 0, tmp);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        presenter.updateTransaction(oldValue, transaction);
+                        transaction.setId(id);
+                        presenter.updateTransaction(transaction);
                     }
                 }
             };
@@ -136,7 +141,6 @@ public class EditTransactionActivity extends AppCompatActivity {
         amount.setText(receivedIntent.getStringExtra("amount"));
         title.setText(receivedIntent.getStringExtra("title"));
         spinnerType.setSelection(list.indexOf(receivedIntent.getSerializableExtra("type")));
-        oldValue = receivedIntent.getParcelableExtra("oldVal");
         if(receivedIntent.getStringExtra("description") != null){
             description.setText(receivedIntent.getStringExtra("description"));
         }else{
@@ -154,6 +158,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         }
         globalEdit.setText(receivedIntent.getStringExtra("global"));
         monthEdit.setText(receivedIntent.getStringExtra("month"));
+        id = Integer.parseInt(receivedIntent.getStringExtra("id"));
 
         date.setOnFocusChangeListener(dateListener);
         endDate.setOnFocusChangeListener(dateListener);
@@ -161,6 +166,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         interval.setOnFocusChangeListener(emptyListener);
         title.setOnFocusChangeListener(titleListener);
         description.setOnFocusChangeListener(emptyListener);
+        saveBtn.setOnClickListener(saveListener);
 
     }
     public TransactionModel getTransaction() {

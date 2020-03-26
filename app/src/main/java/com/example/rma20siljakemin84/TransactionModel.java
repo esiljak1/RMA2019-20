@@ -1,9 +1,13 @@
 package com.example.rma20siljakemin84;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Date;
 
 public class TransactionModel implements ITransactionModel {
+    private static int maxId = 1;
+    private int id = 0;
     private Date date = new Date();
     private double amount = 0;
     private String title = "";
@@ -50,6 +54,7 @@ public class TransactionModel implements ITransactionModel {
     }
 
     public TransactionModel(Date date, double amount, String title, Type type, String itemDescription, int transactionInterval, Date endDate) {
+        this.id = maxId++;
         this.date = date;
         this.amount = amount;
         this.title = title;
@@ -129,5 +134,21 @@ public class TransactionModel implements ITransactionModel {
 
     public void setTransactions(ArrayList<TransactionModel> transactions) {
         this.transactions = transactions;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj instanceof TransactionModel){
+            return id == ((TransactionModel) obj).id;
+        }
+        return false;
     }
 }

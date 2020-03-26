@@ -2,7 +2,6 @@ package com.example.rma20siljakemin84;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     private TransactionPresenter presenter = new TransactionPresenter(this);
 
     private Account account = new Account();
-    //private ArrayList<TransactionModel> transactionModel = new ArrayList<>();
     private TransactionListAdapter adapter;
     private List<String> sorts = new ArrayList<>();
     private List<Type> filters = new ArrayList<>();
@@ -38,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private TypeListAdapter spinFilterAdapter;
     private Date date = new Date(2020, 2, 21);
     private SimpleDateFormat format = new SimpleDateFormat("MMMM, yyyy");
-
-    //private ArrayList<TransactionModel> availableTransactionModels = new ArrayList<>();
 
     private ImageButton.OnClickListener listenerLeft =
             new ImageButton.OnClickListener(){
@@ -108,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     editTransactionIntent.putExtra("interval", t.getTransactionInterval() + "");
                     editTransactionIntent.putExtra("global", account.getTotalLimit() + "");
                     editTransactionIntent.putExtra("month", account.getMonthLimit() + "");
-                    editTransactionIntent.putExtra("oldVal", (Parcelable) listView.getSelectedItem());
+                    editTransactionIntent.putExtra("id", t.getId() + "");
                     if(t.getEndDate() != null) {
                         temp = new Date(t.getEndDate().getYear() - 1900, t.getEndDate().getMonth(), t.getEndDate().getDay());
                         editTransactionIntent.putExtra("endDate", new SimpleDateFormat("dd.MM.yyyy").format(temp));
@@ -178,5 +174,13 @@ public class MainActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener(itemClickListener);
 
+    }
+
+    @Override
+    protected void onResume() {
+        presenter.transactionsForCurrentDate(date);
+        adapter = new TransactionListAdapter(this, R.layout.list_element, presenter.getCurrentDateTransactions());
+        listView.setAdapter(adapter);
+        super.onResume();
     }
 }

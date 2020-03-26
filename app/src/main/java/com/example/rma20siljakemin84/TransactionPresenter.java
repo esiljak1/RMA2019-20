@@ -150,8 +150,8 @@ public class TransactionPresenter implements ITransactionPresenter {
     }
     public void addTransaction(Date date, double amount, String title, Type type, String itemDescription, int transactionInterval, Date endDate){
     }
-    public void updateTransaction(TransactionModel oldTransaction, TransactionModel newTransaction){
-        model.removeTransaction(oldTransaction);
+    public void updateTransaction(TransactionModel newTransaction){
+        model.removeTransaction(newTransaction);
         model.addTransaction(newTransaction);
     }
 
