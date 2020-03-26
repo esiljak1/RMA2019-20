@@ -15,10 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+//Sve podatke o transakcijama u model sa svim geterima i seterima
+//U presenteru imamo instancu modela i view-a
+//U view imamo instancu presentera
 
 public class MainActivity extends AppCompatActivity {
     private ListView listView;
@@ -28,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton leftBtn, rightBtn;
 
     private Account account = new Account();
-    private List<Transaction> transactions = new ArrayList<>();
+    private ArrayList<TransactionModel> transactionModel = new ArrayList<>();
     private TransactionListAdapter adapter;
     private List<String> sorts = new ArrayList<>();
     private List<Type> filters = new ArrayList<>();
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private Date date = new Date(2020, 2, 21);
     private SimpleDateFormat format = new SimpleDateFormat("MMMM, yyyy");
 
-    private List<Transaction> availableTransactions = new ArrayList<>();
+    private ArrayList<TransactionModel> availableTransactionModels = new ArrayList<>();
 
     private ImageButton.OnClickListener listenerLeft =
             new ImageButton.OnClickListener(){
@@ -45,9 +47,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     date.setMonth(date.getMonth() - 1);
                     textDate.setText(format.format(date));
-                    getTransactionsForCurrentDate();
-                    sort((String) spinnerSort.getSelectedItem());
-                    filter((Type) spinnerFilter.getSelectedItem());
+                    transactionModel = TransactionPresenter.getTransactionsForCurrentDate(date, availableTransactionModels);
+                    TransactionPresenter.sort(transactionModel, (String) spinnerSort.getSelectedItem());
+                    transactionModel = TransactionPresenter.filter(availableTransactionModels, date, (Type)spinnerFilter.getSelectedItem());
+                    adapter = new TransactionListAdapter(MainActivity.this, R.layout.list_element, transactionModel);
+                    listView.setAdapter(adapter);
                 }
             };
     private ImageButton.OnClickListener listenerRight =
@@ -56,16 +60,20 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     date.setMonth(date.getMonth() + 1);
                     textDate.setText(format.format(date));
-                    getTransactionsForCurrentDate();
-                    sort((String) spinnerSort.getSelectedItem());
-                    filter((Type)spinnerFilter.getSelectedItem());
+                    transactionModel = TransactionPresenter.getTransactionsForCurrentDate(date, availableTransactionModels);
+                    TransactionPresenter.sort(transactionModel, (String) spinnerSort.getSelectedItem());
+                    transactionModel = TransactionPresenter.filter(availableTransactionModels, date, (Type)spinnerFilter.getSelectedItem());
+                    adapter = new TransactionListAdapter(MainActivity.this, R.layout.list_element, transactionModel);
+                    listView.setAdapter(adapter);
                 }
             };
     private Spinner.OnItemSelectedListener listenerSort =
             new Spinner.OnItemSelectedListener(){
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    sort(sorts.get(position));
+                    TransactionPresenter.sort(transactionModel, sorts.get(position));
+                    adapter = new TransactionListAdapter(MainActivity.this, R.layout.list_element, transactionModel);
+                    listView.setAdapter(adapter);
                 }
 
                 @Override
@@ -76,7 +84,9 @@ public class MainActivity extends AppCompatActivity {
             new Spinner.OnItemSelectedListener(){
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    filter(filters.get(position));
+                    transactionModel = TransactionPresenter.filter(availableTransactionModels, date, filters.get(position));
+                    adapter = new TransactionListAdapter(MainActivity.this, R.layout.list_element, transactionModel);
+                    listView.setAdapter(adapter);
                 }
 
                 @Override
@@ -88,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent editTransactionIntent = new Intent(MainActivity.this, EditTransactionActivity.class);
-                    Transaction t = adapter.getItem(position);
+                    TransactionModel t = adapter.getItem(position);
                     Date temp = new Date(t.getDate().getYear() - 1900, t.getDate().getMonth(), t.getDate().getDay());
                     editTransactionIntent.putExtra("date", new SimpleDateFormat("dd.MM.yyyy").format(temp));
                     editTransactionIntent.putExtra("amount", t.getAmount() + "");
@@ -123,85 +133,7 @@ public class MainActivity extends AppCompatActivity {
         filters.add(Type.INDIVIDUALINCOME);
         filters.add(Type.REGULARINCOME);
     }
-    private void getTransactionsForCurrentDate(){
-        transactions = new ArrayList<>(availableTransactions);
-        ArrayList<Transaction> temp = new ArrayList<>();
-        for(Transaction t : transactions){
-            if(t.getDate().getMonth() == date.getMonth() && t.getDate().getYear() - 1900 == date.getYear()){
-                temp.add(t);
-            }
-        }transactions = temp;
-        adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
-        listView.setAdapter(adapter);
-    }
-    private void sort(String s){
-        if(s.equals("Sort by")) return;
-        String[] temp = s.split("-");
-        Comparator<Transaction> comparator;
-        if(temp[0].equals("Price ")){
-            if(temp[1].equals(" Ascending")){
-                comparator = new Comparator<Transaction>() {
-                    @Override
-                    public int compare(Transaction o1, Transaction o2) {
-                        return Double.compare(o1.getAmount(), o2.getAmount());
-                    }
-                };
-            }else{
-                comparator = new Comparator<Transaction>() {
-                    @Override
-                    public int compare(Transaction o1, Transaction o2) {
-                        return Double.compare(o2.getAmount(), o1.getAmount());
-                    }
-                };
-            }Collections.sort(transactions, comparator);
-        }else if(temp[0].equals("Title")){
-            if(temp[1].equals(" Ascending")){
-                comparator = new Comparator<Transaction>() {
-                    @Override
-                    public int compare(Transaction o1, Transaction o2) {
-                        return o1.getTitle().compareTo(o2.getTitle());
-                    }
-                };
-            }else{
-                comparator = new Comparator<Transaction>() {
-                    @Override
-                    public int compare(Transaction o1, Transaction o2) {
-                        return o2.getTitle().compareTo(o1.getTitle());
-                    }
-                };
 
-            }Collections.sort(transactions, comparator);
-        }else{
-            if(temp[1].equals(" Ascending")){
-                comparator = new Comparator<Transaction>() {
-                    @Override
-                    public int compare(Transaction o1, Transaction o2) {
-                        return o1.getDate().compareTo(o2.getDate());
-                    }
-                };
-            }else{
-                comparator = new Comparator<Transaction>() {
-                    @Override
-                    public int compare(Transaction o1, Transaction o2) {
-                        return o2.getDate().compareTo(o1.getDate());
-                    }
-                };
-            }Collections.sort(transactions, comparator);
-        }adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
-        listView.setAdapter(adapter);
-    }
-    private void filter(Type type){
-        getTransactionsForCurrentDate();
-        if(type.equals(Type.Dummy)) return;
-        ArrayList<Transaction> temp = new ArrayList<>();
-        for(Transaction t : transactions){
-            if(t.getType().equals(type)){
-                temp.add(t);
-            }
-        }transactions = temp;
-        adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
-        listView.setAdapter(adapter);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,11 +154,11 @@ public class MainActivity extends AppCompatActivity {
         button = (Button)findViewById(R.id.button);
         leftBtn = (ImageButton)findViewById(R.id.leftBtn);
         rightBtn = (ImageButton)findViewById(R.id.rightBtn);
-        transactions = Transaction.napuni();
-        availableTransactions = Transaction.napuni();
+        transactionModel = TransactionPresenter.getTransactions();
+        availableTransactionModels = TransactionPresenter.getTransactions();
         date.setYear(date.getYear() - 1900);
         textDate.setText(format.format(date));
-        getTransactionsForCurrentDate();
+        transactionModel = TransactionPresenter.getTransactionsForCurrentDate(date, availableTransactionModels);
         setSorts();
         setFilters();
         textView3.setText(account.getTotalLimit() + "");
@@ -238,16 +170,15 @@ public class MainActivity extends AppCompatActivity {
         spinFilterAdapter = new TypeListAdapter(this, R.layout.type_element, filters);
         spinnerFilter.setAdapter(spinFilterAdapter);
 
-        adapter = new TransactionListAdapter(this, R.layout.list_element, transactions);
+        adapter = new TransactionListAdapter(this, R.layout.list_element, transactionModel);
         listView.setAdapter(adapter);
 
         leftBtn.setOnClickListener(listenerLeft);
         rightBtn.setOnClickListener(listenerRight);
 
         spinnerSort.setOnItemSelectedListener(listenerSort);
-        //spinnerFilter.setSelection(spinFilterAdapter.getCount());
         spinnerFilter.setOnItemSelectedListener(listenerFilter);
-        sort(sorts.get(0));
+        TransactionPresenter.sort(transactionModel, sorts.get(0));
 
         listView.setOnItemClickListener(itemClickListener);
 

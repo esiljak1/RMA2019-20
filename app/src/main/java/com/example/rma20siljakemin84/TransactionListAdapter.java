@@ -14,10 +14,10 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
-public class TransactionListAdapter extends ArrayAdapter<Transaction> {
+public class TransactionListAdapter extends ArrayAdapter<TransactionModel> {
     private int resource;
 
-    public TransactionListAdapter(@NonNull Context context, int resource, @NonNull List<Transaction> objects) {
+    public TransactionListAdapter(@NonNull Context context, int resource, @NonNull List<TransactionModel> objects) {
         super(context, resource, objects);
         this.resource = resource;
     }
@@ -35,7 +35,7 @@ public class TransactionListAdapter extends ArrayAdapter<Transaction> {
         }else{
             newView = (LinearLayout)convertView;
         }
-        Transaction instance = getItem(position);
+        TransactionModel instance = getItem(position);
 
         TextView title = (TextView) newView.findViewById(R.id.title);
         TextView amount = (TextView) newView.findViewById(R.id.amount);
