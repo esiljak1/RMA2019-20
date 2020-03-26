@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,48 +39,6 @@ public class EditTransactionActivity extends AppCompatActivity {
 
     private double oldAmount = 0;
 
-    private EditText.OnFocusChangeListener dateListener =
-            new EditText.OnFocusChangeListener(){
-
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    String datum = ((EditText) v).getText().toString();
-                    try {
-                        Date temp = new SimpleDateFormat("dd.MM.yyyy").parse(datum);
-                        if(v.getId() == R.id.endDate){
-                            if(temp.compareTo(new SimpleDateFormat("dd.MM.yyyy").parse(date.getText().toString())) < 0){
-                                throw new ParseException("poruka", 0);
-                            }
-                        }
-                        ((EditText) v).setBackgroundColor(Color.GREEN);
-                    } catch (ParseException e) {
-                        ((EditText) v).setBackgroundColor(Color.RED);
-                    }
-                }
-            };
-    private EditText.OnFocusChangeListener emptyListener =
-            new EditText.OnFocusChangeListener(){
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if(v != null && !((EditText) v).getText().toString().trim().isEmpty()){
-                        ((EditText) v).setBackgroundColor(Color.GREEN);
-                    }else{
-                        ((EditText) v).setBackgroundColor(Color.RED);
-                    }
-                }
-            };
-    private EditText.OnFocusChangeListener titleListener =
-            new EditText.OnFocusChangeListener(){
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    int duzina = ((EditText) v).getText().toString().length();
-                    if(duzina > 3 && duzina < 15){
-                        ((EditText) v).setBackgroundColor(Color.GREEN);
-                    }else{
-                        ((EditText) v).setBackgroundColor(Color.RED);
-                    }
-                }
-            };
     private Button.OnClickListener saveListener =
             new Button.OnClickListener(){
                 @Override
@@ -108,6 +68,12 @@ public class EditTransactionActivity extends AppCompatActivity {
                 interval.isEnabled() ? Integer.parseInt(interval.getText().toString()) : 0, end);
         transaction.setId(id);
         presenter.updateTransaction(transaction);
+        date.setBackgroundColor(Color.TRANSPARENT);
+        amount.setBackgroundColor(Color.TRANSPARENT);
+        title.setBackgroundColor(Color.TRANSPARENT);
+        if(description.isEnabled()) description.setBackgroundColor(Color.TRANSPARENT);
+        if(interval.isEnabled()) interval.setBackgroundColor(Color.TRANSPARENT);
+        if(endDate.isEnabled()) interval.setBackgroundColor(Color.TRANSPARENT);
     }
 
     private Spinner.OnItemSelectedListener spinnerListener =
@@ -232,14 +198,122 @@ public class EditTransactionActivity extends AppCompatActivity {
         monthEdit.setText(receivedIntent.getStringExtra("month"));
         id = Integer.parseInt(receivedIntent.getStringExtra("id"));
 
-        date.setOnFocusChangeListener(dateListener);
-        endDate.setOnFocusChangeListener(dateListener);
-        amount.setOnFocusChangeListener(emptyListener);
-        interval.setOnFocusChangeListener(emptyListener);
-        title.setOnFocusChangeListener(titleListener);
-        description.setOnFocusChangeListener(emptyListener);
         saveBtn.setOnClickListener(saveListener);
         spinnerType.setOnItemSelectedListener(spinnerListener);
+
+        date.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if(!s.toString().trim().isEmpty()){
+                    try {
+                        new SimpleDateFormat("dd.MM.yyyy").parse(s.toString());
+                    } catch (ParseException e) {
+                        date.setBackgroundColor(Color.RED);
+                        return;
+                    }
+                    date.setBackgroundColor(Color.GREEN);
+                }else{
+                    date.setBackgroundColor(Color.RED);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        endDate.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!s.toString().trim().isEmpty()){
+                    try {
+                        Date end = new SimpleDateFormat("dd.MM.yyyy").parse(s.toString()), temp = new SimpleDateFormat("dd.MM.yyyy").parse(date.getText().toString());
+                        if(end.compareTo(temp) < 0){
+                            throw new ParseException("Samo zbog mijenjanja boje", 0);
+                        }
+                    } catch (ParseException e) {
+                        endDate.setBackgroundColor(Color.RED);
+                        return;
+                    }
+                    endDate.setBackgroundColor(Color.GREEN);
+                }else{
+                    endDate.setBackgroundColor(Color.RED);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        amount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!s.toString().trim().isEmpty()){
+                    amount.setBackgroundColor(Color.GREEN);
+                }else{
+                    amount.setBackgroundColor(Color.RED);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        interval.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!s.toString().trim().isEmpty()){
+                    interval.setBackgroundColor(Color.GREEN);
+                }else{
+                    interval.setBackgroundColor(Color.RED);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        title.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.toString().length() > 3 && s.toString().length() < 15){
+                    title.setBackgroundColor(Color.GREEN);
+                }else{
+                    title.setBackgroundColor(Color.RED);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        description.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!s.toString().trim().isEmpty()){
+                    description.setBackgroundColor(Color.GREEN);
+                }else{
+                    description.setBackgroundColor(Color.RED);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
     }
     public TransactionModel getTransaction() {
