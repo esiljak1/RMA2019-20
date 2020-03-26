@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -34,15 +34,15 @@ public class MainActivity extends AppCompatActivity {
     private List<Type> filters = new ArrayList<>();
     private ArrayAdapter spinSortAdapter;
     private TypeListAdapter spinFilterAdapter;
-    private Date date = new Date(2020, 2, 21);
+    private Calendar date = Calendar.getInstance();
     private SimpleDateFormat format = new SimpleDateFormat("MMMM, yyyy");
 
     private ImageButton.OnClickListener listenerLeft =
             new ImageButton.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    date.setMonth(date.getMonth() - 1);
-                    textDate.setText(format.format(date));
+                    date.add(Calendar.MONTH, -1);
+                    textDate.setText(format.format(date.getTime()));
                     presenter.transactionsForCurrentDate(date);
                     presenter.sort((String) spinnerSort.getSelectedItem());
                     presenter.filter(date, (Type)spinnerFilter.getSelectedItem());
@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
             new ImageButton.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    date.setMonth(date.getMonth() + 1);
-                    textDate.setText(format.format(date));
+                    date.add(Calendar.MONTH, 1);
+                    textDate.setText(format.format(date.getTime()));
                     presenter.transactionsForCurrentDate(date);
                     presenter.sort((String) spinnerSort.getSelectedItem());
                     presenter.filter(date, (Type)spinnerFilter.getSelectedItem());
@@ -95,8 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent editTransactionIntent = new Intent(MainActivity.this, EditTransactionActivity.class);
                     TransactionModel t = adapter.getItem(position);
-                    Date temp = new Date(t.getDate().getYear() - 1900, t.getDate().getMonth(), t.getDate().getDay());
-                    editTransactionIntent.putExtra("date", new SimpleDateFormat("dd.MM.yyyy").format(temp));
+                    editTransactionIntent.putExtra("date", new SimpleDateFormat("dd.MM.yyyy").format(t.getDate().getTime()));
                     editTransactionIntent.putExtra("amount", t.getAmount() + "");
                     editTransactionIntent.putExtra("title", t.getTitle());
                     editTransactionIntent.putExtra("type", t.getType());
@@ -106,8 +105,7 @@ public class MainActivity extends AppCompatActivity {
                     editTransactionIntent.putExtra("month", account.getMonthLimit() + "");
                     editTransactionIntent.putExtra("id", t.getId() + "");
                     if(t.getEndDate() != null) {
-                        temp = new Date(t.getEndDate().getYear() - 1900, t.getEndDate().getMonth(), t.getEndDate().getDay());
-                        editTransactionIntent.putExtra("endDate", new SimpleDateFormat("dd.MM.yyyy").format(temp));
+                        editTransactionIntent.putExtra("endDate", new SimpleDateFormat("dd.MM.yyyy").format(t.getEndDate().getTime()));
                     }
                     MainActivity.this.startActivity(editTransactionIntent);
                 }
@@ -149,8 +147,7 @@ public class MainActivity extends AppCompatActivity {
         button = (Button)findViewById(R.id.button);
         leftBtn = (ImageButton)findViewById(R.id.leftBtn);
         rightBtn = (ImageButton)findViewById(R.id.rightBtn);
-        date.setYear(date.getYear() - 1900);
-        textDate.setText(format.format(date));
+        textDate.setText(format.format(date.getTime()));
         setSorts();
         setFilters();
         textView3.setText(account.getTotalLimit() + "");

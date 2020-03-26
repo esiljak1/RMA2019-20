@@ -3,57 +3,113 @@ package com.example.rma20siljakemin84;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 
 public class TransactionModel implements ITransactionModel {
     private static int maxId = 1;
     private int id = 0;
-    private Date date = new Date();
+    private Calendar date;
     private double amount = 0;
     private String title = "";
     private Type type = Type.INDIVIDUALPAYMENT;
     private String itemDescription = "";
     private int transactionInterval = 0;
-    private Date endDate = new Date();
+    private Calendar endDate;
 
     private static ArrayList<TransactionModel> transactions = new ArrayList<TransactionModel>(){
         {
             //Individual payments
-            add(new TransactionModel(new Date(2020, 3, 22), 150, "Transaction 1", Type.INDIVIDUALPAYMENT, "A very nice jacket", 0, null));
-            add(new TransactionModel(new Date(2020, 1, 7), 79.90, "Transaction 2", Type.INDIVIDUALPAYMENT, "Steam wallet", 0, null));
-            add(new TransactionModel(new Date(2020, 1, 30), 100, "Transaction 3", Type.INDIVIDUALPAYMENT, "4GB DDR4 RAM", 0, null));
-            add(new TransactionModel(new Date(2019, 11, 25), 35, "Transaction 4", Type.INDIVIDUALPAYMENT, "A very cool hat", 0, null));
+            Calendar cal = Calendar.getInstance(), end = Calendar.getInstance();
+            cal.set(2020, 3, 22);
+            add(new TransactionModel(cal, 150, "Transaction 1", Type.INDIVIDUALPAYMENT, "A very nice jacket", 0, null));
+            cal = Calendar.getInstance();
+            cal.set(2020,1,7);
+            add(new TransactionModel(cal, 79.90, "Transaction 2", Type.INDIVIDUALPAYMENT, "Steam wallet", 0, null));
+            cal = Calendar.getInstance();
+            cal.set(2020, 1, 30);
+            add(new TransactionModel(cal, 100, "Transaction 3", Type.INDIVIDUALPAYMENT, "4GB DDR4 RAM", 0, null));
+            cal = Calendar.getInstance();
+            cal.set(2019, 11, 25);
+            add(new TransactionModel(cal, 35, "Transaction 4", Type.INDIVIDUALPAYMENT, "A very cool hat", 0, null));
 
             //Regular payments
-            add(new TransactionModel(new Date(2019, 1, 15), 50, "Transaction 5", Type.REGULARPAYMENT, "Electricity bill", 30, new Date(2021, 1, 15)));
-            add(new TransactionModel(new Date(2019, 2, 1), 100, "Transaction 6", Type.REGULARPAYMENT, "Heating bill", 30, new Date(2024, 2, 1)));
-            add(new TransactionModel(new Date(2018, 12, 10), 35, "Transaction 7", Type.REGULARPAYMENT, "Water bill", 30, new Date(2028, 12, 10)));
-            add(new TransactionModel(new Date(2020, 1, 3), 50, "Transaction 8", Type.REGULARPAYMENT, "Gym subscription", 30, new Date(2021, 1, 3)));
+            cal = Calendar.getInstance();
+            end = Calendar.getInstance();
+            cal.set(2019, 1, 15);
+            end.set(2021, 1, 15);
+            add(new TransactionModel(cal, 50, "Transaction 5", Type.REGULARPAYMENT, "Electricity bill", 30, end));
+            end = Calendar.getInstance();
+            cal = Calendar.getInstance();
+            cal.set(2019, 2, 1);
+            end.set(2024, 2, 1);
+            add(new TransactionModel(cal, 100, "Transaction 6", Type.REGULARPAYMENT, "Heating bill", 30, end));
+            end = Calendar.getInstance();
+            cal = Calendar.getInstance();
+            cal.set(2018, 12, 10);
+            end.set(2020, 12, 10);
+            add(new TransactionModel(cal, 35, "Transaction 7", Type.REGULARPAYMENT, "Water bill", 30, end));
+            end = Calendar.getInstance();
+            cal = Calendar.getInstance();
+            cal.set(2020, 1, 3);
+            end.set(2021, 1, 3);
+            add(new TransactionModel(cal, 50, "Transaction 8", Type.REGULARPAYMENT, "Gym subscription", 30, end));
 
             //Purchase
-            add(new TransactionModel(new Date(2020, 1, 2), 25, "Transaction 9", Type.PURCHASE, "Sunglasses", 0, null));
-            add(new TransactionModel(new Date(2019, 8, 16), 250, "Transaction 10", Type.PURCHASE, "A spoon", 0, null));
-            add(new TransactionModel(new Date(2020, 2, 15), 5, "Transaction 11", Type.PURCHASE, "A plate", 0, null));
-            add(new TransactionModel(new Date(2020, 1, 7), 120, "Transaction 12", Type.PURCHASE, "Sports shoes", 0, null));
+            cal = Calendar.getInstance();
+            cal.set(2020, 1, 2);
+            add(new TransactionModel(cal, 25, "Transaction 9", Type.PURCHASE, "Sunglasses", 0, null));
+            cal = Calendar.getInstance();
+            cal.set(2019, 8, 16);
+            add(new TransactionModel(cal, 250, "Transaction 10", Type.PURCHASE, "A spoon", 0, null));
+            cal = Calendar.getInstance();
+            cal.set(2020, 2, 15);
+            add(new TransactionModel(cal, 5, "Transaction 11", Type.PURCHASE, "A plate", 0, null));
+            cal = Calendar.getInstance();
+            cal.set(2020, 1, 7);
+            add(new TransactionModel(cal, 120, "Transaction 12", Type.PURCHASE, "Sports shoes", 0, null));
 
             //Individual income
-            add(new TransactionModel(new Date(2020, 2, 1), 250, "Transaction 13", Type.INDIVIDUALINCOME, null, 0, null));
-            add(new TransactionModel(new Date(2020, 1, 6), 500, "Transaction 14", Type.INDIVIDUALINCOME, null, 0, null));
-            add(new TransactionModel(new Date(2019, 12, 1), 1500, "Transaction 15", Type.INDIVIDUALINCOME, null, 0, null));
-            add(new TransactionModel(new Date(2020, 3, 1), 500, "Transaction 16", Type.INDIVIDUALINCOME, null, 0, null));
+            cal = Calendar.getInstance();
+            cal.set(2020, 2, 1);
+            add(new TransactionModel(cal, 250, "Transaction 13", Type.INDIVIDUALINCOME, null, 0, null));
+            cal = Calendar.getInstance();
+            cal.set(2020, 1, 6);
+            add(new TransactionModel(cal, 500, "Transaction 14", Type.INDIVIDUALINCOME, null, 0, null));
+            cal = Calendar.getInstance();
+            cal.set(2019, 12, 1);
+            add(new TransactionModel(cal, 1500, "Transaction 15", Type.INDIVIDUALINCOME, null, 0, null));
+            cal = Calendar.getInstance();
+            cal.set(2020, 3, 1);
+            add(new TransactionModel(cal, 500, "Transaction 16", Type.INDIVIDUALINCOME, null, 0, null));
 
             //Regular income
-            add(new TransactionModel(new Date(2019, 1, 7), 100, "Transaction 17", Type.REGULARINCOME, null, 365, new Date(2025, 1, 7)));
-            add(new TransactionModel(new Date(2019, 5, 15), 50, "Transaction 18", Type.REGULARINCOME, null, 16, new Date(2020, 5, 15)));
-            add(new TransactionModel(new Date(2020, 4, 1), 2000, "Transaction 19", Type.REGULARINCOME, null, 30, new Date(2021, 4, 1)));
-            add(new TransactionModel(new Date(2019, 9, 9), 10, "Transaction 20", Type.REGULARINCOME, null, 7, new Date(2021, 9, 9)));
+            end = Calendar.getInstance();
+            cal = Calendar.getInstance();
+            cal.set(2019, 1, 7);
+            end.set(2025, 1, 7);
+            add(new TransactionModel(cal, 100, "Transaction 17", Type.REGULARINCOME, null, 365, end));
+            end = Calendar.getInstance();
+            cal = Calendar.getInstance();
+            cal.set(2019, 5, 15);
+            end.set(2020, 5, 15);
+            add(new TransactionModel(cal, 50, "Transaction 18", Type.REGULARINCOME, null, 16, end));
+            end = Calendar.getInstance();
+            cal = Calendar.getInstance();
+            cal.set(2019, 4, 1);
+            end.set(2021, 4, 1);
+            add(new TransactionModel(cal, 2000, "Transaction 19", Type.REGULARINCOME, null, 30, end));
+            end = Calendar.getInstance();
+            cal = Calendar.getInstance();
+            cal.set(2019, 9, 9);
+            end.set(2021, 9, 9);
+            add(new TransactionModel(cal, 10, "Transaction 20", Type.REGULARINCOME, null, 7, end));
         }
     };
 
     public TransactionModel() {
     }
 
-    public TransactionModel(Date date, double amount, String title, Type type, String itemDescription, int transactionInterval, Date endDate) {
+    public TransactionModel(Calendar date, double amount, String title, Type type, String itemDescription, int transactionInterval, Calendar endDate) {
         this.id = maxId++;
         this.date = date;
         this.amount = amount;
@@ -64,11 +120,11 @@ public class TransactionModel implements ITransactionModel {
         this.endDate = endDate;
     }
 
-    public Date getDate() {
+    public Calendar getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Calendar date) {
         this.date = date;
     }
 
@@ -113,11 +169,11 @@ public class TransactionModel implements ITransactionModel {
         this.transactionInterval = transactionInterval;
     }
 
-    public Date getEndDate() {
+    public Calendar getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(Calendar endDate) {
         this.endDate = endDate;
     }
 

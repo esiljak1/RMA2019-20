@@ -1,9 +1,9 @@
 package com.example.rma20siljakemin84;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 
 public class TransactionPresenter implements ITransactionPresenter {
     private MainActivity view;
@@ -16,66 +16,11 @@ public class TransactionPresenter implements ITransactionPresenter {
         this.model = new TransactionModel();
     }
 
-    public Date getDate() {
-        return model.getDate();
-    }
 
-    public void setDate(Date date) {
-        model.setDate(date);
-    }
-
-    public double getAmount() {
-        return model.getAmount();
-    }
-
-    public void setAmount(double amount) {
-        model.setAmount(amount);
-    }
-
-    public String getTitle() {
-        return model.getTitle();
-    }
-
-    public void setTitle(String title) {
-        model.setTitle(title);
-    }
-
-    public Type getType() {
-        return model.getType();
-    }
-
-    public void setType(Type type) {
-        model.setType(type);
-    }
-
-    public String getItemDescription() {
-        return model.getItemDescription();
-    }
-
-    public void setItemDescription(String itemDescription) {
-        model.setItemDescription(itemDescription);
-    }
-
-    public int getTransactionInterval() {
-        return model.getTransactionInterval();
-    }
-
-    public void setTransactionInterval(int transactionInterval) {
-        model.setTransactionInterval(transactionInterval);
-    }
-
-    public Date getEndDate() {
-        return model.getEndDate();
-    }
-
-    public void setEndDate(Date endDate) {
-        model.setEndDate(endDate);
-    }
-
-    public void transactionsForCurrentDate(Date date){
+    public void transactionsForCurrentDate(Calendar date){
         currentDateTransactions = new ArrayList<>();
         for(TransactionModel t : model.getTransactions()){
-            if(t.getDate().getMonth() == date.getMonth() && t.getDate().getYear() - 1900 == date.getYear()){
+            if(t.getDate().get(Calendar.MONTH) == date.get(Calendar.MONTH) && t.getDate().get(Calendar.YEAR) == date.get(Calendar.YEAR)){
                 currentDateTransactions.add(t);
             }
         }
@@ -138,7 +83,7 @@ public class TransactionPresenter implements ITransactionPresenter {
             Collections.sort(currentDateTransactions, comparator);
         }
     }
-    public  void filter(Date date, Type type){
+    public  void filter(Calendar date, Type type){
         transactionsForCurrentDate(date);
         if(type.equals(Type.Dummy)) return;
         ArrayList<TransactionModel> temp = new ArrayList<>();
@@ -148,7 +93,7 @@ public class TransactionPresenter implements ITransactionPresenter {
             }
         }currentDateTransactions = temp;
     }
-    public void addTransaction(Date date, double amount, String title, Type type, String itemDescription, int transactionInterval, Date endDate){
+    public void addTransaction(Calendar date, double amount, String title, Type type, String itemDescription, int transactionInterval, Calendar endDate){
     }
     public void updateTransaction(TransactionModel newTransaction){
         model.removeTransaction(newTransaction);
