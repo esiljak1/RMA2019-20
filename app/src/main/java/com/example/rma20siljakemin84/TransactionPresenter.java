@@ -16,11 +16,27 @@ public class TransactionPresenter implements ITransactionPresenter {
         this.model = new TransactionModel();
     }
 
+    private boolean checkRegular(TransactionModel transaction, Calendar date){
+        Calendar temp = Calendar.getInstance();
+        temp.set(Calendar.DATE, transaction.getDate().get(Calendar.DATE));
+        temp.set(Calendar.MONTH, transaction.getDate().get(Calendar.MONTH));
+        temp.set(Calendar.YEAR, transaction.getDate().get(Calendar.YEAR));
+        while (temp.compareTo(transaction.getEndDate()) < 0){
+            if(temp.get(Calendar.MONTH) == date.get(Calendar.MONTH) && temp.get(Calendar.YEAR) == date.get(Calendar.YEAR)){
+                return true;
+            }temp.add(Calendar.DATE, transaction.getTransactionInterval());
+        }return false;
+    }
+
 
     public void transactionsForCurrentDate(Calendar date){
         currentDateTransactions = new ArrayList<>();
+        boolean uslov = true;
         for(TransactionModel t : model.getTransactions()){
-            if(t.getDate().get(Calendar.MONTH) == date.get(Calendar.MONTH) && t.getDate().get(Calendar.YEAR) == date.get(Calendar.YEAR)){
+            if(t.getType().equals(Type.REGULARINCOME) || t.getType().equals(Type.REGULARPAYMENT)){
+                if(checkRegular(t, date)) currentDateTransactions.add(t);
+            }
+            else if(uslov && t.getDate().get(Calendar.MONTH) == date.get(Calendar.MONTH) && t.getDate().get(Calendar.YEAR) == date.get(Calendar.YEAR)){
                 currentDateTransactions.add(t);
             }
         }
