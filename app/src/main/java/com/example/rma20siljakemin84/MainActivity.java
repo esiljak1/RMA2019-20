@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
                     date.add(Calendar.MONTH, -1);
                     textDate.setText(format.format(date.getTime()));
                     presenter.transactionsForCurrentDate(date);
-                    presenter.sort((String) spinnerSort.getSelectedItem());
                     presenter.filter(date, (Type)spinnerFilter.getSelectedItem());
+                    presenter.sort((String) spinnerSort.getSelectedItem());
                     adapter = new TransactionListAdapter(MainActivity.this, R.layout.list_element, presenter.getCurrentDateTransactions());
                     listView.setAdapter(adapter);
                 }
@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
                     date.add(Calendar.MONTH, 1);
                     textDate.setText(format.format(date.getTime()));
                     presenter.transactionsForCurrentDate(date);
-                    presenter.sort((String) spinnerSort.getSelectedItem());
                     presenter.filter(date, (Type)spinnerFilter.getSelectedItem());
+                    presenter.sort((String) spinnerSort.getSelectedItem());
                     adapter = new TransactionListAdapter(MainActivity.this, R.layout.list_element, presenter.getCurrentDateTransactions());
                     listView.setAdapter(adapter);
                 }
