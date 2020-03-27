@@ -127,7 +127,11 @@ public class TransactionPresenter implements ITransactionPresenter {
     public double getAmountforDate(Calendar date){
         double ret = 0;
         for(TransactionModel tm : model.getTransactions()){
-            if(date.get(Calendar.MONTH) == tm.getDate().get(Calendar.MONTH) && date.get(Calendar.YEAR) == tm.getDate().get(Calendar.YEAR)) {
+            if(tm.getType().equals(Type.REGULARPAYMENT) || tm.getType().equals(Type.REGULARINCOME)){
+                if(checkRegular(tm, date)){
+                    ret += tm.getAmount();
+                }
+            }else if(date.get(Calendar.MONTH) == tm.getDate().get(Calendar.MONTH) && date.get(Calendar.YEAR) == tm.getDate().get(Calendar.YEAR)) {
                 ret += tm.getAmount();
             }
         }

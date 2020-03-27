@@ -1,9 +1,9 @@
 package com.example.rma20siljakemin84;
 
-public class Account {
-    private double budget;
-    private double totalLimit;
-    private double monthLimit;
+public class AccountModel implements IAccountModel {
+    private double budget = 1000;
+    private double totalLimit = 100000;
+    private double monthLimit = 10000;
 
     public double getBudget() {
         return budget;

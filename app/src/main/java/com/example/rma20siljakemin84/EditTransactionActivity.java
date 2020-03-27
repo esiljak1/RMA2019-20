@@ -71,6 +71,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         date.setBackgroundColor(Color.TRANSPARENT);
         amount.setBackgroundColor(Color.TRANSPARENT);
         title.setBackgroundColor(Color.TRANSPARENT);
+        spinnerType.setBackgroundColor(Color.TRANSPARENT);
         if(description.isEnabled()) description.setBackgroundColor(Color.TRANSPARENT);
         if(interval.isEnabled()) interval.setBackgroundColor(Color.TRANSPARENT);
         if(endDate.isEnabled()) interval.setBackgroundColor(Color.TRANSPARENT);
@@ -92,6 +93,7 @@ public class EditTransactionActivity extends AppCompatActivity {
                     }else{
                         description.setEnabled(true);
                     }
+                    spinnerType.setBackgroundColor(Color.GREEN);
                 }
 
                 @Override
@@ -108,7 +110,7 @@ public class EditTransactionActivity extends AppCompatActivity {
             d = new SimpleDateFormat("dd.MM.yyyy").parse(date.getText().toString());
             temp.set(Calendar.DATE, d.getDate());
             temp.set(Calendar.MONTH, d.getMonth());
-            temp.set(Calendar.YEAR, d.getYear());
+            temp.set(Calendar.YEAR, d.getYear()+ 1900);
         } catch (ParseException e) {
             e.printStackTrace();
         }

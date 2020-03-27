@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TransactionPresenter presenter = new TransactionPresenter(this);
 
-    private Account account = new Account();
+    private AccountModel accountModel = new AccountModel();
     private TransactionListAdapter adapter;
     private List<String> sorts = new ArrayList<>();
     private List<Type> filters = new ArrayList<>();
@@ -101,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
                     editTransactionIntent.putExtra("type", t.getType());
                     editTransactionIntent.putExtra("description", t.getItemDescription());
                     editTransactionIntent.putExtra("interval", t.getTransactionInterval() + "");
-                    editTransactionIntent.putExtra("global", account.getTotalLimit() + "");
-                    editTransactionIntent.putExtra("month", account.getMonthLimit() + "");
+                    editTransactionIntent.putExtra("global", accountModel.getTotalLimit() + "");
+                    editTransactionIntent.putExtra("month", accountModel.getMonthLimit() + "");
                     editTransactionIntent.putExtra("id", t.getId() + "");
                     if(t.getEndDate() != null) {
                         editTransactionIntent.putExtra("endDate", new SimpleDateFormat("dd.MM.yyyy").format(t.getEndDate().getTime()));
@@ -136,8 +136,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setTitle("RMA Spirala");
 
-        account.setMonthLimit(2000);
-        account.setTotalLimit(10000);
         listView = (ListView)findViewById(R.id.listView);
         spinnerSort = (Spinner)findViewById(R.id.spinnerSort);
         spinnerFilter = (Spinner)findViewById(R.id.spinnerFilter);
@@ -150,8 +148,8 @@ public class MainActivity extends AppCompatActivity {
         textDate.setText(format.format(date.getTime()));
         setSorts();
         setFilters();
-        textView3.setText(account.getTotalLimit() + "");
-        textView4.setText(account.getMonthLimit() + "");
+        textView3.setText(accountModel.getTotalLimit() + "");
+        textView4.setText(accountModel.getMonthLimit() + "");
 
         spinSortAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, sorts);
         spinnerSort.setAdapter(spinSortAdapter);
