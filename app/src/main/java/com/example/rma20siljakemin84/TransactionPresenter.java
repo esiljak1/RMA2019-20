@@ -115,6 +115,9 @@ public class TransactionPresenter implements ITransactionPresenter {
         model.removeTransaction(newTransaction);
         model.addTransaction(newTransaction);
     }
+    public void deleteTransaction(TransactionModel transaction){
+        model.removeTransaction(transaction);
+    }
 
     public ArrayList<TransactionModel> getCurrentDateTransactions() {
         return currentDateTransactions;

@@ -50,6 +50,27 @@ public class EditTransactionActivity extends AppCompatActivity {
                     }
                 }
             };
+    private Button.OnClickListener deleteListener =
+            new Button.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(EditTransactionActivity.this).setTitle("Deleting transaction").setMessage("Are you sure you want to delete this transaction?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    transaction = new TransactionModel();
+                                    transaction.setId(id);
+                                    presenter.deleteTransaction(transaction);
+                                    EditTransactionActivity.super.onBackPressed();
+                                }
+                            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                    }).show();
+                }
+            };
 
     private void changeTransaction() throws ParseException {
         Date temp = new SimpleDateFormat("dd.MM.yyyy").parse(date.getText().toString());
@@ -326,6 +347,7 @@ public class EditTransactionActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+        deleteBtn.setOnClickListener(deleteListener);
 
     }
     public TransactionModel getTransaction() {
