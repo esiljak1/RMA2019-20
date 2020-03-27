@@ -214,29 +214,38 @@ public class EditTransactionActivity extends AppCompatActivity {
 
         Intent receivedIntent = getIntent();
 
-        date.setText(receivedIntent.getStringExtra("date"));
-        amount.setText(receivedIntent.getStringExtra("amount"));
-        oldAmount = Double.parseDouble(amount.getText().toString());
-        title.setText(receivedIntent.getStringExtra("title"));
-        spinnerType.setSelection(list.indexOf(receivedIntent.getSerializableExtra("type")));
-        if(receivedIntent.getStringExtra("description") != null){
-            description.setText(receivedIntent.getStringExtra("description"));
+        if(receivedIntent.getStringExtra("dodavanje") == null) {
+            date.setText(receivedIntent.getStringExtra("date"));
+            amount.setText(receivedIntent.getStringExtra("amount"));
+            oldAmount = Double.parseDouble(amount.getText().toString());
+            title.setText(receivedIntent.getStringExtra("title"));
+            spinnerType.setSelection(list.indexOf(receivedIntent.getSerializableExtra("type")));
+            if (receivedIntent.getStringExtra("description") != null) {
+                description.setText(receivedIntent.getStringExtra("description"));
+            } else {
+                description.setEnabled(false);
+            }
+            if (receivedIntent.getStringExtra("interval") != null && !receivedIntent.getStringExtra("interval").equals("0")) {
+                interval.setText(receivedIntent.getStringExtra("interval"));
+            } else {
+                interval.setEnabled(false);
+            }
+            if (receivedIntent.getStringExtra("endDate") != null) {
+                endDate.setText(receivedIntent.getStringExtra("endDate"));
+            } else {
+                endDate.setEnabled(false);
+            }
+            id = Integer.parseInt(receivedIntent.getStringExtra("id"));
         }else{
-            description.setEnabled(false);
-        }
-        if(receivedIntent.getStringExtra("interval") != null && !receivedIntent.getStringExtra("interval").equals("0")){
-            interval.setText(receivedIntent.getStringExtra("interval"));
-        }else{
-            interval.setEnabled(false);
-        }
-        if(receivedIntent.getStringExtra("endDate") != null){
-            endDate.setText(receivedIntent.getStringExtra("endDate"));
-        }else{
-            endDate.setEnabled(false);
+            spinnerType.setSelection(0);
+            date.setBackgroundColor(Color.RED);
+            amount.setBackgroundColor(Color.RED);
+            title.setBackgroundColor(Color.RED);
+            description.setBackgroundColor(Color.RED);
+            deleteBtn.setEnabled(false);
         }
         globalEdit.setText(receivedIntent.getStringExtra("global"));
         monthEdit.setText(receivedIntent.getStringExtra("month"));
-        id = Integer.parseInt(receivedIntent.getStringExtra("id"));
 
         saveBtn.setOnClickListener(saveListener);
         spinnerType.setOnItemSelectedListener(spinnerListener);

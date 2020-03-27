@@ -110,6 +110,17 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this.startActivity(editTransactionIntent);
                 }
             };
+    private Button.OnClickListener addTransactionListener =
+            new Button.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Intent addTransactionIntent = new Intent(MainActivity.this, EditTransactionActivity.class);
+                    addTransactionIntent.putExtra("dodavanje", "da");
+                    addTransactionIntent.putExtra("global", accountPresenter.getOverallLimit() + "");
+                    addTransactionIntent.putExtra("month", accountPresenter.getMonthlyLimit() + "");
+                    MainActivity.this.startActivity(addTransactionIntent);
+                }
+            };
 
     private void setSorts(){
         sorts.add("Sort by");
@@ -168,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
         spinnerFilter.setOnItemSelectedListener(listenerFilter);
 
         listView.setOnItemClickListener(itemClickListener);
+        button.setOnClickListener(addTransactionListener);
 
     }
 
