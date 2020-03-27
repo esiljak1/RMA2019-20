@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TransactionPresenter presenter = new TransactionPresenter(this);
 
-    private AccountModel accountModel = new AccountModel();
+    private AccountPresenter accountPresenter = new AccountPresenter(this);
     private TransactionListAdapter adapter;
     private List<String> sorts = new ArrayList<>();
     private List<Type> filters = new ArrayList<>();
@@ -101,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
                     editTransactionIntent.putExtra("type", t.getType());
                     editTransactionIntent.putExtra("description", t.getItemDescription());
                     editTransactionIntent.putExtra("interval", t.getTransactionInterval() + "");
-                    editTransactionIntent.putExtra("global", accountModel.getTotalLimit() + "");
-                    editTransactionIntent.putExtra("month", accountModel.getMonthLimit() + "");
+                    editTransactionIntent.putExtra("global", accountPresenter.getOverallLimit() + "");
+                    editTransactionIntent.putExtra("month", accountPresenter.getMonthlyLimit() + "");
                     editTransactionIntent.putExtra("id", t.getId() + "");
                     if(t.getEndDate() != null) {
                         editTransactionIntent.putExtra("endDate", new SimpleDateFormat("dd.MM.yyyy").format(t.getEndDate().getTime()));
@@ -148,8 +148,8 @@ public class MainActivity extends AppCompatActivity {
         textDate.setText(format.format(date.getTime()));
         setSorts();
         setFilters();
-        textView3.setText(accountModel.getTotalLimit() + "");
-        textView4.setText(accountModel.getMonthLimit() + "");
+        textView3.setText(accountPresenter.getOverallLimit() + "");
+        textView4.setText(accountPresenter.getMonthlyLimit() + "");
 
         spinSortAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, sorts);
         spinnerSort.setAdapter(spinSortAdapter);

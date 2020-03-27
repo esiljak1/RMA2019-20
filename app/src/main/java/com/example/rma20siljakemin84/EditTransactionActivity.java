@@ -39,6 +39,13 @@ public class EditTransactionActivity extends AppCompatActivity {
 
     private double oldAmount = 0;
 
+    private Button.OnClickListener closeListener =
+            new Button.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    EditTransactionActivity.super.onBackPressed();
+                }
+            };
     private Button.OnClickListener saveListener =
             new Button.OnClickListener(){
                 @Override
@@ -348,6 +355,7 @@ public class EditTransactionActivity extends AppCompatActivity {
             }
         });
         deleteBtn.setOnClickListener(deleteListener);
+        closeBtn.setOnClickListener(closeListener);
 
     }
     public TransactionModel getTransaction() {
