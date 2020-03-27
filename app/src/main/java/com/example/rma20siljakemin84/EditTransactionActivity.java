@@ -102,7 +102,17 @@ public class EditTransactionActivity extends AppCompatActivity {
     private void checkIfOver(){
         final double iznos = Double.parseDouble(amount.getText().toString()) - oldAmount, mjesecno = Double.parseDouble(monthEdit.getText().toString()),
                     ukupno = Double.parseDouble(globalEdit.getText().toString());
-        if(mjesecno - iznos < 0 || ukupno - iznos < 0){
+        Calendar temp = Calendar.getInstance();
+        Date d = null;
+        try {
+            d = new SimpleDateFormat("dd.MM.yyyy").parse(date.getText().toString());
+            temp.set(Calendar.DATE, d.getDate());
+            temp.set(Calendar.MONTH, d.getMonth());
+            temp.set(Calendar.YEAR, d.getYear());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(iznos + presenter.getAmountforDate(temp) > mjesecno || iznos + presenter.getAllAmounts() > ukupno){
             new AlertDialog.Builder(this).setTitle("Over the limit").setMessage("Are you sure you want to do this?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override

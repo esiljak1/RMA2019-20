@@ -123,4 +123,22 @@ public class TransactionPresenter implements ITransactionPresenter {
     public void setCurrentDateTransactions(ArrayList<TransactionModel> currentDateTransactions) {
         this.currentDateTransactions = currentDateTransactions;
     }
+
+    public double getAmountforDate(Calendar date){
+        double ret = 0;
+        for(TransactionModel tm : model.getTransactions()){
+            if(date.get(Calendar.MONTH) == tm.getDate().get(Calendar.MONTH) && date.get(Calendar.YEAR) == tm.getDate().get(Calendar.YEAR)) {
+                ret += tm.getAmount();
+            }
+        }
+        return ret;
+    }
+
+    public double getAllAmounts(){
+        double ret = 0;
+        for(TransactionModel tm : model.getTransactions()){
+            ret += tm.getAmount();
+        }
+        return ret;
+    }
 }
