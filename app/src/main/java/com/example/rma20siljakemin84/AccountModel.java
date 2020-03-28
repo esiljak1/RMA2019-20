@@ -5,6 +5,8 @@ public class AccountModel implements IAccountModel {
     private double totalLimit = 100000;
     private double monthLimit = 10000;
 
+    private static AccountModel instance = new AccountModel();
+
     public double getBudget() {
         return budget;
     }
@@ -27,5 +29,9 @@ public class AccountModel implements IAccountModel {
 
     public void setMonthLimit(double monthLimit) {
         this.monthLimit = monthLimit;
+    }
+
+    public static AccountModel getInstance(){
+        return instance;
     }
 }

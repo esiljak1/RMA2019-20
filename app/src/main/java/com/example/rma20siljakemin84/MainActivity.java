@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
 
     private TransactionPresenter presenter = new TransactionPresenter(this);
 
-    private AccountPresenter accountPresenter = new AccountPresenter(this);
+    private AccountPresenter accountPresenter = presenter.getAccount();
     private TransactionListAdapter adapter;
     private List<String> sorts = new ArrayList<>();
     private List<Type> filters = new ArrayList<>();
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
                     editTransactionIntent.putExtra("type", t.getType());
                     editTransactionIntent.putExtra("description", t.getItemDescription());
                     editTransactionIntent.putExtra("interval", t.getTransactionInterval() + "");
-                    editTransactionIntent.putExtra("global", accountPresenter.getOverallLimit() + "");
+                    editTransactionIntent.putExtra("global", accountPresenter.getBudget() + "");
                     editTransactionIntent.putExtra("month", accountPresenter.getMonthlyLimit() + "");
                     editTransactionIntent.putExtra("id", t.getId() + "");
                     if(t.getEndDate() != null) {
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
                 public void onClick(View v) {
                     Intent addTransactionIntent = new Intent(MainActivity.this, EditTransactionActivity.class);
                     addTransactionIntent.putExtra("dodavanje", "da");
-                    addTransactionIntent.putExtra("global", accountPresenter.getOverallLimit() + "");
+                    addTransactionIntent.putExtra("global", accountPresenter.getBudget() + "");
                     addTransactionIntent.putExtra("month", accountPresenter.getMonthlyLimit() + "");
                     MainActivity.this.startActivity(addTransactionIntent);
                 }
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
         textDate.setText(format.format(date.getTime()));
         setSorts();
         setFilters();
-        textView3.setText(accountPresenter.getOverallLimit() + "");
+        textView3.setText(accountPresenter.getBudget() + "");
         textView4.setText(accountPresenter.getMonthlyLimit() + "");
 
         spinSortAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, sorts);
@@ -185,9 +185,12 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
 
     @Override
     protected void onResume() {
+        spinnerFilter.setSelection(0);
+        spinnerSort.setSelection(0);
         presenter.transactionsForCurrentDate(date);
         adapter = new TransactionListAdapter(this, R.layout.list_element, presenter.getCurrentDateTransactions());
         listView.setAdapter(adapter);
+        textView3.setText(accountPresenter.getBudget() + "");
         super.onResume();
     }
 }

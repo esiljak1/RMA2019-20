@@ -15,4 +15,13 @@ public class AccountPresenter implements IAccountPresenter {
     public double getOverallLimit(){
         return interactor.get().getTotalLimit();
     }
+    public double getBudget() {
+        return interactor.get().getBudget();
+    }
+    public void updateBudget(double iznos){
+        interactor.get().setBudget(interactor.get().getBudget() - iznos);
+    }
+    public void setBudget(double budget){
+        interactor.get().setBudget(budget);
+    }
 }

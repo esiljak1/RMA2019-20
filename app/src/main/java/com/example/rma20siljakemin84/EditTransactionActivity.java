@@ -36,6 +36,7 @@ public class EditTransactionActivity extends AppCompatActivity {
     private TransactionModel transaction;
     private TransactionPresenter presenter = new TransactionPresenter(new MainActivity());
     private int id = -1;
+    private double budget;
 
     private double oldAmount = 0;
 
@@ -50,7 +51,7 @@ public class EditTransactionActivity extends AppCompatActivity {
             new Button.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    if(saveTest()){
+                    if(saveTest() && budgetTest()){
                         checkIfOver();
                     }else{
                         new AlertDialog.Builder(EditTransactionActivity.this).setTitle("Wrong credentials").setMessage("Please fill in fields with correct data").show();
@@ -142,6 +143,14 @@ public class EditTransactionActivity extends AppCompatActivity {
                 public void onNothingSelected(AdapterView<?> parent) {
                 }
             };
+    private boolean budgetTest(){
+        Type temp = (Type) spinnerType.getSelectedItem();
+        if(temp.equals(Type.REGULARINCOME) || temp.equals(Type.INDIVIDUALINCOME)){
+            return true;
+        }
+        double iznos = Double.parseDouble(amount.getText().toString()) - oldAmount;
+        return iznos <= budget;
+    }
 
     private void checkIfOver(){
         final double iznos = Double.parseDouble(amount.getText().toString()) - oldAmount, mjesecno = Double.parseDouble(monthEdit.getText().toString()),
@@ -163,6 +172,8 @@ public class EditTransactionActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             try {
                                 changeTransaction();
+                                presenter.updateAccountBudget(iznos);
+                                globalEdit.setText(presenter.getAccount().getBudget() + "");
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -175,6 +186,8 @@ public class EditTransactionActivity extends AppCompatActivity {
         }else{
             try {
                 changeTransaction();
+                presenter.updateAccountBudget(iznos);
+                globalEdit.setText(presenter.getAccount().getBudget() + "");
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -263,6 +276,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         }
         globalEdit.setText(receivedIntent.getStringExtra("global"));
         monthEdit.setText(receivedIntent.getStringExtra("month"));
+        budget = Double.parseDouble(receivedIntent.getStringExtra("global"));
 
         saveBtn.setOnClickListener(saveListener);
 

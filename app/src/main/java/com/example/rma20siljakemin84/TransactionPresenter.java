@@ -8,12 +8,22 @@ import java.util.Comparator;
 public class TransactionPresenter implements ITransactionPresenter {
     private MainActivity view;
     private TransactionInteractor interactor;
+    private AccountPresenter account;
+
+    public AccountPresenter getAccount() {
+        return account;
+    }
+
+    public void setAccount(AccountPresenter account) {
+        this.account = account;
+    }
 
     private ArrayList<TransactionModel> currentDateTransactions = new ArrayList<>();
 
     public TransactionPresenter(MainActivity view) {
         this.view = view;
         this.interactor = new TransactionInteractor();
+        this.account = new AccountPresenter(view);
     }
 
     private boolean checkRegular(TransactionModel transaction, Calendar date){
@@ -144,5 +154,9 @@ public class TransactionPresenter implements ITransactionPresenter {
             ret += tm.getAmount();
         }
         return ret;
+    }
+
+    public void updateAccountBudget(double iznos) {
+        account.updateBudget(iznos);
     }
 }
