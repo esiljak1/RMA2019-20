@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
                     editTransactionIntent.putExtra("description", t.getItemDescription());
                     editTransactionIntent.putExtra("interval", t.getTransactionInterval() + "");
                     editTransactionIntent.putExtra("global", accountPresenter.getBudget() + "");
+                    editTransactionIntent.putExtra("limit", accountPresenter.getOverallLimit() + "");
                     editTransactionIntent.putExtra("month", accountPresenter.getMonthlyLimit() + "");
                     editTransactionIntent.putExtra("id", t.getId() + "");
                     if(t.getEndDate() != null) {
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
                     addTransactionIntent.putExtra("dodavanje", "da");
                     addTransactionIntent.putExtra("global", accountPresenter.getBudget() + "");
                     addTransactionIntent.putExtra("month", accountPresenter.getMonthlyLimit() + "");
+                    addTransactionIntent.putExtra("limit", accountPresenter.getOverallLimit() + "");
                     MainActivity.this.startActivity(addTransactionIntent);
                 }
             };
