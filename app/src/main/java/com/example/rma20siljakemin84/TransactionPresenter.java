@@ -7,13 +7,13 @@ import java.util.Comparator;
 
 public class TransactionPresenter implements ITransactionPresenter {
     private MainActivity view;
-    private TransactionModel model;
+    private TransactionInteractor interactor;
 
     private ArrayList<TransactionModel> currentDateTransactions = new ArrayList<>();
 
     public TransactionPresenter(MainActivity view) {
         this.view = view;
-        this.model = new TransactionModel();
+        this.interactor = new TransactionInteractor();
     }
 
     private boolean checkRegular(TransactionModel transaction, Calendar date){
@@ -32,7 +32,7 @@ public class TransactionPresenter implements ITransactionPresenter {
     public void transactionsForCurrentDate(Calendar date){
         currentDateTransactions = new ArrayList<>();
         boolean uslov = true;
-        for(TransactionModel t : model.getTransactions()){
+        for(TransactionModel t : interactor.get()){
             if(t.getType().equals(Type.REGULARINCOME) || t.getType().equals(Type.REGULARPAYMENT)){
                 if(checkRegular(t, date)) currentDateTransactions.add(t);
             }
@@ -109,14 +109,11 @@ public class TransactionPresenter implements ITransactionPresenter {
             }
         }currentDateTransactions = temp;
     }
-    public void addTransaction(Calendar date, double amount, String title, Type type, String itemDescription, int transactionInterval, Calendar endDate){
-    }
     public void updateTransaction(TransactionModel newTransaction){
-        model.removeTransaction(newTransaction);
-        model.addTransaction(newTransaction);
+        interactor.update(newTransaction);
     }
     public void deleteTransaction(TransactionModel transaction){
-        model.removeTransaction(transaction);
+        interactor.delete(transaction);
     }
 
     public ArrayList<TransactionModel> getCurrentDateTransactions() {
@@ -129,7 +126,7 @@ public class TransactionPresenter implements ITransactionPresenter {
 
     public double getAmountforDate(Calendar date){
         double ret = 0;
-        for(TransactionModel tm : model.getTransactions()){
+        for(TransactionModel tm : interactor.get()){
             if(tm.getType().equals(Type.REGULARPAYMENT) || tm.getType().equals(Type.REGULARINCOME)){
                 if(checkRegular(tm, date)){
                     ret += tm.getAmount();
@@ -143,7 +140,7 @@ public class TransactionPresenter implements ITransactionPresenter {
 
     public double getAllAmounts(){
         double ret = 0;
-        for(TransactionModel tm : model.getTransactions()){
+        for(TransactionModel tm : interactor.get()){
             ret += tm.getAmount();
         }
         return ret;
