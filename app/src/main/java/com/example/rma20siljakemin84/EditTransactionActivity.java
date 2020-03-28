@@ -55,7 +55,12 @@ public class EditTransactionActivity extends AppCompatActivity {
                     if(saveTest() && budgetTest()){
                         checkIfOver();
                     }else{
-                        new AlertDialog.Builder(EditTransactionActivity.this).setTitle("Wrong credentials").setMessage("Please fill in fields with correct data").show();
+                        new AlertDialog.Builder(EditTransactionActivity.this).setTitle("Wrong credentials").setMessage("Please fill in fields with correct data")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    }).show();
                     }
                 }
             };
