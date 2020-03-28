@@ -37,22 +37,22 @@ public class TransactionModel implements ITransactionModel {
             end = Calendar.getInstance();
             cal.set(2019, 1, 15);
             end.set(2021, 1, 15);
-            add(new TransactionModel(cal, 50, "Transaction 5", Type.REGULARPAYMENT, "Electricity bill", 30, end));
+            add(new TransactionModel(cal, 50, "Transaction 5", Type.REGULARPAYMENT, "Electricity bill", 35, end));
             end = Calendar.getInstance();
             cal = Calendar.getInstance();
             cal.set(2019, 2, 1);
             end.set(2024, 2, 1);
-            add(new TransactionModel(cal, 100, "Transaction 6", Type.REGULARPAYMENT, "Heating bill", 30, end));
+            add(new TransactionModel(cal, 100, "Transaction 6", Type.REGULARPAYMENT, "Heating bill", 35, end));
             end = Calendar.getInstance();
             cal = Calendar.getInstance();
             cal.set(2018, 12, 10);
             end.set(2020, 12, 10);
-            add(new TransactionModel(cal, 35, "Transaction 7", Type.REGULARPAYMENT, "Water bill", 30, end));
+            add(new TransactionModel(cal, 35, "Transaction 7", Type.REGULARPAYMENT, "Water bill", 35, end));
             end = Calendar.getInstance();
             cal = Calendar.getInstance();
             cal.set(2020, 1, 3);
             end.set(2021, 1, 3);
-            add(new TransactionModel(cal, 50, "Transaction 8", Type.REGULARPAYMENT, "Gym subscription", 30, end));
+            add(new TransactionModel(cal, 50, "Transaction 8", Type.REGULARPAYMENT, "Gym subscription", 35, end));
 
             //Purchase
             cal = Calendar.getInstance();
@@ -92,17 +92,17 @@ public class TransactionModel implements ITransactionModel {
             cal = Calendar.getInstance();
             cal.set(2019, 5, 15);
             end.set(2020, 5, 15);
-            add(new TransactionModel(cal, 50, "Transaction 18", Type.REGULARINCOME, null, 16, end));
+            add(new TransactionModel(cal, 50, "Transaction 18", Type.REGULARINCOME, null, 35, end));
             end = Calendar.getInstance();
             cal = Calendar.getInstance();
             cal.set(2019, 4, 1);
             end.set(2021, 4, 1);
-            add(new TransactionModel(cal, 2000, "Transaction 19", Type.REGULARINCOME, null, 30, end));
+            add(new TransactionModel(cal, 2000, "Transaction 19", Type.REGULARINCOME, null, 45, end));
             end = Calendar.getInstance();
             cal = Calendar.getInstance();
             cal.set(2019, 9, 9);
             end.set(2021, 9, 9);
-            add(new TransactionModel(cal, 10, "Transaction 20", Type.REGULARINCOME, null, 7, end));
+            add(new TransactionModel(cal, 10, "Transaction 20", Type.REGULARINCOME, null, 50, end));
         }
     };
 

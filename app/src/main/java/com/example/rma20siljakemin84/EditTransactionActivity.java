@@ -35,7 +35,7 @@ public class EditTransactionActivity extends AppCompatActivity {
 
     private TransactionModel transaction;
     private TransactionPresenter presenter = new TransactionPresenter(new MainActivity());
-    private int id;
+    private int id = -1;
 
     private double oldAmount = 0;
 
@@ -121,7 +121,14 @@ public class EditTransactionActivity extends AppCompatActivity {
                     }else{
                         description.setEnabled(true);
                     }
-                    spinnerType.setBackgroundColor(Color.GREEN);
+                    if(id != -1){
+                        try{
+                            ((ColorDrawable) spinnerType.getBackground()).getColor();
+                        } catch (Exception ex){
+                            spinnerType.setBackgroundColor(Color.TRANSPARENT);
+                            return;
+                        }
+                    }spinnerType.setBackgroundColor(Color.GREEN);
                 }
 
                 @Override
@@ -193,7 +200,7 @@ public class EditTransactionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_transaction);
-        setTitle("Edit transaction");
+        setTitle("Add/edit transaction");
 
         napuniSpinner();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
@@ -213,6 +220,8 @@ public class EditTransactionActivity extends AppCompatActivity {
         monthEdit = (TextView) findViewById(R.id.monthEdit);
 
         Intent receivedIntent = getIntent();
+
+        spinnerType.setOnItemSelectedListener(spinnerListener);
 
         if(receivedIntent.getStringExtra("dodavanje") == null) {
             date.setText(receivedIntent.getStringExtra("date"));
@@ -237,18 +246,18 @@ public class EditTransactionActivity extends AppCompatActivity {
             }
             id = Integer.parseInt(receivedIntent.getStringExtra("id"));
         }else{
+            spinnerType.setBackgroundColor(Color.GREEN);
             spinnerType.setSelection(0);
             date.setBackgroundColor(Color.RED);
             amount.setBackgroundColor(Color.RED);
-            title.setBackgroundColor(Color.RED);
-            description.setBackgroundColor(Color.RED);
+            title.setBackgroundColor(Color.GREEN);
+            description.setBackgroundColor(Color.GREEN);
             deleteBtn.setEnabled(false);
         }
         globalEdit.setText(receivedIntent.getStringExtra("global"));
         monthEdit.setText(receivedIntent.getStringExtra("month"));
 
         saveBtn.setOnClickListener(saveListener);
-        spinnerType.setOnItemSelectedListener(spinnerListener);
 
         date.addTextChangedListener(new TextWatcher() {
             @Override
