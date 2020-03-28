@@ -19,7 +19,7 @@ import java.util.Calendar;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ITransactionView, IAccountView{
     private ListView listView;
     private Spinner spinnerSort, spinnerFilter;
     private TextView textView3, textView4, textDate;

@@ -3,16 +3,16 @@ package com.example.rma20siljakemin84;
 public class AccountPresenter implements IAccountPresenter {
 
     private MainActivity view;
-    private AccountModel model;
+    private AccountInteractor interactor;
 
     public AccountPresenter(MainActivity view) {
         this.view = view;
-        model = new AccountModel();
+        interactor = new AccountInteractor();
     }
     public double getMonthlyLimit(){
-        return model.getMonthLimit();
+        return interactor.get().getMonthLimit();
     }
     public double getOverallLimit(){
-        return model.getTotalLimit();
+        return interactor.get().getTotalLimit();
     }
 }
