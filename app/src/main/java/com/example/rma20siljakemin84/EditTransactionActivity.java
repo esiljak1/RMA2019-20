@@ -94,8 +94,14 @@ public class EditTransactionActivity extends AppCompatActivity {
         transaction = new TransactionModel(cal, Double.parseDouble(amount.getText().toString()), title.getText().toString(), (Type) spinnerType.getSelectedItem(),
                 description.isEnabled() ? description.getText().toString() : null,
                 interval.isEnabled() ? Integer.parseInt(interval.getText().toString()) : 0, end);
-        transaction.setId(id);
+        if(id != -1) {
+            transaction.setId(id);
+        }else{
+            id = transaction.getId();
+        }
+
         presenter.updateTransaction(transaction);
+
         date.setBackgroundColor(Color.TRANSPARENT);
         amount.setBackgroundColor(Color.TRANSPARENT);
         title.setBackgroundColor(Color.TRANSPARENT);
@@ -103,6 +109,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         if(description.isEnabled()) description.setBackgroundColor(Color.TRANSPARENT);
         if(interval.isEnabled()) interval.setBackgroundColor(Color.TRANSPARENT);
         if(endDate.isEnabled()) interval.setBackgroundColor(Color.TRANSPARENT);
+        if(!deleteBtn.isEnabled()) deleteBtn.setEnabled(true);
     }
 
     private Spinner.OnItemSelectedListener spinnerListener =
