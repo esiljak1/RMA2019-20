@@ -28,7 +28,7 @@ public class EditTransactionActivity extends AppCompatActivity {
     private EditText date, amount, title, description, interval, endDate;
     private Button saveBtn, closeBtn, deleteBtn;
     private Spinner spinnerType;
-    private TextView globalEdit, monthEdit;
+    private TextView budgetEdit, limitEdit;
 
     private ArrayList<Type> list = new ArrayList<>();
     private ArrayAdapter<Type> adapter;
@@ -159,7 +159,7 @@ public class EditTransactionActivity extends AppCompatActivity {
     }
 
     private void checkIfOver(){
-        final double iznos = Double.parseDouble(amount.getText().toString()) - oldAmount, mjesecno = Double.parseDouble(monthEdit.getText().toString());
+        final double iznos = Double.parseDouble(amount.getText().toString()) - oldAmount, ukupno = Double.parseDouble(limitEdit.getText().toString());
         Calendar temp = Calendar.getInstance();
         Date d = null;
         try {
@@ -170,7 +170,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if(iznos + presenter.getAmountforDate(temp) > mjesecno || iznos + presenter.getAllAmounts() > limit){
+        if(iznos + presenter.getAmountforDate(temp) > limit || iznos + presenter.getAllAmounts() > ukupno){
             new AlertDialog.Builder(this).setTitle("Over the limit").setMessage("Are you sure you want to do this?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
@@ -182,7 +182,7 @@ public class EditTransactionActivity extends AppCompatActivity {
                                     znak = -1;
                                 }
                                 presenter.updateAccountBudget(iznos*znak);
-                                globalEdit.setText(presenter.getAccount().getBudget() + "");
+                                budgetEdit.setText(presenter.getAccount().getBudget() + "");
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -200,7 +200,7 @@ public class EditTransactionActivity extends AppCompatActivity {
                     znak = -1;
                 }
                 presenter.updateAccountBudget(iznos*znak);
-                globalEdit.setText(presenter.getAccount().getBudget() + "");
+                budgetEdit.setText(presenter.getAccount().getBudget() + "");
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -249,8 +249,8 @@ public class EditTransactionActivity extends AppCompatActivity {
         deleteBtn = (Button) findViewById(R.id.deleteBtn);
         spinnerType = (Spinner) findViewById(R.id.spinnerType);
         spinnerType.setAdapter(adapter);
-        globalEdit = (TextView) findViewById(R.id.globalEdit);
-        monthEdit = (TextView) findViewById(R.id.monthEdit);
+        budgetEdit = (TextView) findViewById(R.id.globalEdit);
+        limitEdit = (TextView) findViewById(R.id.limitEdit);
 
         Intent receivedIntent = getIntent();
 
@@ -287,8 +287,8 @@ public class EditTransactionActivity extends AppCompatActivity {
             description.setBackgroundColor(Color.GREEN);
             deleteBtn.setEnabled(false);
         }
-        globalEdit.setText(receivedIntent.getStringExtra("global"));
-        monthEdit.setText(receivedIntent.getStringExtra("month"));
+        budgetEdit.setText(receivedIntent.getStringExtra("global"));
+        limitEdit.setText(receivedIntent.getStringExtra("month"));
         budget = Double.parseDouble(receivedIntent.getStringExtra("global"));
         limit = Double.parseDouble(receivedIntent.getStringExtra("limit"));
 

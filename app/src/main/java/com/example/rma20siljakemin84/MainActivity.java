@@ -102,8 +102,8 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
                     editTransactionIntent.putExtra("description", t.getItemDescription());
                     editTransactionIntent.putExtra("interval", t.getTransactionInterval() + "");
                     editTransactionIntent.putExtra("global", accountPresenter.getBudget() + "");
-                    editTransactionIntent.putExtra("limit", accountPresenter.getOverallLimit() + "");
-                    editTransactionIntent.putExtra("month", accountPresenter.getMonthlyLimit() + "");
+                    editTransactionIntent.putExtra("limit", accountPresenter.getMonthlyLimit()+ "");
+                    editTransactionIntent.putExtra("month", accountPresenter.getOverallLimit() + "");
                     editTransactionIntent.putExtra("id", t.getId() + "");
                     if(t.getEndDate() != null) {
                         editTransactionIntent.putExtra("endDate", new SimpleDateFormat("dd.MM.yyyy").format(t.getEndDate().getTime()));
@@ -118,8 +118,8 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
                     Intent addTransactionIntent = new Intent(MainActivity.this, EditTransactionActivity.class);
                     addTransactionIntent.putExtra("dodavanje", "da");
                     addTransactionIntent.putExtra("global", accountPresenter.getBudget() + "");
-                    addTransactionIntent.putExtra("month", accountPresenter.getMonthlyLimit() + "");
-                    addTransactionIntent.putExtra("limit", accountPresenter.getOverallLimit() + "");
+                    addTransactionIntent.putExtra("month", accountPresenter.getOverallLimit() + "");
+                    addTransactionIntent.putExtra("limit", accountPresenter.getMonthlyLimit() + "");
                     MainActivity.this.startActivity(addTransactionIntent);
                 }
             };
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
         setSorts();
         setFilters();
         textView3.setText(accountPresenter.getBudget() + "");
-        textView4.setText(accountPresenter.getMonthlyLimit() + "");
+        textView4.setText(accountPresenter.getOverallLimit() + "");
 
         spinSortAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, sorts);
         spinnerSort.setAdapter(spinSortAdapter);

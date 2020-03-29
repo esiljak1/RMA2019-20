@@ -139,10 +139,18 @@ public class TransactionPresenter implements ITransactionPresenter {
         for(TransactionModel tm : interactor.get()){
             if(tm.getType().equals(Type.REGULARPAYMENT) || tm.getType().equals(Type.REGULARINCOME)){
                 if(checkRegular(tm, date)){
-                    ret += tm.getAmount();
+                    if(tm.getType().equals(Type.REGULARPAYMENT)) {
+                        ret += tm.getAmount();
+                    }else{
+                        ret -= tm.getAmount();
+                    }
                 }
             }else if(date.get(Calendar.MONTH) == tm.getDate().get(Calendar.MONTH) && date.get(Calendar.YEAR) == tm.getDate().get(Calendar.YEAR)) {
-                ret += tm.getAmount();
+                if(tm.getType().equals(Type.INDIVIDUALINCOME)){
+                    ret -= tm.getAmount();
+                }else{
+                    ret += tm.getAmount();
+                }
             }
         }
         return ret;
@@ -151,7 +159,11 @@ public class TransactionPresenter implements ITransactionPresenter {
     public double getAllAmounts(){
         double ret = 0;
         for(TransactionModel tm : interactor.get()){
-            ret += tm.getAmount();
+            if(tm.getType().equals(Type.INDIVIDUALINCOME) || tm.getType().equals(Type.REGULARINCOME)){
+                ret -= tm.getAmount();
+            }else{
+                ret += tm.getAmount();
+            }
         }
         return ret;
     }
