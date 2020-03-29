@@ -30,15 +30,14 @@ public class EditTransactionActivity extends AppCompatActivity {
     private Spinner spinnerType;
     private TextView budgetEdit, limitEdit;
 
-    private ArrayList<Type> list = new ArrayList<>();
-    private ArrayAdapter<Type> adapter;
-
+    private ArrayList<Type> typeList = new ArrayList<>();
+    private ArrayAdapter<Type> typeListAdapter;
     private TransactionModel transaction;
     private TransactionPresenter presenter = new TransactionPresenter(new MainActivity());
+
     private int id = -1;
     private double budget;
-    private double limit;
-
+    private double monthLimit;
     private double oldAmount = 0;
 
     private Button.OnClickListener closeListener =
@@ -52,8 +51,8 @@ public class EditTransactionActivity extends AppCompatActivity {
             new Button.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    if(saveTest() && budgetTest()){
-                        checkIfOver();
+                    if(checkFields() && checkIfAmountNotOverBudget()){
+                        checkIfOverLimitAndUpdateTransaction();
                     }else{
                         new AlertDialog.Builder(EditTransactionActivity.this).setTitle("Wrong credentials").setMessage("Please fill in fields with correct data")
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -83,6 +82,36 @@ public class EditTransactionActivity extends AppCompatActivity {
 
                                 }
                     }).show();
+                }
+            };
+    private Spinner.OnItemSelectedListener spinnerListener =
+            new Spinner.OnItemSelectedListener(){
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if(position == 0 || position == 2 || position == 4){
+                        endDate.setEnabled(false);
+                        interval.setEnabled(false);
+                    }else{
+                        endDate.setEnabled(true);
+                        interval.setEnabled(true);
+                    }
+                    if(position == 3 || position == 4){
+                        description.setEnabled(false);
+                    }else{
+                        description.setEnabled(true);
+                    }
+                    if(id != -1){
+                        try{
+                            ((ColorDrawable) spinnerType.getBackground()).getColor();
+                        } catch (Exception ex){
+                            spinnerType.setBackgroundColor(Color.TRANSPARENT);
+                            return;
+                        }
+                    }spinnerType.setBackgroundColor(Color.GREEN);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
                 }
             };
 
@@ -118,38 +147,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         if(endDate.isEnabled()) interval.setBackgroundColor(Color.TRANSPARENT);
         if(!deleteBtn.isEnabled()) deleteBtn.setEnabled(true);
     }
-
-    private Spinner.OnItemSelectedListener spinnerListener =
-            new Spinner.OnItemSelectedListener(){
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if(position == 0 || position == 2 || position == 4){
-                        endDate.setEnabled(false);
-                        interval.setEnabled(false);
-                    }else{
-                        endDate.setEnabled(true);
-                        interval.setEnabled(true);
-                    }
-                    if(position == 3 || position == 4){
-                        description.setEnabled(false);
-                    }else{
-                        description.setEnabled(true);
-                    }
-                    if(id != -1){
-                        try{
-                            ((ColorDrawable) spinnerType.getBackground()).getColor();
-                        } catch (Exception ex){
-                            spinnerType.setBackgroundColor(Color.TRANSPARENT);
-                            return;
-                        }
-                    }spinnerType.setBackgroundColor(Color.GREEN);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                }
-            };
-    private boolean budgetTest(){
+    private boolean checkIfAmountNotOverBudget(){
         Type temp = (Type) spinnerType.getSelectedItem();
         if(temp.equals(Type.REGULARINCOME) || temp.equals(Type.INDIVIDUALINCOME)){
             return true;
@@ -158,7 +156,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         return iznos <= budget;
     }
 
-    private void checkIfOver(){
+    private void checkIfOverLimitAndUpdateTransaction(){
         final double iznos = Double.parseDouble(amount.getText().toString()) - oldAmount, ukupno = Double.parseDouble(limitEdit.getText().toString());
         Calendar temp = Calendar.getInstance();
         Date d = null;
@@ -170,7 +168,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if(iznos + presenter.getAmountforDate(temp) > limit || iznos + presenter.getAllAmounts() > ukupno){
+        if(iznos + presenter.getAmountforDate(temp) > monthLimit || iznos + presenter.getAllAmounts() > ukupno){
             new AlertDialog.Builder(this).setTitle("Over the limit").setMessage("Are you sure you want to do this?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
@@ -206,7 +204,7 @@ public class EditTransactionActivity extends AppCompatActivity {
             }
         }
     }
-    private boolean exceptionTest(EditText text){
+    private boolean checkIfFieldIsNotRed(EditText text){
         try{
             if(text.isEnabled()) {
                 if (((ColorDrawable) text.getBackground()).getColor() == Color.RED)
@@ -217,16 +215,16 @@ public class EditTransactionActivity extends AppCompatActivity {
         }return true;
     }
 
-    private boolean saveTest(){
-         return exceptionTest(date) && exceptionTest(amount) && exceptionTest(title) && exceptionTest(description) && exceptionTest(interval) && exceptionTest(endDate);
+    private boolean checkFields(){
+         return checkIfFieldIsNotRed(date) && checkIfFieldIsNotRed(amount) && checkIfFieldIsNotRed(title) && checkIfFieldIsNotRed(description) && checkIfFieldIsNotRed(interval) && checkIfFieldIsNotRed(endDate);
     }
 
     private void napuniSpinner(){
-        list.add(Type.INDIVIDUALPAYMENT);
-        list.add(Type.REGULARPAYMENT);
-        list.add(Type.PURCHASE);
-        list.add(Type.REGULARINCOME);
-        list.add(Type.INDIVIDUALINCOME);
+        typeList.add(Type.INDIVIDUALPAYMENT);
+        typeList.add(Type.REGULARPAYMENT);
+        typeList.add(Type.PURCHASE);
+        typeList.add(Type.REGULARINCOME);
+        typeList.add(Type.INDIVIDUALINCOME);
     }
 
     @Override
@@ -236,7 +234,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         setTitle("Add/edit transaction");
 
         napuniSpinner();
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
+        typeListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, typeList);
 
         date = (EditText) findViewById(R.id.date);
         amount = (EditText) findViewById(R.id.amount);
@@ -248,7 +246,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         closeBtn = (Button) findViewById(R.id.closeBtn);
         deleteBtn = (Button) findViewById(R.id.deleteBtn);
         spinnerType = (Spinner) findViewById(R.id.spinnerType);
-        spinnerType.setAdapter(adapter);
+        spinnerType.setAdapter(typeListAdapter);
         budgetEdit = (TextView) findViewById(R.id.globalEdit);
         limitEdit = (TextView) findViewById(R.id.limitEdit);
 
@@ -261,7 +259,7 @@ public class EditTransactionActivity extends AppCompatActivity {
             amount.setText(receivedIntent.getStringExtra("amount"));
             oldAmount = Double.parseDouble(amount.getText().toString());
             title.setText(receivedIntent.getStringExtra("title"));
-            spinnerType.setSelection(list.indexOf(receivedIntent.getSerializableExtra("type")));
+            spinnerType.setSelection(typeList.indexOf(receivedIntent.getSerializableExtra("type")));
             if (receivedIntent.getStringExtra("description") != null) {
                 description.setText(receivedIntent.getStringExtra("description"));
             } else {
@@ -288,9 +286,9 @@ public class EditTransactionActivity extends AppCompatActivity {
             deleteBtn.setEnabled(false);
         }
         budgetEdit.setText(receivedIntent.getStringExtra("global"));
-        limitEdit.setText(receivedIntent.getStringExtra("month"));
+        limitEdit.setText(receivedIntent.getStringExtra("limit"));
         budget = Double.parseDouble(receivedIntent.getStringExtra("global"));
-        limit = Double.parseDouble(receivedIntent.getStringExtra("limit"));
+        monthLimit = Double.parseDouble(receivedIntent.getStringExtra("month"));
 
         saveBtn.setOnClickListener(saveListener);
 
@@ -410,12 +408,5 @@ public class EditTransactionActivity extends AppCompatActivity {
         deleteBtn.setOnClickListener(deleteListener);
         closeBtn.setOnClickListener(closeListener);
 
-    }
-    public TransactionModel getTransaction() {
-        return transaction;
-    }
-
-    public void setTransaction(TransactionModel transaction) {
-        this.transaction = transaction;
     }
 }

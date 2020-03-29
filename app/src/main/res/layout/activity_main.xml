@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <ListView
-        android:id="@+id/listView"
+        android:id="@+id/listViewTransactions"
         android:layout_width="318dp"
         android:layout_height="366dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -21,7 +21,7 @@
         android:id="@+id/spinnerSort"
         android:layout_width="318dp"
         android:layout_height="50dp"
-        app:layout_constraintBottom_toTopOf="@+id/listView"
+        app:layout_constraintBottom_toTopOf="@+id/listViewTransactions"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +64,7 @@
         app:layout_constraintVertical_bias="0.258" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textBudget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="amount"
@@ -76,7 +76,7 @@
         app:layout_constraintVertical_bias="0.333" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/textLimit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="limit"
@@ -98,14 +98,14 @@
         app:layout_constraintTop_toBottomOf="@+id/spinnerFilter" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/addTransactionBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add transaction"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/listView" />
+        app:layout_constraintTop_toBottomOf="@+id/listViewTransactions" />
 
     <ImageButton
         android:id="@+id/leftBtn"

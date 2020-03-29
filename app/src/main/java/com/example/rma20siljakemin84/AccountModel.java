@@ -7,11 +7,19 @@ public class AccountModel implements IAccountModel {
 
     private static AccountModel instance = new AccountModel();
 
+    private AccountModel() {
+    }
+
+    private void notNegativeNumberTest(double number){
+        if(number < 0) throw new IllegalArgumentException("Can't be negative");
+    }
+
     public double getBudget() {
         return budget;
     }
 
     public void setBudget(double budget) {
+        notNegativeNumberTest(budget);
         this.budget = budget;
     }
 
@@ -20,6 +28,7 @@ public class AccountModel implements IAccountModel {
     }
 
     public void setTotalLimit(double totalLimit) {
+        notNegativeNumberTest(totalLimit);
         this.totalLimit = totalLimit;
     }
 
@@ -28,6 +37,7 @@ public class AccountModel implements IAccountModel {
     }
 
     public void setMonthLimit(double monthLimit) {
+        notNegativeNumberTest(monthLimit);
         this.monthLimit = monthLimit;
     }
 

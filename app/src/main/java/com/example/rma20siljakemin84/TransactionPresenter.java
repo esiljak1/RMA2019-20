@@ -10,14 +10,6 @@ public class TransactionPresenter implements ITransactionPresenter {
     private TransactionInteractor interactor;
     private AccountPresenter account;
 
-    public AccountPresenter getAccount() {
-        return account;
-    }
-
-    public void setAccount(AccountPresenter account) {
-        this.account = account;
-    }
-
     private ArrayList<TransactionModel> currentDateTransactions = new ArrayList<>();
 
     public TransactionPresenter(MainActivity view) {
@@ -170,5 +162,12 @@ public class TransactionPresenter implements ITransactionPresenter {
 
     public void updateAccountBudget(double iznos) {
         account.updateBudget(iznos);
+    }
+    public AccountPresenter getAccount() {
+        return account;
+    }
+
+    public void setAccount(AccountPresenter account) {
+        this.account = account;
     }
 }
