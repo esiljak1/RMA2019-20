@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity implements ITransactionView{
             new ImageButton.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    date.add(Calendar.MONTH, -1);
-                    textDate.setText(format.format(date.getTime()));
+                    date.add(Calendar.MONTH, -1);       //pritiskom ili na lijevoili na desno dugme vrsi se ponovno filtiranje/sortiranje u zavisnosti koji je item
+                    textDate.setText(format.format(date.getTime())); //selectovan u spinnerima
                     presenter.transactionsForCurrentDate(date);
                     presenter.filter(date, (Type)spinnerFilter.getSelectedItem());
                     presenter.sort((String) spinnerSort.getSelectedItem());
@@ -100,10 +100,10 @@ public class MainActivity extends AppCompatActivity implements ITransactionView{
                     editTransactionIntent.putExtra("type", t.getType());
                     editTransactionIntent.putExtra("description", t.getItemDescription());
                     editTransactionIntent.putExtra("interval", t.getTransactionInterval() + "");
-                    editTransactionIntent.putExtra("global", presenter.getAccount().getBudget() + "");
-                    editTransactionIntent.putExtra("month", presenter.getAccount().getMonthlyLimit()+ "");
-                    editTransactionIntent.putExtra("limit", presenter.getAccount().getOverallLimit() + "");
-                    editTransactionIntent.putExtra("id", t.getId() + "");
+                    editTransactionIntent.putExtra("global", presenter.getAccount().getBudget() + "");  //budzet
+                    editTransactionIntent.putExtra("month", presenter.getAccount().getMonthlyLimit()+ "");  //monthLimit
+                    editTransactionIntent.putExtra("limit", presenter.getAccount().getOverallLimit() + ""); //overallLimit
+                    editTransactionIntent.putExtra("id", t.getId() + "");   //jedinstveni id po kojem se razlikuju transakcije radi lakseg update-a
                     if(t.getEndDate() != null) {
                         editTransactionIntent.putExtra("endDate", new SimpleDateFormat("dd.MM.yyyy").format(t.getEndDate().getTime()));
                     }

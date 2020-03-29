@@ -44,7 +44,7 @@ public class EditTransactionActivity extends AppCompatActivity {
             new Button.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    EditTransactionActivity.super.onBackPressed();
+                    EditTransactionActivity.super.onBackPressed(); //vracanje na prethodnu aktivnost
                 }
             };
     private Button.OnClickListener saveListener =
@@ -72,7 +72,7 @@ public class EditTransactionActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     transaction = new TransactionModel();
-                                    transaction.setId(id);
+                                    transaction.setId(id);      //postavljamo id da bi se trazena transakcija izbrisala iz liste
                                     presenter.deleteTransaction(transaction);
                                     EditTransactionActivity.super.onBackPressed();
                                 }
@@ -120,7 +120,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         Calendar cal = Calendar.getInstance(), end = null;
         cal.set(Calendar.DAY_OF_MONTH, temp.getDate());
         cal.set(Calendar.MONTH, temp.getMonth());
-        cal.set(Calendar.YEAR, temp.getYear() + 1900);
+        cal.set(Calendar.YEAR, temp.getYear() + 1900);      //iz nekog razloga formatiranje datuma daje godinu koja je za 1900 manja od prave godine
         if(endDate.isEnabled()){
             temp = new SimpleDateFormat("dd.MM.yyyy").parse(endDate.getText().toString());
             end.set(Calendar.DAY_OF_MONTH, temp.getDay());
@@ -133,7 +133,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         if(id != -1) {
             transaction.setId(id);
         }else{
-            id = transaction.getId();
+            id = transaction.getId();       //postavljamo id ukoliko dodajemo novu transakciju da bismo odmah mogli i update/delete po potrebi tu transakciju
         }
 
         presenter.updateTransaction(transaction);
@@ -145,11 +145,11 @@ public class EditTransactionActivity extends AppCompatActivity {
         if(description.isEnabled()) description.setBackgroundColor(Color.TRANSPARENT);
         if(interval.isEnabled()) interval.setBackgroundColor(Color.TRANSPARENT);
         if(endDate.isEnabled()) interval.setBackgroundColor(Color.TRANSPARENT);
-        if(!deleteBtn.isEnabled()) deleteBtn.setEnabled(true);
+        if(!deleteBtn.isEnabled()) deleteBtn.setEnabled(true);      //ako dodajemo transakciju delete je disabled, cim dodamo transakciju enable-ujemo delete jer tada editujemo transakciju
     }
     private boolean checkIfAmountNotOverBudget(){
         Type temp = (Type) spinnerType.getSelectedItem();
-        if(temp.equals(Type.REGULARINCOME) || temp.equals(Type.INDIVIDUALINCOME)){
+        if(temp.equals(Type.REGULARINCOME) || temp.equals(Type.INDIVIDUALINCOME)){      //ako je income dodajemo na budzet pa ne mozemo potrositi budzet
             return true;
         }
         double iznos = Double.parseDouble(amount.getText().toString()) - oldAmount;
@@ -176,10 +176,10 @@ public class EditTransactionActivity extends AppCompatActivity {
                             try {
                                 changeTransaction();
                                 int znak = 1;
-                                if(spinnerType.getSelectedItem().equals(Type.REGULARINCOME) || spinnerType.getSelectedItem().equals(Type.INDIVIDUALINCOME)){
-                                    znak = -1;
+                                if(spinnerType.getSelectedItem().equals(Type.REGULARINCOME) || spinnerType.getSelectedItem().equals(Type.INDIVIDUALINCOME)){        //ako je dobit postavljamo znak na -1
+                                    znak = -1;                                                                                                                  //jer minus puta minus daju plus
                                 }
-                                presenter.updateAccountBudget(iznos*znak);
+                                presenter.subtractFromAccountBudget(iznos*znak);
                                 budgetEdit.setText(presenter.getAccount().getBudget() + "");
                             } catch (ParseException e) {
                                 e.printStackTrace();
@@ -197,7 +197,7 @@ public class EditTransactionActivity extends AppCompatActivity {
                 if(spinnerType.getSelectedItem().equals(Type.REGULARINCOME) || spinnerType.getSelectedItem().equals(Type.INDIVIDUALINCOME)){
                     znak = -1;
                 }
-                presenter.updateAccountBudget(iznos*znak);
+                presenter.subtractFromAccountBudget(iznos*znak);
                 budgetEdit.setText(presenter.getAccount().getBudget() + "");
             } catch (ParseException e) {
                 e.printStackTrace();

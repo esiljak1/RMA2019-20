@@ -160,7 +160,7 @@ public class TransactionPresenter implements ITransactionPresenter {
         return ret;
     }
 
-    public void updateAccountBudget(double iznos) {
+    public void subtractFromAccountBudget(double iznos) {
         account.updateBudget(iznos);
     }
     public AccountPresenter getAccount() {
