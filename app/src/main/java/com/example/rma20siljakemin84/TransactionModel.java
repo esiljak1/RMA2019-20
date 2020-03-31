@@ -29,24 +29,24 @@ public class TransactionModel implements ITransactionModel {
             cal.set(2020, 1, 30);
             add(new TransactionModel(cal, 100, "Transaction 3", Type.INDIVIDUALPAYMENT, "4GB DDR4 RAM", 0, null));
             cal = Calendar.getInstance();
-            cal.set(2019, 11, 25);
+            cal.set(2020, 11, 25);
             add(new TransactionModel(cal, 35, "Transaction 4", Type.INDIVIDUALPAYMENT, "A very cool hat", 0, null));
 
             //Regular payments
             cal = Calendar.getInstance();
             end = Calendar.getInstance();
-            cal.set(2019, 1, 15);
+            cal.set(2020, 1, 15);
             end.set(2021, 1, 15);
             add(new TransactionModel(cal, 50, "Transaction 5", Type.REGULARPAYMENT, "Electricity bill", 35, end));
             end = Calendar.getInstance();
             cal = Calendar.getInstance();
-            cal.set(2019, 2, 1);
+            cal.set(2020, 2, 1);
             end.set(2024, 2, 1);
             add(new TransactionModel(cal, 100, "Transaction 6", Type.REGULARPAYMENT, "Heating bill", 35, end));
             end = Calendar.getInstance();
             cal = Calendar.getInstance();
-            cal.set(2018, 12, 10);
-            end.set(2020, 12, 10);
+            cal.set(2020, 12, 10);
+            end.set(2022, 12, 10);
             add(new TransactionModel(cal, 35, "Transaction 7", Type.REGULARPAYMENT, "Water bill", 35, end));
             end = Calendar.getInstance();
             cal = Calendar.getInstance();
@@ -59,7 +59,7 @@ public class TransactionModel implements ITransactionModel {
             cal.set(2020, 1, 2);
             add(new TransactionModel(cal, 25, "Transaction 9", Type.PURCHASE, "Sunglasses", 0, null));
             cal = Calendar.getInstance();
-            cal.set(2019, 8, 16);
+            cal.set(2020, 8, 16);
             add(new TransactionModel(cal, 250, "Transaction 10", Type.PURCHASE, "A spoon", 0, null));
             cal = Calendar.getInstance();
             cal.set(2020, 2, 15);
@@ -76,7 +76,7 @@ public class TransactionModel implements ITransactionModel {
             cal.set(2020, 1, 6);
             add(new TransactionModel(cal, 500, "Transaction 14", Type.INDIVIDUALINCOME, null, 0, null));
             cal = Calendar.getInstance();
-            cal.set(2019, 12, 1);
+            cal.set(2020, 12, 1);
             add(new TransactionModel(cal, 1500, "Transaction 15", Type.INDIVIDUALINCOME, null, 0, null));
             cal = Calendar.getInstance();
             cal.set(2020, 3, 1);
@@ -85,22 +85,22 @@ public class TransactionModel implements ITransactionModel {
             //Regular income
             end = Calendar.getInstance();
             cal = Calendar.getInstance();
-            cal.set(2019, 1, 7);
+            cal.set(2020, 1, 7);
             end.set(2025, 1, 7);
             add(new TransactionModel(cal, 100, "Transaction 17", Type.REGULARINCOME, null, 365, end));
             end = Calendar.getInstance();
             cal = Calendar.getInstance();
-            cal.set(2019, 5, 15);
-            end.set(2020, 5, 15);
+            cal.set(2020, 5, 15);
+            end.set(2021, 5, 15);
             add(new TransactionModel(cal, 50, "Transaction 18", Type.REGULARINCOME, null, 35, end));
             end = Calendar.getInstance();
             cal = Calendar.getInstance();
-            cal.set(2019, 4, 1);
+            cal.set(2020, 4, 1);
             end.set(2021, 4, 1);
             add(new TransactionModel(cal, 2000, "Transaction 19", Type.REGULARINCOME, null, 45, end));
             end = Calendar.getInstance();
             cal = Calendar.getInstance();
-            cal.set(2019, 9, 9);
+            cal.set(2020, 9, 9);
             end.set(2021, 9, 9);
             add(new TransactionModel(cal, 10, "Transaction 20", Type.REGULARINCOME, null, 50, end));
         }
