@@ -57,7 +57,7 @@ public class TransactionDetailFragment extends Fragment {
                     if(checkFields() && checkIfAmountNotOverBudget()){
                         checkIfOverLimitAndUpdateTransaction();
                     }else{
-                        new AlertDialog.Builder(view.getContext()).setTitle("Wrong credentials").setMessage("Please fill in fields with correct data")
+                        new AlertDialog.Builder(getContext()).setTitle("Wrong credentials").setMessage("Please fill in fields with correct data")
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -70,7 +70,7 @@ public class TransactionDetailFragment extends Fragment {
             new Button.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    new AlertDialog.Builder(view.getContext()).setTitle("Deleting transaction").setMessage("Are you sure you want to delete this transaction?")
+                    new AlertDialog.Builder(getContext()).setTitle("Deleting transaction").setMessage("Are you sure you want to delete this transaction?")
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -173,7 +173,7 @@ public class TransactionDetailFragment extends Fragment {
             e.printStackTrace();
         }
         if(iznos + presenter.getAmountforDate(temp) > monthLimit || iznos + presenter.getAllAmounts() > ukupno){
-            new AlertDialog.Builder(view.getContext()).setTitle("Over the limit").setMessage("Are you sure you want to do this?")
+            new AlertDialog.Builder(getContext()).setTitle("Over the limit").setMessage("Are you sure you want to do this?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -232,10 +232,10 @@ public class TransactionDetailFragment extends Fragment {
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
+        if(view == null) view = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
 
         napuniSpinner();
-        typeListAdapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_item, typeList);
+        typeListAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, typeList);
 
         date = (EditText) view.findViewById(R.id.date);
         amount = (EditText) view.findViewById(R.id.amount);
@@ -255,7 +255,7 @@ public class TransactionDetailFragment extends Fragment {
 
         spinnerType.setOnItemSelectedListener(spinnerListener);
 
-        if(arguments.getString("dodavanje") == null) {
+        if(arguments != null && arguments.getString("dodavanje") == null) {
             date.setText(arguments.getString("date"));
             amount.setText(arguments.getString("amount"));
             oldAmount = Double.parseDouble(amount.getText().toString());
@@ -286,10 +286,15 @@ public class TransactionDetailFragment extends Fragment {
             description.setBackgroundColor(Color.GREEN);
             deleteBtn.setEnabled(false);
         }
-        budgetEdit.setText(arguments.getString("global"));
-        limitEdit.setText(arguments.getString("limit"));
-        budget = Double.parseDouble(arguments.getString("global"));
-        monthLimit = Double.parseDouble(arguments.getString("month"));
+        if(arguments != null && arguments.getString("global") != null) {
+            budgetEdit.setText(arguments.getString("global"));
+            limitEdit.setText(arguments.getString("limit"));
+            budget = Double.parseDouble(arguments.getString("global"));
+            monthLimit = Double.parseDouble(arguments.getString("month"));
+        }else{
+            interval.setEnabled(false);
+            endDate.setEnabled(false);
+        }
 
         saveBtn.setOnClickListener(saveListener);
 

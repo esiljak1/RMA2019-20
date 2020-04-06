@@ -25,6 +25,7 @@ public class TransactionListFragment extends Fragment {
     private TextView textBudget, textLimit, textDate;
     private Button addTransactionBtn;
     private ImageButton leftBtn, rightBtn;
+    private int selectedItem = -1;
 
     private TransactionPresenter presenter = new TransactionPresenter(new MainActivity());
 
@@ -47,7 +48,7 @@ public class TransactionListFragment extends Fragment {
                     presenter.transactionsForCurrentDate(date);
                     presenter.filter(date, (Type)spinnerFilter.getSelectedItem());
                     presenter.sort((String) spinnerSort.getSelectedItem());
-                    transactionsAdapter = new TransactionListAdapter(view.getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
+                    transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
                     listViewTransactions.setAdapter(transactionsAdapter);
                 }
             };
@@ -60,7 +61,7 @@ public class TransactionListFragment extends Fragment {
                     presenter.transactionsForCurrentDate(date);
                     presenter.filter(date, (Type)spinnerFilter.getSelectedItem());
                     presenter.sort((String) spinnerSort.getSelectedItem());
-                    transactionsAdapter = new TransactionListAdapter(view.getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
+                    transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
                     listViewTransactions.setAdapter(transactionsAdapter);
                 }
             };
@@ -69,7 +70,7 @@ public class TransactionListFragment extends Fragment {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     presenter.sort(sorts.get(position));
-                    transactionsAdapter = new TransactionListAdapter(view.getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
+                    transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
                     listViewTransactions.setAdapter(transactionsAdapter);
                 }
 
@@ -82,7 +83,7 @@ public class TransactionListFragment extends Fragment {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     presenter.filter(date, filters.get(position));
-                    transactionsAdapter = new TransactionListAdapter(view.getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
+                    transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
                     listViewTransactions.setAdapter(transactionsAdapter);
                 }
 
@@ -94,6 +95,12 @@ public class TransactionListFragment extends Fragment {
             new ListView.OnItemClickListener(){
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if(selectedItem == position){
+                        listViewTransactions.setAdapter(transactionsAdapter);
+                        selectedItem = -1;
+                        return;
+                    }
+                    selectedItem = position;
                     TransactionDetailFragment detailFragment = new TransactionDetailFragment();
                     TransactionModel t = transactionsAdapter.getItem(position);
                     Bundle args = new Bundle();
@@ -111,7 +118,11 @@ public class TransactionListFragment extends Fragment {
                         args.putString("endDate", new SimpleDateFormat("dd.MM.yyyy").format(t.getEndDate().getTime()));
                     }
                     detailFragment.setArguments(args);
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailFragment).addToBackStack(null).commit();
+                    if(getActivity().findViewById(R.id.transaction_details) != null){
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transaction_details, detailFragment).addToBackStack(null).commit();
+                    }else {
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailFragment).addToBackStack(null).commit();
+                    }
                 }
             };
     private Button.OnClickListener addTransactionListener =
@@ -149,7 +160,7 @@ public class TransactionListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_transaction_list, container, false);
+        if(view == null) view = inflater.inflate(R.layout.fragment_transaction_list, container, false);
 
         listViewTransactions = (ListView)view.findViewById(R.id.listViewTransactions);
         spinnerSort = (Spinner)view.findViewById(R.id.spinnerSort);
@@ -166,14 +177,14 @@ public class TransactionListFragment extends Fragment {
         textBudget.setText(presenter.getAccount().getBudget() + "");
         textLimit.setText(presenter.getAccount().getOverallLimit() + "");
 
-        spinSortAdapter = new ArrayAdapter(view.getContext(), android.R.layout.simple_spinner_item, sorts);
+        spinSortAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, sorts);
         spinnerSort.setAdapter(spinSortAdapter);
 
-        spinFilterAdapter = new TypeListAdapter(view.getContext(), R.layout.type_element, filters);
+        spinFilterAdapter = new TypeListAdapter(getContext(), R.layout.type_element, filters);
         spinnerFilter.setAdapter(spinFilterAdapter);
 
         presenter.transactionsForCurrentDate(date);
-        transactionsAdapter = new TransactionListAdapter(view.getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
+        transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
 
         leftBtn.setOnClickListener(listenerLeft);

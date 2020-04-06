@@ -9,6 +9,8 @@
         android:id="@+id/listViewTransactions"
         android:layout_width="318dp"
         android:layout_height="366dp"
+        android:choiceMode="singleChoice"
+        android:listSelector="@android:color/holo_blue_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
