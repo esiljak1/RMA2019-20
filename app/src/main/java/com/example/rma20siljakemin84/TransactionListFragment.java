@@ -114,18 +114,20 @@ public class TransactionListFragment extends Fragment {
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailFragment).addToBackStack(null).commit();
                 }
             };
-//    private Button.OnClickListener addTransactionListener =
-//            new Button.OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    Intent addTransactionIntent = new Intent(MainActivity.this, EditTransactionActivity.class);
-//                    addTransactionIntent.putExtra("dodavanje", "da");
-//                    addTransactionIntent.putExtra("global", presenter.getAccount().getBudget() + "");
-//                    addTransactionIntent.putExtra("limit", presenter.getAccount().getOverallLimit() + "");
-//                    addTransactionIntent.putExtra("month", presenter.getAccount().getMonthlyLimit() + "");
-//                    MainActivity.this.startActivity(addTransactionIntent);
-//                }
-//            };
+    private Button.OnClickListener addTransactionListener =
+            new Button.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    TransactionDetailFragment detailFragment = new TransactionDetailFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("dodavanje", "da");
+                    bundle.putString("global", presenter.getAccount().getBudget() + "");
+                    bundle.putString("limit", presenter.getAccount().getOverallLimit() + "");
+                    bundle.putString("month", presenter.getAccount().getMonthlyLimit() + "");
+                    detailFragment.setArguments(bundle);
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailFragment).addToBackStack(null).commit();
+                }
+            };
 
     private void setSortList(){
         sorts.add("Sort by");
@@ -181,7 +183,7 @@ public class TransactionListFragment extends Fragment {
         spinnerFilter.setOnItemSelectedListener(listenerFilter);
 
         listViewTransactions.setOnItemClickListener(itemClickListener);
-//        addTransactionBtn.setOnClickListener(addTransactionListener);
+        addTransactionBtn.setOnClickListener(addTransactionListener);
 
         return view;
     }
