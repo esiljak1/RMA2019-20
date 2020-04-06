@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+    <ListView
+        android:id="@+id/listViewTransactions"
+        android:layout_width="318dp"
+        android:layout_height="366dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.816" />
+
+    <Spinner
+        android:id="@+id/spinnerSort"
+        android:layout_width="318dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/listViewTransactions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.903" />
+
+    <Spinner
+        android:id="@+id/spinnerFilter"
+        android:layout_width="318dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/spinnerSort"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.54" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Global amount: "
+        app:layout_constraintBottom_toTopOf="@+id/spinnerFilter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.147"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.333" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Limit: "
+        app:layout_constraintBottom_toTopOf="@+id/spinnerFilter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.123"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.258" />
+
+    <TextView
+        android:id="@+id/textBudget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="amount"
+        app:layout_constraintBottom_toTopOf="@+id/spinnerFilter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.096"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.333" />
+
+    <TextView
+        android:id="@+id/textLimit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="limit"
+        app:layout_constraintBottom_toTopOf="@+id/spinnerFilter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.06"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.258" />
+
+    <TextView
+        android:id="@+id/textDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mjesec"
+        app:layout_constraintBottom_toTopOf="@+id/spinnerSort"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerFilter" />
+
+    <Button
+        android:id="@+id/addTransactionBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add transaction"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listViewTransactions" />
+
+    <ImageButton
+        android:id="@+id/leftBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/spinnerSort"
+        app:layout_constraintEnd_toStartOf="@+id/textDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerFilter"
+        app:srcCompat="@drawable/abc_vector_test" />
+
+    <ImageButton
+        android:id="@+id/rightBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="-1"
+        app:layout_constraintBottom_toTopOf="@+id/spinnerSort"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textDate"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerFilter"
+        app:srcCompat="@drawable/abc_vector_test" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

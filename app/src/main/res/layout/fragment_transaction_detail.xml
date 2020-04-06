@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditTransactionActivity">
+
+    <EditText
+        android:id="@+id/endDate"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:inputType="date"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.747"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.84" />
+
+    <EditText
+        android:id="@+id/date"
+        android:layout_width="213dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="32dp"
+        android:ems="10"
+        android:inputType="date"
+        app:layout_constraintBottom_toTopOf="@+id/amount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.737"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginBottom="32dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Title"
+        app:layout_constraintBottom_toTopOf="@+id/spinnerType"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.747"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Spinner
+        android:id="@+id/spinnerType"
+        android:layout_width="213dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.747"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginBottom="24dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Description"
+        app:layout_constraintBottom_toTopOf="@+id/interval"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.747"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/closeBtn"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/endDate"
+        app:layout_constraintVertical_bias="0.541" />
+
+    <Button
+        android:id="@+id/closeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Close"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.907"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/endDate"
+        app:layout_constraintVertical_bias="0.541" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        app:layout_constraintBottom_toBottomOf="@+id/date"
+        app:layout_constraintEnd_toStartOf="@+id/date"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/date"
+        app:layout_constraintVertical_bias="0.38" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:text="Amount"
+        app:layout_constraintBottom_toBottomOf="@+id/amount"
+        app:layout_constraintEnd_toStartOf="@+id/amount"
+        app:layout_constraintHorizontal_bias="0.328"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/amount"
+        app:layout_constraintVertical_bias="0.461" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        app:layout_constraintBottom_toBottomOf="@+id/title"
+        app:layout_constraintEnd_toStartOf="@+id/title"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/title"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Type"
+        app:layout_constraintBottom_toBottomOf="@+id/spinnerType"
+        app:layout_constraintEnd_toStartOf="@+id/spinnerType"
+        app:layout_constraintHorizontal_bias="0.517"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/spinnerType"
+        app:layout_constraintVertical_bias="0.38" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        app:layout_constraintBottom_toBottomOf="@+id/description"
+        app:layout_constraintEnd_toStartOf="@+id/description"
+        app:layout_constraintHorizontal_bias="0.583"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/description"
+        app:layout_constraintVertical_bias="0.428" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="40dp"
+        android:text="Interval (days)"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/interval"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView10"
+        app:layout_constraintVertical_bias="0.076" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="End date"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/endDate"
+        app:layout_constraintHorizontal_bias="0.561"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView11"
+        app:layout_constraintVertical_bias="0.24" />
+
+    <Button
+        android:id="@+id/deleteBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/closeBtn"
+        app:layout_constraintHorizontal_bias="0.477"
+        app:layout_constraintStart_toEndOf="@+id/saveBtn"
+        app:layout_constraintTop_toBottomOf="@+id/endDate"
+        app:layout_constraintVertical_bias="0.541" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="Global amount"
+        app:layout_constraintBottom_toTopOf="@+id/date"
+        app:layout_constraintEnd_toStartOf="@+id/date"
+        app:layout_constraintHorizontal_bias="0.581"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.721" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="Limit"
+        app:layout_constraintBottom_toTopOf="@+id/date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.56"
+        app:layout_constraintStart_toEndOf="@+id/textView13"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.72" />
+
+    <TextView
+        android:id="@+id/globalEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="amount"
+        app:layout_constraintBottom_toBottomOf="@+id/textView13"
+        app:layout_constraintEnd_toStartOf="@+id/textView14"
+        app:layout_constraintHorizontal_bias="0.255"
+        app:layout_constraintStart_toEndOf="@+id/textView13"
+        app:layout_constraintTop_toTopOf="@+id/textView13"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/limitEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="amount"
+        app:layout_constraintBottom_toBottomOf="@+id/textView14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.523"
+        app:layout_constraintStart_toEndOf="@+id/textView14"
+        app:layout_constraintTop_toTopOf="@+id/textView14"
+        app:layout_constraintVertical_bias="0.72" />
+
+    <EditText
+        android:id="@+id/amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        app:layout_constraintBottom_toTopOf="@+id/title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.747"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/interval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/endDate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.747"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:text="(dd.MM.yyyy)"
+        app:layout_constraintBottom_toTopOf="@+id/textView7"
+        app:layout_constraintEnd_toStartOf="@+id/date"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6"
+        app:layout_constraintVertical_bias="0.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
