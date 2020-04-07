@@ -215,9 +215,7 @@ public class TransactionListFragment extends Fragment {
                             }
                             AccountDetailsFragment detailsFragment = new AccountDetailsFragment();
                             Bundle bundle = new Bundle();
-                            bundle.putString("budzet", presenter.getAccount().getBudget() + "");
-                            bundle.putString("global", presenter.getAccount().getOverallLimit() + "");
-                            bundle.putString("month", presenter.getAccount().getMonthlyLimit() + "");
+                            bundle.putParcelable("account", presenter.getAccount());
                             detailsFragment.setArguments(bundle);
                             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).addToBackStack(null).commit();
                         }
