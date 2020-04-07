@@ -18,18 +18,6 @@ public class MainActivity extends AppCompatActivity implements ITransactionView{
         setTitle("RMA Spirala");
 
         FragmentManager fm = getSupportFragmentManager();
-        FrameLayout detail = findViewById(R.id.transaction_details);
-
-        if(detail != null){
-            twoPaneMode = true;
-            TransactionDetailFragment detailFragment = (TransactionDetailFragment) fm.findFragmentById(R.id.transaction_details);
-            if(detailFragment == null){
-                detailFragment = new TransactionDetailFragment();
-                fm.beginTransaction().replace(R.id.transaction_details, detailFragment).commit();
-            }
-        }else{
-            twoPaneMode = false;
-        }
 
         Fragment listFragment = fm.findFragmentByTag("list");
 
@@ -38,6 +26,25 @@ public class MainActivity extends AppCompatActivity implements ITransactionView{
             fm.beginTransaction().replace(R.id.transactions_list, listFragment, "list").commit();
         }else{
             fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
+        FrameLayout detail = findViewById(R.id.transaction_details);
+
+        if(detail != null){
+            twoPaneMode = true;
+            TransactionDetailFragment detailFragment = (TransactionDetailFragment) fm.findFragmentById(R.id.transaction_details);
+            if(detailFragment == null){
+                detailFragment = new TransactionDetailFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("global", ((TransactionListFragment)listFragment).getPresenter().getAccount().getBudget() + "");
+                bundle.putString("limit", ((TransactionListFragment)listFragment).getPresenter().getAccount().getOverallLimit() + "");
+                bundle.putString("month", ((TransactionListFragment)listFragment).getPresenter().getAccount().getMonthlyLimit() + "");
+                bundle.putString("dodavanje", "da");
+                detailFragment.setArguments(bundle);
+                fm.beginTransaction().replace(R.id.transaction_details, detailFragment).commit();
+            }
+        }else{
+            twoPaneMode = false;
         }
 
 

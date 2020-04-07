@@ -96,6 +96,8 @@ public class TransactionListFragment extends Fragment {
                     if(selectedItem == position){
                         listViewTransactions.setAdapter(transactionsAdapter);
                         selectedItem = -1;
+                        TransactionDetailFragment detailFragment = new TransactionDetailFragment();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transaction_details, detailFragment).addToBackStack(null).commit();
                         return;
                     }
                     selectedItem = position;
@@ -134,7 +136,11 @@ public class TransactionListFragment extends Fragment {
                     bundle.putString("limit", presenter.getAccount().getOverallLimit() + "");
                     bundle.putString("month", presenter.getAccount().getMonthlyLimit() + "");
                     detailFragment.setArguments(bundle);
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailFragment).addToBackStack(null).commit();
+                    if(getActivity().findViewById(R.id.transaction_details) != null){
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transaction_details, detailFragment).addToBackStack(null).commit();
+                    }else{
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailFragment).addToBackStack(null).commit();
+                    }
                 }
             };
 
@@ -225,7 +231,6 @@ public class TransactionListFragment extends Fragment {
                 return false;
             }
         });
-
         return view;
     }
     public void updateList(){

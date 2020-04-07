@@ -144,7 +144,8 @@ public class TransactionDetailFragment extends Fragment {
         presenter.updateTransaction(transaction);
 
         if(getActivity().findViewById(R.id.transaction_details) != null){
-            updateInAnotherFragment();
+            TransactionListFragment listFragment = new TransactionListFragment();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).addToBackStack(null).commit();
         }
 
         date.setBackgroundColor(Color.TRANSPARENT);
@@ -303,6 +304,10 @@ public class TransactionDetailFragment extends Fragment {
         }else{
             interval.setEnabled(false);
             endDate.setEnabled(false);
+            budget = ((AccountPresenter) arguments.getParcelable("account")).getBudget();
+            monthLimit = ((AccountPresenter) arguments.getParcelable("account")).getOverallLimit();
+            budgetEdit.setText( budget + "");
+            limitEdit.setText( monthLimit+ "");
         }
 
         saveBtn.setOnClickListener(saveListener);
