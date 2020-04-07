@@ -127,6 +127,7 @@ public class TransactionDetailFragment extends Fragment {
         cal.set(Calendar.YEAR, temp.getYear() + 1900);      //iz nekog razloga formatiranje datuma daje godinu koja je za 1900 manja od prave godine
         if(endDate.isEnabled()){
             temp = new SimpleDateFormat("dd.MM.yyyy").parse(endDate.getText().toString());
+            end = Calendar.getInstance();
             end.set(Calendar.DAY_OF_MONTH, temp.getDay());
             end.set(Calendar.MONTH, temp.getMonth());
             end.set(Calendar.YEAR, temp.getYear() + 1900);
@@ -141,6 +142,10 @@ public class TransactionDetailFragment extends Fragment {
         }
 
         presenter.updateTransaction(transaction);
+
+        if(getActivity().findViewById(R.id.transaction_details) != null){
+            updateInAnotherFragment();
+        }
 
         date.setBackgroundColor(Color.TRANSPARENT);
         amount.setBackgroundColor(Color.TRANSPARENT);
@@ -207,6 +212,10 @@ public class TransactionDetailFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+    private void updateInAnotherFragment(){
+        TransactionListFragment fragment = (TransactionListFragment)getActivity().getSupportFragmentManager().findFragmentById(R.id.transactions_list);
+        fragment.getPresenter().setCurrentDateTransactions(presenter.getCurrentDateTransactions());
     }
     private boolean checkIfFieldIsNotRed(EditText text){
         try{

@@ -2,6 +2,7 @@ package com.example.rma20siljakemin84;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -38,6 +39,7 @@ public class TransactionListFragment extends Fragment {
     private SimpleDateFormat format = new SimpleDateFormat("MMMM, yyyy");
 
     private View view;
+    private double oldTouchValue = 0;
 
     private ImageButton.OnClickListener listenerLeft =
             new ImageButton.OnClickListener(){
@@ -48,8 +50,7 @@ public class TransactionListFragment extends Fragment {
                     presenter.transactionsForCurrentDate(date);
                     presenter.filter(date, (Type)spinnerFilter.getSelectedItem());
                     presenter.sort((String) spinnerSort.getSelectedItem());
-                    transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
-                    listViewTransactions.setAdapter(transactionsAdapter);
+                    updateList();
                 }
             };
     private ImageButton.OnClickListener listenerRight =
@@ -61,8 +62,7 @@ public class TransactionListFragment extends Fragment {
                     presenter.transactionsForCurrentDate(date);
                     presenter.filter(date, (Type)spinnerFilter.getSelectedItem());
                     presenter.sort((String) spinnerSort.getSelectedItem());
-                    transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
-                    listViewTransactions.setAdapter(transactionsAdapter);
+                    updateList();
                 }
             };
     private Spinner.OnItemSelectedListener listenerSort =
@@ -70,8 +70,7 @@ public class TransactionListFragment extends Fragment {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     presenter.sort(sorts.get(position));
-                    transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
-                    listViewTransactions.setAdapter(transactionsAdapter);
+                    updateList();
                 }
 
                 @Override
@@ -83,8 +82,7 @@ public class TransactionListFragment extends Fragment {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     presenter.filter(date, filters.get(position));
-                    transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
-                    listViewTransactions.setAdapter(transactionsAdapter);
+                    updateList();
                 }
 
                 @Override
@@ -196,6 +194,48 @@ public class TransactionListFragment extends Fragment {
         listViewTransactions.setOnItemClickListener(itemClickListener);
         addTransactionBtn.setOnClickListener(addTransactionListener);
 
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                    {
+                        oldTouchValue = event.getX();
+                        return true;
+                    }
+                    case MotionEvent.ACTION_UP:
+                    {
+                        double current = event.getX();
+                        if(oldTouchValue < current){
+                            System.out.println("Lijevi swipe");
+                        }
+                        if(oldTouchValue > current){
+                            if(getActivity().findViewById(R.id.transaction_details) != null){
+                                return false;
+                            }
+                            AccountDetailsFragment detailsFragment = new AccountDetailsFragment();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("budzet", presenter.getAccount().getBudget() + "");
+                            bundle.putString("global", presenter.getAccount().getOverallLimit() + "");
+                            bundle.putString("month", presenter.getAccount().getMonthlyLimit() + "");
+                            detailsFragment.setArguments(bundle);
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).addToBackStack(null).commit();
+                        }
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
         return view;
+    }
+    public void updateList(){
+        transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
+        listViewTransactions.setAdapter(transactionsAdapter);
+    }
+
+    public TransactionPresenter getPresenter() {
+        return presenter;
     }
 }
