@@ -296,19 +296,10 @@ public class TransactionDetailFragment extends Fragment {
             description.setBackgroundColor(Color.GREEN);
             deleteBtn.setEnabled(false);
         }
-        if(arguments != null && arguments.getString("global") != null) {
-            budgetEdit.setText(arguments.getString("global"));
-            limitEdit.setText(arguments.getString("limit"));
-            budget = Double.parseDouble(arguments.getString("global"));
-            monthLimit = Double.parseDouble(arguments.getString("month"));
-        }else{
-            interval.setEnabled(false);
-            endDate.setEnabled(false);
-            budget = ((AccountPresenter) arguments.getParcelable("account")).getBudget();
-            monthLimit = ((AccountPresenter) arguments.getParcelable("account")).getOverallLimit();
-            budgetEdit.setText( budget + "");
-            limitEdit.setText( monthLimit+ "");
-        }
+        budgetEdit.setText(arguments.getString("global"));
+        limitEdit.setText(arguments.getString("limit"));
+        budget = Double.parseDouble(arguments.getString("global"));
+        monthLimit = Double.parseDouble(arguments.getString("month"));
 
         saveBtn.setOnClickListener(saveListener);
 

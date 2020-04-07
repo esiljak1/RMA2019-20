@@ -97,6 +97,12 @@ public class TransactionListFragment extends Fragment {
                         listViewTransactions.setAdapter(transactionsAdapter);
                         selectedItem = -1;
                         TransactionDetailFragment detailFragment = new TransactionDetailFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("global", presenter.getAccount().getBudget() + "");
+                        bundle.putString("limit", presenter.getAccount().getOverallLimit() + "");
+                        bundle.putString("month", presenter.getAccount().getOverallLimit() + "");
+                        bundle.putString("dodavanje", "da");
+                        detailFragment.setArguments(bundle);
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transaction_details, detailFragment).addToBackStack(null).commit();
                         return;
                     }
