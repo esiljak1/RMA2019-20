@@ -2,6 +2,7 @@ package com.example.rma20siljakemin84;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -20,8 +21,43 @@ public class GraphsFragment extends Fragment {
 
     private ArrayList<String> spinnerItems = new ArrayList<>();
     private ArrayAdapter<String> spinnerAdapter;
+    private double oldTouchValue = 0;
 
     private View view;
+    private View.OnTouchListener swipeGesture =
+            new View.OnTouchListener(){
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch(event.getAction()){
+                        case MotionEvent.ACTION_DOWN:
+                        {
+                            oldTouchValue = event.getX();
+                            return true;
+                        }
+                        case MotionEvent.ACTION_UP:
+                        {
+                            double current = event.getX();
+                            if(oldTouchValue < current){
+                                if(getActivity().findViewById(R.id.transaction_details) != null){
+                                    return false;
+                                }
+                                AccountDetailsFragment detailsFragment = new AccountDetailsFragment();
+                                //nedostaje bundle
+                                //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).addToBackStack(null).commit();
+                            }
+                            if(oldTouchValue > current){
+                                if(getActivity().findViewById(R.id.transaction_details) != null){
+                                    return false;
+                                }
+                                TransactionListFragment listFragment = new TransactionListFragment();
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).addToBackStack(null).commit();
+                            }
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            };
 
     private void setSpinnerData(){
         spinnerItems.add("by day");
