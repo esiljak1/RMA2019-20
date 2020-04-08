@@ -77,6 +77,16 @@ public class TransactionDetailFragment extends Fragment {
                                     transaction = new TransactionModel();
                                     transaction.setId(id);      //postavljamo id da bi se trazena transakcija izbrisala iz liste
                                     presenter.deleteTransaction(transaction);
+                                    if(getActivity().findViewById(R.id.transaction_details) != null){
+                                        TransactionDetailFragment detailFragment = new TransactionDetailFragment();
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("global", budget + "");
+                                        bundle.putString("limit", presenter.getAccount().getOverallLimit() + "");
+                                        bundle.putString("month", monthLimit + "");
+                                        bundle.putString("dodavanje", "da");
+                                        detailFragment.setArguments(bundle);
+                                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transaction_details, detailFragment).commit();
+                                    }
                                     TransactionListFragment listFragment = new TransactionListFragment();
                                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).commit();
                                 }
@@ -300,6 +310,10 @@ public class TransactionDetailFragment extends Fragment {
         limitEdit.setText(arguments.getString("limit"));
         budget = Double.parseDouble(arguments.getString("global"));
         monthLimit = Double.parseDouble(arguments.getString("month"));
+
+        if(getActivity().findViewById(R.id.transaction_details) != null){
+            closeBtn.setEnabled(false);
+        }
 
         saveBtn.setOnClickListener(saveListener);
 
