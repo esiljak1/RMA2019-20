@@ -19,6 +19,7 @@ public class GraphsFragment extends Fragment {
     private Spinner spinnerGraphicChooser;
     private BarChart spendingChart, incomeChart, totalChart;
 
+    private TransactionPresenter presenter;
     private ArrayList<String> spinnerItems = new ArrayList<>();
     private ArrayAdapter<String> spinnerAdapter;
     private double oldTouchValue = 0;
@@ -42,15 +43,17 @@ public class GraphsFragment extends Fragment {
                                     return false;
                                 }
                                 AccountDetailsFragment detailsFragment = new AccountDetailsFragment();
-                                //nedostaje bundle
-                                //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).addToBackStack(null).commit();
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("transaction", presenter);
+                                detailsFragment.setArguments(bundle);
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).commit();
                             }
                             if(oldTouchValue > current){
                                 if(getActivity().findViewById(R.id.transaction_details) != null){
                                     return false;
                                 }
                                 TransactionListFragment listFragment = new TransactionListFragment();
-                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).addToBackStack(null).commit();
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).commit();
                             }
                             return true;
                         }
@@ -74,10 +77,16 @@ public class GraphsFragment extends Fragment {
         incomeChart = view.findViewById(R.id.incomeChart);
         totalChart = view.findViewById(R.id.totalChart);
 
+        presenter = getArguments().getParcelable("transaction");
+
         setSpinnerData();
         spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, spinnerItems);
         spinnerGraphicChooser.setAdapter(spinnerAdapter);
         spinnerGraphicChooser.setSelection(2);
+
+        view.setOnTouchListener(swipeGesture);
+
+        //TODO dodati minimalnu vrijednost koju prst mora preci da se detektuje swipe
 
         return view;
     }

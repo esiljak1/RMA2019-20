@@ -1,11 +1,14 @@
 package com.example.rma20siljakemin84;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class TransactionPresenter implements ITransactionPresenter {
+public class TransactionPresenter implements ITransactionPresenter, Parcelable {
     private MainActivity view;
     private TransactionInteractor interactor;
     private AccountPresenter account;
@@ -17,6 +20,22 @@ public class TransactionPresenter implements ITransactionPresenter {
         this.interactor = new TransactionInteractor();
         this.account = new AccountPresenter(view);
     }
+
+    protected TransactionPresenter(Parcel in) {
+        account = in.readParcelable(AccountPresenter.class.getClassLoader());
+    }
+
+    public static final Creator<TransactionPresenter> CREATOR = new Creator<TransactionPresenter>() {
+        @Override
+        public TransactionPresenter createFromParcel(Parcel in) {
+            return new TransactionPresenter(in);
+        }
+
+        @Override
+        public TransactionPresenter[] newArray(int size) {
+            return new TransactionPresenter[size];
+        }
+    };
 
     private boolean checkRegular(TransactionModel transaction, Calendar date){
         Calendar temp = Calendar.getInstance();
@@ -169,5 +188,15 @@ public class TransactionPresenter implements ITransactionPresenter {
 
     public void setAccount(AccountPresenter account) {
         this.account = account;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(account, flags);
     }
 }

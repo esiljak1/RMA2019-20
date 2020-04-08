@@ -47,7 +47,7 @@ public class TransactionDetailFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     TransactionListFragment listFragment = new TransactionListFragment();
-                    getFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).addToBackStack(null).commit();
+                    getFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).commit();
                 }
             };
     private Button.OnClickListener saveListener =
@@ -78,7 +78,7 @@ public class TransactionDetailFragment extends Fragment {
                                     transaction.setId(id);      //postavljamo id da bi se trazena transakcija izbrisala iz liste
                                     presenter.deleteTransaction(transaction);
                                     TransactionListFragment listFragment = new TransactionListFragment();
-                                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).addToBackStack(null).commit();
+                                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).commit();
                                 }
                             }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override

@@ -19,6 +19,7 @@ public class AccountDetailsFragment extends Fragment {
 
     private View view;
     private AccountPresenter account;
+    private TransactionPresenter transaction;
     private double oldTouchValue = 0;
 
     private Button.OnClickListener saveListener =
@@ -41,7 +42,8 @@ public class AccountDetailsFragment extends Fragment {
 
         Bundle bundle = getArguments();
 
-        account = bundle.getParcelable("account");
+        transaction = bundle.getParcelable("transaction");
+        account = transaction.getAccount();
         budgetAccountDetails.setText(account.getBudget() + "");
         globalLimitAccountDetails.setText(account.getOverallLimit() + "");
         monthLimitAccountDetails.setText(account.getMonthlyLimit() + "");
@@ -64,14 +66,17 @@ public class AccountDetailsFragment extends Fragment {
                                 return false;
                             }
                             TransactionListFragment listFragment = new TransactionListFragment();
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).addToBackStack(null).commit();
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).commit();
                         }
                         if(oldTouchValue > current){
                             if(getActivity().findViewById(R.id.transaction_details) != null){
                                 return false;
                             }
                             GraphsFragment graphsFragment = new GraphsFragment();
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).addToBackStack(null).commit();
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("transaction", transaction);
+                            graphsFragment.setArguments(bundle);
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).commit();
                         }return true;
                     }
                 }

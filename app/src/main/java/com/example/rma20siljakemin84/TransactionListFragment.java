@@ -103,7 +103,7 @@ public class TransactionListFragment extends Fragment {
                         bundle.putString("month", presenter.getAccount().getOverallLimit() + "");
                         bundle.putString("dodavanje", "da");
                         detailFragment.setArguments(bundle);
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transaction_details, detailFragment).addToBackStack(null).commit();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transaction_details, detailFragment).commit();
                         return;
                     }
                     selectedItem = position;
@@ -125,7 +125,7 @@ public class TransactionListFragment extends Fragment {
                     }
                     detailFragment.setArguments(args);
                     if(getActivity().findViewById(R.id.transaction_details) != null){
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transaction_details, detailFragment).addToBackStack(null).commit();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transaction_details, detailFragment).commit();
                     }else {
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailFragment).addToBackStack(null).commit();
                     }
@@ -223,7 +223,10 @@ public class TransactionListFragment extends Fragment {
                                 return false;
                             }
                             GraphsFragment graphsFragment = new GraphsFragment();
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).addToBackStack(null).commit();
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("transaction", presenter);
+                            graphsFragment.setArguments(bundle);
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).commit();
                         }
                         if(oldTouchValue > current){
                             if(getActivity().findViewById(R.id.transaction_details) != null){
@@ -231,9 +234,9 @@ public class TransactionListFragment extends Fragment {
                             }
                             AccountDetailsFragment detailsFragment = new AccountDetailsFragment();
                             Bundle bundle = new Bundle();
-                            bundle.putParcelable("account", presenter.getAccount());
+                            bundle.putParcelable("transaction", presenter);
                             detailsFragment.setArguments(bundle);
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).addToBackStack(null).commit();
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).commit();
                         }
                         return true;
                     }
