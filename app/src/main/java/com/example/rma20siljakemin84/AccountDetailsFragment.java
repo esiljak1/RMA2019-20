@@ -60,12 +60,19 @@ public class AccountDetailsFragment extends Fragment {
                     {
                         double current = event.getX();
                         if(oldTouchValue < current){
+                            if(getActivity().findViewById(R.id.transaction_details) != null){
+                                return false;
+                            }
                             TransactionListFragment listFragment = new TransactionListFragment();
                             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).addToBackStack(null).commit();
                         }
                         if(oldTouchValue > current){
-                            System.out.println("Desni swipe");
-                        }
+                            if(getActivity().findViewById(R.id.transaction_details) != null){
+                                return false;
+                            }
+                            GraphsFragment graphsFragment = new GraphsFragment();
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).addToBackStack(null).commit();
+                        }return true;
                     }
                 }
                 return false;

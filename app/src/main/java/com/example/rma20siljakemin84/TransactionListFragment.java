@@ -219,7 +219,11 @@ public class TransactionListFragment extends Fragment {
                     {
                         double current = event.getX();
                         if(oldTouchValue < current){
-                            System.out.println("Lijevi swipe");
+                            if(getActivity().findViewById(R.id.transaction_details) != null){
+                                return false;
+                            }
+                            GraphsFragment graphsFragment = new GraphsFragment();
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).addToBackStack(null).commit();
                         }
                         if(oldTouchValue > current){
                             if(getActivity().findViewById(R.id.transaction_details) != null){
