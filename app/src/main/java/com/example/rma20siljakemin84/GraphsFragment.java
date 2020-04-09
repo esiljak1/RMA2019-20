@@ -17,13 +17,14 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class GraphsFragment extends Fragment {
     private static final int MIN_DISTANCE = 900;
     private static final int mjeseci = 12;
-    private static int dani = 31;
-    private static int sedmice = 5; //nisam siguran koliko sedmica
+    private static final int dani = 365;
+    private static final int sedmice = 52; //nisam siguran koliko sedmica
 
     private Spinner spinnerGraphicChooser;
     private BarChart spendingChart, incomeChart, totalChart;
@@ -74,6 +75,19 @@ public class GraphsFragment extends Fragment {
                     return false;
                 }
             };
+
+    private boolean checkNumberOfWeeks(){
+        Calendar calendar = Calendar.getInstance();
+        if(calendar.get(Calendar.YEAR) % 4 == 0){
+            calendar.set(Calendar.MONTH, Calendar.JANUARY);
+            calendar.set(Calendar.DAY_OF_MONTH, 1);
+            return calendar.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY;
+        }else{
+            calendar.set(Calendar.MONTH, Calendar.JANUARY);
+            calendar.set(Calendar.DAY_OF_MONTH, 1);
+            return calendar.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY;
+        }
+    }
 
     private void setSpinnerData(){
         spinnerItems.add("by day");
@@ -135,13 +149,13 @@ public class GraphsFragment extends Fragment {
         spinnerGraphicChooser.setAdapter(spinnerAdapter);
         spinnerGraphicChooser.setSelection(2);
 
+        checkNumberOfWeeks();
+
         setIncomeChartForMonths();
         setSpendingChartForMonths();
         setTotalChartForMonths();
 
         view.setOnTouchListener(swipeGesture);
-
-        //TODO dodati minimalnu vrijednost koju prst mora preci da se detektuje swipe
 
         return view;
     }

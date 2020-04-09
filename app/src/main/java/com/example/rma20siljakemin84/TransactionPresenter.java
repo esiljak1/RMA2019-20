@@ -42,10 +42,23 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
         temp.set(Calendar.DATE, transaction.getDate().get(Calendar.DATE));
         temp.set(Calendar.MONTH, transaction.getDate().get(Calendar.MONTH));
         temp.set(Calendar.YEAR, transaction.getDate().get(Calendar.YEAR));
-        while (temp.compareTo(transaction.getEndDate()) <= 0){
+        while (temp.compareTo(transaction.getEndDate()) <= 0 && temp.get(Calendar.YEAR) <= date.get(Calendar.YEAR) && temp.get(Calendar.MONTH) <= date.get(Calendar.MONTH)){
             if(temp.get(Calendar.MONTH) == date.get(Calendar.MONTH) && temp.get(Calendar.YEAR) == date.get(Calendar.YEAR)){
                 return true;
             }temp.add(Calendar.DATE, transaction.getTransactionInterval());
+        }return false;
+    }
+
+    private boolean checkRegularWeek(TransactionModel transaction, Calendar date){
+        Calendar temp = Calendar.getInstance();
+        temp.set(Calendar.DATE, transaction.getDate().get(Calendar.DATE));
+        temp.set(Calendar.MONTH, transaction.getDate().get(Calendar.MONTH));
+        temp.set(Calendar.YEAR, transaction.getDate().get(Calendar.YEAR));
+        while(temp.compareTo(transaction.getEndDate()) <= 0 && temp.get(Calendar.WEEK_OF_YEAR) <= date.get(Calendar.WEEK_OF_YEAR) && temp.get(Calendar.YEAR) <= date.get(Calendar.YEAR)){
+            if(temp.get(Calendar.WEEK_OF_YEAR) == date.get(Calendar.WEEK_OF_YEAR) && temp.get(Calendar.YEAR) == temp.get(Calendar.YEAR)){
+                return true;
+            }
+            temp.add(Calendar.DATE, transaction.getTransactionInterval());
         }return false;
     }
 
@@ -231,6 +244,43 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
                 }
             }else if(t.getType().equals(Type.REGULARPAYMENT)){
                 if(checkRegular(t, calendar)){
+                    amount += t.getAmount();
+                }
+            }
+        }return amount;
+    }
+
+    public double getIncomeForWeek(int week){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.WEEK_OF_YEAR, week);
+
+        double amount = 0;
+
+        for(TransactionModel t : interactor.get()){
+            if(t.getType().equals(Type.INDIVIDUALINCOME)){
+                if(t.getDate().get(Calendar.WEEK_OF_YEAR) == week && t.getDate().get(Calendar.YEAR) == calendar.get(Calendar.YEAR)){
+                    amount += t.getAmount();
+                }
+            }else if(t.getType().equals(Type.REGULARINCOME)){
+                if(checkRegularWeek(t, calendar)){
+                    amount += t.getAmount();
+                }
+            }
+        }return amount;
+    }
+
+    public double getSpendingForWeek(int week){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.WEEK_OF_YEAR, week);
+
+        double amount = 0;
+        for(TransactionModel t : interactor.get()){
+            if(t.getType().equals(Type.INDIVIDUALPAYMENT) || t.getType().equals(Type.PURCHASE)){
+                if(t.getDate().get(Calendar.WEEK_OF_YEAR) == week && t.getDate().get(Calendar.YEAR) == calendar.get(Calendar.YEAR)){
+                    amount += t.getAmount();
+                }
+            }else if(t.getType().equals(Type.REGULARPAYMENT)){
+                if(checkRegularWeek(t, calendar)){
                     amount += t.getAmount();
                 }
             }
