@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -75,6 +76,38 @@ public class GraphsFragment extends Fragment {
                     return false;
                 }
             };
+    private Spinner.OnItemSelectedListener spinnerListener =
+            new Spinner.OnItemSelectedListener(){
+
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    switch (position){
+                        case 0:
+                        {
+                            setIncomeChartForDays();
+                            setSpendingChartForDays();
+                            setTotalChartForDays();
+                            break;
+                        } case 1:
+                        {
+                            setIncomeChartForWeeks();
+                            setSpendingChartForWeeks();
+                            setTotalChartForWeeks();
+                            break;
+                        }
+                        case 2:
+                        {
+                            setIncomeChartForMonths();
+                            setSpendingChartForMonths();
+                            setTotalChartForMonths();
+                        }
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            };
 
     private boolean checkNumberOfWeeks(){
         Calendar calendar = Calendar.getInstance();
@@ -105,6 +138,8 @@ public class GraphsFragment extends Fragment {
         barDataSet.setColor(Color.GREEN);
         BarData barData = new BarData(barDataSet);
         incomeChart.setData(barData);
+        incomeChart.notifyDataSetChanged();
+        incomeChart.invalidate();
     }
 
     private void setSpendingChartForMonths(){
@@ -117,6 +152,8 @@ public class GraphsFragment extends Fragment {
         barDataSet.setColor(Color.RED);
         BarData barData = new BarData(barDataSet);
         spendingChart.setData(barData);
+        spendingChart.notifyDataSetChanged();
+        spendingChart.invalidate();
     }
 
     private void setTotalChartForMonths(){
@@ -131,6 +168,120 @@ public class GraphsFragment extends Fragment {
         barDataSet.setColor(Color.BLUE);
         BarData barData = new BarData(barDataSet);
         totalChart.setData(barData);
+        totalChart.notifyDataSetChanged();
+        totalChart.invalidate();
+    }
+
+    private void setIncomeChartForWeeks(){
+        int vel = sedmice;
+        barEntryArrayList = new ArrayList<>();
+        if(checkNumberOfWeeks()){
+            vel++;
+        }
+        for(int i = 0; i < vel; i++){
+            double vrijednost = presenter.getIncomeForWeek(i);
+            barEntryArrayList.add(new BarEntry(i + 1, (float)vrijednost));
+        }
+        BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Income");
+        barDataSet.setColor(Color.GREEN);
+        BarData barData = new BarData(barDataSet);
+        incomeChart.setData(barData);
+        incomeChart.notifyDataSetChanged();
+        incomeChart.invalidate();
+    }
+
+    private void setSpendingChartForWeeks(){
+        int vel = sedmice;
+        barEntryArrayList = new ArrayList<>();
+        if(checkNumberOfWeeks()){
+            vel++;
+        }
+        for(int i = 0; i < vel; i++){
+            double vrijednost = presenter.getSpendingForWeek(i);
+            barEntryArrayList.add(new BarEntry(i + 1, (float)vrijednost));
+        }
+        BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Spending");
+        barDataSet.setColor(Color.RED);
+        BarData barData = new BarData(barDataSet);
+        spendingChart.setData(barData);
+        spendingChart.notifyDataSetChanged();
+        spendingChart.invalidate();
+    }
+
+    private void setTotalChartForWeeks(){
+        int vel = sedmice;
+        double vrijednost = 0;
+        barEntryArrayList = new ArrayList<>();
+        if(checkNumberOfWeeks()){
+            vel++;
+        }
+        for(int i = 0; i < vel; i++){
+            vrijednost += presenter.getIncomeForWeek(i);
+            vrijednost -= presenter.getSpendingForWeek(i);
+            barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
+        }
+        BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Total");
+        barDataSet.setColor(Color.BLUE);
+        BarData barData = new BarData(barDataSet);
+        totalChart.setData(barData);
+        totalChart.notifyDataSetChanged();
+        totalChart.invalidate();
+    }
+
+    private void setIncomeChartForDays(){
+        int vel = dani;
+        barEntryArrayList = new ArrayList<>();
+        if(Calendar.getInstance().get(Calendar.YEAR) % 4 == 0){
+            vel++;
+        }
+        for(int i = 0; i < vel; i++){
+            double vrijednost = presenter.getIncomeForDay(i);
+            barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
+        }
+        BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Income");
+        barDataSet.setColor(Color.GREEN);
+        BarData barData = new BarData(barDataSet);
+        incomeChart.setData(barData);
+        incomeChart.notifyDataSetChanged();
+        incomeChart.invalidate();
+    }
+
+    private void setSpendingChartForDays(){
+        int vel = dani;
+        barEntryArrayList = new ArrayList<>();
+        if(Calendar.getInstance().get(Calendar.YEAR) % 4 == 0){
+            vel++;
+        }
+        for(int i = 0; i < vel; i++){
+            double vrijednost = presenter.getSpendingForDay(i);
+            barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
+        }
+        BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Spending");
+        barDataSet.setColor(Color.RED);
+        BarData barData = new BarData(barDataSet);
+        spendingChart.setData(barData);
+        spendingChart.notifyDataSetChanged();
+        spendingChart.invalidate();
+    }
+
+    private void setTotalChartForDays(){
+        int vel = dani;
+        double vrijednost = 0;
+        barEntryArrayList = new ArrayList<>();
+        if(Calendar.getInstance().get(Calendar.YEAR) % 4 == 0){
+            vel++;
+        }
+        for(int i = 0; i < vel; i++){
+            vrijednost += presenter.getIncomeForDay(i);
+            vrijednost -= presenter.getSpendingForDay(i);
+            barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
+        }
+        BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Total");
+        barDataSet.setColor(Color.BLUE);
+        BarData barData = new BarData(barDataSet);
+        totalChart.setData(barData);
+        totalChart.notifyDataSetChanged();
+        totalChart.invalidate();
     }
 
     @Override
@@ -149,13 +300,8 @@ public class GraphsFragment extends Fragment {
         spinnerGraphicChooser.setAdapter(spinnerAdapter);
         spinnerGraphicChooser.setSelection(2);
 
-        checkNumberOfWeeks();
-
-        setIncomeChartForMonths();
-        setSpendingChartForMonths();
-        setTotalChartForMonths();
-
         view.setOnTouchListener(swipeGesture);
+        spinnerGraphicChooser.setOnItemSelectedListener(spinnerListener);
 
         return view;
     }
