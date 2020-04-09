@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="#b3d9ff">
     <ListView
         android:id="@+id/listViewTransactions"
         android:layout_width="318dp"
@@ -116,7 +117,8 @@
         app:layout_constraintEnd_toStartOf="@+id/textDate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerFilter"
-        app:srcCompat="@drawable/abc_vector_test" />
+        app:srcCompat="@drawable/abc_vector_test"
+        android:background=""/>
 
     <ImageButton
         android:id="@+id/rightBtn"
@@ -127,6 +129,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textDate"
         app:layout_constraintTop_toBottomOf="@+id/spinnerFilter"
-        app:srcCompat="@drawable/abc_vector_test" />
+        app:srcCompat="@drawable/abc_vector_test"
+        android:background="b"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
