@@ -31,7 +31,7 @@
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/spendingChart"
-                android:layout_width="220dp"
+                android:layout_width="250dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="95dp"
                 android:layout_marginEnd="96dp"
@@ -62,7 +62,7 @@
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/incomeChart"
-                android:layout_width="220dp"
+                android:layout_width="250dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="95dp"
                 android:layout_marginEnd="96dp"
@@ -94,7 +94,7 @@
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/totalChart"
-                android:layout_width="220dp"
+                android:layout_width="250dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="95dp"
                 android:layout_marginEnd="96dp"

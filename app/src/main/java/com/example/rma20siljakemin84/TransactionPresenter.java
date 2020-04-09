@@ -199,4 +199,23 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(account, flags);
     }
+
+    public double getIncomeForMonth(int month){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.MONTH, month);
+
+        double amount = 0;
+
+        for(TransactionModel t : interactor.get()){
+            if(t.getType().equals(Type.INDIVIDUALINCOME)){
+                if(t.getDate().get(Calendar.MONTH) == month && t.getDate().get(Calendar.YEAR) == calendar.get(Calendar.YEAR)){
+                    amount += t.getAmount();
+                }
+            }else if(t.getType().equals(Type.REGULARINCOME)){
+                if(checkRegular(t, calendar)){
+                    amount += t.getAmount();
+                }
+            }
+        }return amount;
+    }
 }

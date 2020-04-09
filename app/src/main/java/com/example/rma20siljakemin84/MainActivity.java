@@ -49,15 +49,4 @@ public class MainActivity extends AppCompatActivity implements ITransactionView{
 
 
     }
-
-//    @Override
-//    protected void onResume() {
-//        spinnerFilter.setSelection(0);
-//        spinnerSort.setSelection(0);
-//        presenter.transactionsForCurrentDate(date);
-//        transactionsAdapter = new TransactionListAdapter(this, R.layout.list_element, presenter.getCurrentDateTransactions());
-//        listViewTransactions.setAdapter(transactionsAdapter);
-//        textBudget.setText(presenter.getAccount().getBudget() + "");
-//        super.onResume();
-//    }
 }
