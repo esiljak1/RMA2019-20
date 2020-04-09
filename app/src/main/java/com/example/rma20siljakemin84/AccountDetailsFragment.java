@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 
-public class AccountDetailsFragment extends Fragment {
+public class AccountDetailsFragment extends Fragment implements IAccountView{
     private static final int MIN_DISTANCE = 800;
 
     private TextView budgetAccountDetails;

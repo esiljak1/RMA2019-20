@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 
-public class GraphsFragment extends Fragment {
+public class GraphsFragment extends Fragment implements ITransactionView{
     private static final int MIN_DISTANCE = 900;
     private static final int mjeseci = 12;
     private static final int dani = 365;
