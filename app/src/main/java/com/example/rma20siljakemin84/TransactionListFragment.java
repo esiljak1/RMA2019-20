@@ -21,6 +21,8 @@ import java.util.Calendar;
 import java.util.List;
 
 public class TransactionListFragment extends Fragment {
+    private static final int MIN_DISTANCE = 800;
+
     private ListView listViewTransactions;
     private Spinner spinnerSort, spinnerFilter;
     private TextView textBudget, textLimit, textDate;
@@ -217,28 +219,30 @@ public class TransactionListFragment extends Fragment {
                     }
                     case MotionEvent.ACTION_UP:
                     {
-                        double current = event.getX();
-                        if(oldTouchValue < current){
-                            if(getActivity().findViewById(R.id.transaction_details) != null){
-                                return false;
+                        double deltaX = oldTouchValue - event.getX();
+                        if(Math.abs(deltaX) > MIN_DISTANCE) {
+                            if (deltaX < 0) {
+                                if (getActivity().findViewById(R.id.transaction_details) != null) {
+                                    return false;
+                                }
+                                GraphsFragment graphsFragment = new GraphsFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("transaction", presenter);
+                                graphsFragment.setArguments(bundle);
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).commit();
                             }
-                            GraphsFragment graphsFragment = new GraphsFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable("transaction", presenter);
-                            graphsFragment.setArguments(bundle);
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).commit();
-                        }
-                        if(oldTouchValue > current){
-                            if(getActivity().findViewById(R.id.transaction_details) != null){
-                                return false;
+                            if (deltaX > 0) {
+                                if (getActivity().findViewById(R.id.transaction_details) != null) {
+                                    return false;
+                                }
+                                AccountDetailsFragment detailsFragment = new AccountDetailsFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("transaction", presenter);
+                                detailsFragment.setArguments(bundle);
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).commit();
                             }
-                            AccountDetailsFragment detailsFragment = new AccountDetailsFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable("transaction", presenter);
-                            detailsFragment.setArguments(bundle);
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).commit();
+                            return true;
                         }
-                        return true;
                     }
                 }
                 return false;

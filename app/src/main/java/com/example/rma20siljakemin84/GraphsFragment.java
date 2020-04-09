@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 
 public class GraphsFragment extends Fragment {
+    private static final int MIN_DISTANCE = 900;
     private static final int mjeseci = 12;
     private static int dani = 31;
     private static int sedmice = 5; //nisam siguran koliko sedmica
@@ -47,25 +48,27 @@ public class GraphsFragment extends Fragment {
                         }
                         case MotionEvent.ACTION_UP:
                         {
-                            double current = event.getX();
-                            if(oldTouchValue < current){
-                                if(getActivity().findViewById(R.id.transaction_details) != null){
-                                    return false;
+                            double deltaX = oldTouchValue - event.getX();
+                            if(Math.abs(deltaX) > MIN_DISTANCE) {
+                                if (deltaX < 0) {
+                                    if (getActivity().findViewById(R.id.transaction_details) != null) {
+                                        return false;
+                                    }
+                                    AccountDetailsFragment detailsFragment = new AccountDetailsFragment();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable("transaction", presenter);
+                                    detailsFragment.setArguments(bundle);
+                                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).commit();
                                 }
-                                AccountDetailsFragment detailsFragment = new AccountDetailsFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("transaction", presenter);
-                                detailsFragment.setArguments(bundle);
-                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).commit();
-                            }
-                            if(oldTouchValue > current){
-                                if(getActivity().findViewById(R.id.transaction_details) != null){
-                                    return false;
+                                if (deltaX > 0) {
+                                    if (getActivity().findViewById(R.id.transaction_details) != null) {
+                                        return false;
+                                    }
+                                    TransactionListFragment listFragment = new TransactionListFragment();
+                                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).commit();
                                 }
-                                TransactionListFragment listFragment = new TransactionListFragment();
-                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).commit();
+                                return true;
                             }
-                            return true;
                         }
                     }
                     return false;

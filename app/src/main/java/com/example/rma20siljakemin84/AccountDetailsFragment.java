@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 
 
 public class AccountDetailsFragment extends Fragment {
+    private static final int MIN_DISTANCE = 800;
+
     private TextView budgetAccountDetails;
     private EditText globalLimitAccountDetails, monthLimitAccountDetails;
     private Button saveBtnAccountDetails;
@@ -60,24 +62,27 @@ public class AccountDetailsFragment extends Fragment {
                     }
                     case MotionEvent.ACTION_UP:
                     {
-                        double current = event.getX();
-                        if(oldTouchValue < current){
-                            if(getActivity().findViewById(R.id.transaction_details) != null){
-                                return false;
+                        double deltaX = oldTouchValue - event.getX();
+                        if(Math.abs(deltaX) > MIN_DISTANCE) {
+                            if (deltaX < 0) {
+                                if (getActivity().findViewById(R.id.transaction_details) != null) {
+                                    return false;
+                                }
+                                TransactionListFragment listFragment = new TransactionListFragment();
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).commit();
                             }
-                            TransactionListFragment listFragment = new TransactionListFragment();
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).commit();
+                            if (deltaX > 0) {
+                                if (getActivity().findViewById(R.id.transaction_details) != null) {
+                                    return false;
+                                }
+                                GraphsFragment graphsFragment = new GraphsFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("transaction", transaction);
+                                graphsFragment.setArguments(bundle);
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).commit();
+                            }
+                            return true;
                         }
-                        if(oldTouchValue > current){
-                            if(getActivity().findViewById(R.id.transaction_details) != null){
-                                return false;
-                            }
-                            GraphsFragment graphsFragment = new GraphsFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable("transaction", transaction);
-                            graphsFragment.setArguments(bundle);
-                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).commit();
-                        }return true;
                     }
                 }
                 return false;
