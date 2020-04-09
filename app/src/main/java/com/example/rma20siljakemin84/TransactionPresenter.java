@@ -42,7 +42,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
         temp.set(Calendar.DATE, transaction.getDate().get(Calendar.DATE));
         temp.set(Calendar.MONTH, transaction.getDate().get(Calendar.MONTH));
         temp.set(Calendar.YEAR, transaction.getDate().get(Calendar.YEAR));
-        while (temp.compareTo(transaction.getEndDate()) < 0){
+        while (temp.compareTo(transaction.getEndDate()) <= 0){
             if(temp.get(Calendar.MONTH) == date.get(Calendar.MONTH) && temp.get(Calendar.YEAR) == date.get(Calendar.YEAR)){
                 return true;
             }temp.add(Calendar.DATE, transaction.getTransactionInterval());
@@ -212,6 +212,24 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
                     amount += t.getAmount();
                 }
             }else if(t.getType().equals(Type.REGULARINCOME)){
+                if(checkRegular(t, calendar)){
+                    amount += t.getAmount();
+                }
+            }
+        }return amount;
+    }
+
+    public double getSpendingForMonth(int month){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.MONTH, month);
+
+        double amount = 0;
+        for(TransactionModel t : interactor.get()){
+            if(t.getType().equals(Type.INDIVIDUALPAYMENT) || t.getType().equals(Type.PURCHASE)){
+                if(t.getDate().get(Calendar.MONTH) == month && t.getDate().get(Calendar.YEAR) == calendar.get(Calendar.YEAR)){
+                    amount += t.getAmount();
+                }
+            }else if(t.getType().equals(Type.REGULARPAYMENT)){
                 if(checkRegular(t, calendar)){
                     amount += t.getAmount();
                 }

@@ -79,6 +79,7 @@ public class GraphsFragment extends Fragment {
     }
 
     private void setIncomeChartForMonths(){
+        barEntryArrayList = new ArrayList<>();
         for(int i = 0; i < mjeseci; i++){
             double vrijednost = presenter.getIncomeForMonth(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
@@ -87,6 +88,32 @@ public class GraphsFragment extends Fragment {
         barDataSet.setColor(Color.GREEN);
         BarData barData = new BarData(barDataSet);
         incomeChart.setData(barData);
+    }
+
+    private void setSpendingChartForMonths(){
+        barEntryArrayList = new ArrayList<>();
+        for(int i = 0; i < mjeseci; i++){
+            double vrijednost = presenter.getSpendingForMonth(i);
+            barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
+        }
+        BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Spending");
+        barDataSet.setColor(Color.RED);
+        BarData barData = new BarData(barDataSet);
+        spendingChart.setData(barData);
+    }
+
+    private void setTotalChartForMonths(){
+        barEntryArrayList = new ArrayList<>();
+        double vrijednost = 0;
+        for(int i = 0; i < mjeseci; i++){
+            vrijednost += presenter.getIncomeForMonth(i);
+            vrijednost -= presenter.getSpendingForMonth(i);
+            barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
+        }
+        BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Total");
+        barDataSet.setColor(Color.BLUE);
+        BarData barData = new BarData(barDataSet);
+        totalChart.setData(barData);
     }
 
     @Override
@@ -106,6 +133,8 @@ public class GraphsFragment extends Fragment {
         spinnerGraphicChooser.setSelection(2);
 
         setIncomeChartForMonths();
+        setSpendingChartForMonths();
+        setTotalChartForMonths();
 
         view.setOnTouchListener(swipeGesture);
 
