@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class TransactionListFragment extends Fragment implements ITransactionView{
+public class TransactionListFragment extends Fragment{
     private static final int MIN_DISTANCE = 800;
 
     private ListView listViewTransactions;

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class TransactionDetailFragment extends Fragment implements ITransactionView{
+public class TransactionDetailFragment extends Fragment{
     private EditText date, amount, title, description, interval, endDate;
     private Button saveBtn, closeBtn, deleteBtn;
     private Spinner spinnerType;
@@ -35,7 +35,6 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
     private ArrayList<Type> typeList = new ArrayList<>();
     private ArrayAdapter<Type> typeListAdapter;
     private TransactionModel transaction;
-    //private TransactionPresenter presenter = new TransactionPresenter(new MainActivity());
 
     private int id = -1;
     private double budget;
