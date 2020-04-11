@@ -21,7 +21,6 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
 
     private View view;
     private AccountPresenter account;
-    private TransactionPresenter transaction;
     private double oldTouchValue = 0;
 
     private Button.OnClickListener saveListener =
@@ -42,10 +41,7 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
         monthLimitAccountDetails = view.findViewById(R.id.monthLimitAccountDetails);
         saveBtnAccountDetails = view.findViewById(R.id.saveBtnAccountDetails);
 
-        Bundle bundle = getArguments();
-
-        transaction = bundle.getParcelable("transaction");
-        account = transaction.getAccount();
+        account = ((MainActivity) getActivity()).getPresenter().getAccount();
         budgetAccountDetails.setText(account.getBudget() + "");
         globalLimitAccountDetails.setText(account.getOverallLimit() + "");
         monthLimitAccountDetails.setText(account.getMonthlyLimit() + "");
@@ -76,9 +72,6 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
                                     return false;
                                 }
                                 GraphsFragment graphsFragment = new GraphsFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("transaction", transaction);
-                                graphsFragment.setArguments(bundle);
                                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).commit();
                             }
                             return true;

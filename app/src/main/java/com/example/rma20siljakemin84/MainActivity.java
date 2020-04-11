@@ -10,6 +10,23 @@ import androidx.fragment.app.FragmentManager;
 
 public class MainActivity extends AppCompatActivity implements ITransactionView{
     private boolean twoPaneMode = false;
+    private TransactionPresenter presenter = new TransactionPresenter(this);
+
+    public TransactionPresenter getPresenter() {
+        return presenter;
+    }
+
+    public void setPresenter(TransactionPresenter presenter) {
+        this.presenter = presenter;
+    }
+
+    public boolean isTwoPaneMode() {
+        return twoPaneMode;
+    }
+
+    public void setTwoPaneMode(boolean twoPaneMode) {
+        this.twoPaneMode = twoPaneMode;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +52,15 @@ public class MainActivity extends AppCompatActivity implements ITransactionView{
             TransactionDetailFragment detailFragment = (TransactionDetailFragment) fm.findFragmentById(R.id.transaction_details);
             if(detailFragment == null){
                 detailFragment = new TransactionDetailFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("global", ((TransactionListFragment)listFragment).getPresenter().getAccount().getBudget() + "");
-                bundle.putString("limit", ((TransactionListFragment)listFragment).getPresenter().getAccount().getOverallLimit() + "");
-                bundle.putString("month", ((TransactionListFragment)listFragment).getPresenter().getAccount().getMonthlyLimit() + "");
-                bundle.putString("dodavanje", "da");
-                detailFragment.setArguments(bundle);
                 fm.beginTransaction().replace(R.id.transaction_details, detailFragment).commit();
             }
         }else{
             twoPaneMode = false;
         }
 
+
+    }
+    public void funkcija(){
 
     }
 }

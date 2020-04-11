@@ -57,9 +57,6 @@ public class GraphsFragment extends Fragment implements ITransactionView{
                                         return false;
                                     }
                                     AccountDetailsFragment detailsFragment = new AccountDetailsFragment();
-                                    Bundle bundle = new Bundle();
-                                    bundle.putParcelable("transaction", presenter);
-                                    detailsFragment.setArguments(bundle);
                                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).commit();
                                 }
                                 if (deltaX > 0) {
@@ -293,7 +290,7 @@ public class GraphsFragment extends Fragment implements ITransactionView{
         incomeChart = view.findViewById(R.id.incomeChart);
         totalChart = view.findViewById(R.id.totalChart);
 
-        presenter = getArguments().getParcelable("transaction");
+        presenter = ((MainActivity) getActivity()).getPresenter();
 
         setSpinnerData();
         spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, spinnerItems);

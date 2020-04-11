@@ -35,7 +35,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
     private ArrayList<Type> typeList = new ArrayList<>();
     private ArrayAdapter<Type> typeListAdapter;
     private TransactionModel transaction;
-    private TransactionPresenter presenter = new TransactionPresenter(new MainActivity());
+    //private TransactionPresenter presenter = new TransactionPresenter(new MainActivity());
 
     private int id = -1;
     private double budget;
@@ -76,12 +76,12 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                                 public void onClick(DialogInterface dialog, int which) {
                                     transaction = new TransactionModel();
                                     transaction.setId(id);      //postavljamo id da bi se trazena transakcija izbrisala iz liste
-                                    presenter.deleteTransaction(transaction);
+                                    ((MainActivity) getActivity()).getPresenter().deleteTransaction(transaction);
                                     if(getActivity().findViewById(R.id.transaction_details) != null){
                                         TransactionDetailFragment detailFragment = new TransactionDetailFragment();
                                         Bundle bundle = new Bundle();
                                         bundle.putString("global", budget + "");
-                                        bundle.putString("limit", presenter.getAccount().getOverallLimit() + "");
+                                        bundle.putString("limit", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit() + "");
                                         bundle.putString("month", monthLimit + "");
                                         bundle.putString("dodavanje", "da");
                                         detailFragment.setArguments(bundle);
@@ -151,9 +151,9 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
             id = transaction.getId();       //postavljamo id ukoliko dodajemo novu transakciju da bismo odmah mogli i update/delete po potrebi tu transakciju
         }
 
-        presenter.updateTransaction(transaction);
+        ((MainActivity) getActivity()).getPresenter().updateTransaction(transaction);
 
-        if(getActivity().findViewById(R.id.transaction_details) != null){
+        if(((MainActivity) getActivity()).isTwoPaneMode()){
             TransactionListFragment listFragment = new TransactionListFragment();
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).addToBackStack(null).commit();
         }
@@ -188,7 +188,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if(iznos + presenter.getAmountforDate(temp) > monthLimit || iznos + presenter.getAllAmounts() > ukupno){
+        if(iznos + ((MainActivity) getActivity()).getPresenter().getAmountforDate(temp) > monthLimit || iznos + ((MainActivity) getActivity()).getPresenter().getAllAmounts() > ukupno){
             new AlertDialog.Builder(getContext()).setTitle("Over the limit").setMessage("Are you sure you want to do this?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
@@ -199,8 +199,8 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                                 if(spinnerType.getSelectedItem().equals(Type.REGULARINCOME) || spinnerType.getSelectedItem().equals(Type.INDIVIDUALINCOME)){        //ako je dobit postavljamo znak na -1
                                     znak = -1;                                                                                                                  //jer minus puta minus daju plus
                                 }
-                                presenter.subtractFromAccountBudget(iznos*znak);
-                                budgetEdit.setText(presenter.getAccount().getBudget() + "");
+                                ((MainActivity) getActivity()).getPresenter().subtractFromAccountBudget(iznos*znak);
+                                budgetEdit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -217,16 +217,12 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                 if(spinnerType.getSelectedItem().equals(Type.REGULARINCOME) || spinnerType.getSelectedItem().equals(Type.INDIVIDUALINCOME)){
                     znak = -1;
                 }
-                presenter.subtractFromAccountBudget(iznos*znak);
-                budgetEdit.setText(presenter.getAccount().getBudget() + "");
+                ((MainActivity) getActivity()).getPresenter().subtractFromAccountBudget(iznos*znak);
+                budgetEdit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
-    }
-    private void updateInAnotherFragment(){
-        TransactionListFragment fragment = (TransactionListFragment)getActivity().getSupportFragmentManager().findFragmentById(R.id.transactions_list);
-        fragment.getPresenter().setCurrentDateTransactions(presenter.getCurrentDateTransactions());
     }
     private boolean checkIfFieldIsNotRed(EditText text){
         try{
@@ -306,10 +302,10 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
             description.setBackgroundColor(Color.GREEN);
             deleteBtn.setEnabled(false);
         }
-        budgetEdit.setText(arguments.getString("global"));
-        limitEdit.setText(arguments.getString("limit"));
-        budget = Double.parseDouble(arguments.getString("global"));
-        monthLimit = Double.parseDouble(arguments.getString("month"));
+        budgetEdit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
+        limitEdit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit() + "");
+        budget = Double.parseDouble(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
+        monthLimit = Double.parseDouble(((MainActivity) getActivity()).getPresenter().getAccount().getMonthlyLimit() + "");
 
         if(getActivity().findViewById(R.id.transaction_details) != null){
             closeBtn.setEnabled(false);

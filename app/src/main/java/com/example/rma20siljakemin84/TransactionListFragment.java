@@ -32,8 +32,6 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
     private ConstraintLayout transactionList;
     private int selectedItem = -1;
 
-    private TransactionPresenter presenter = new TransactionPresenter(new MainActivity());
-
     private TransactionListAdapter transactionsAdapter;
     private List<String> sorts = new ArrayList<>();
     private List<Type> filters = new ArrayList<>();
@@ -51,9 +49,9 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                 public void onClick(View v) {
                     date.add(Calendar.MONTH, -1);       //pritiskom ili na lijevoili na desno dugme vrsi se ponovno filtiranje/sortiranje u zavisnosti koji je item
                     textDate.setText(format.format(date.getTime())); //selectovan u spinnerima
-                    presenter.transactionsForCurrentDate(date);
-                    presenter.filter(date, (Type)spinnerFilter.getSelectedItem());
-                    presenter.sort((String) spinnerSort.getSelectedItem());
+                    ((MainActivity) getActivity()).getPresenter().transactionsForCurrentDate(date);
+                    ((MainActivity) getActivity()).getPresenter().filter(date, (Type)spinnerFilter.getSelectedItem());
+                    ((MainActivity) getActivity()).getPresenter().sort((String) spinnerSort.getSelectedItem());
                     updateList();
                 }
             };
@@ -63,9 +61,9 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                 public void onClick(View v) {
                     date.add(Calendar.MONTH, 1);
                     textDate.setText(format.format(date.getTime()));
-                    presenter.transactionsForCurrentDate(date);
-                    presenter.filter(date, (Type)spinnerFilter.getSelectedItem());
-                    presenter.sort((String) spinnerSort.getSelectedItem());
+                    ((MainActivity) getActivity()).getPresenter().transactionsForCurrentDate(date);
+                    ((MainActivity) getActivity()).getPresenter().filter(date, (Type)spinnerFilter.getSelectedItem());
+                    ((MainActivity) getActivity()).getPresenter().sort((String) spinnerSort.getSelectedItem());
                     updateList();
                 }
             };
@@ -73,7 +71,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
             new Spinner.OnItemSelectedListener(){
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    presenter.sort(sorts.get(position));
+                    ((MainActivity) getActivity()).getPresenter().sort(sorts.get(position));
                     updateList();
                 }
 
@@ -85,7 +83,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
             new Spinner.OnItemSelectedListener(){
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    presenter.filter(date, filters.get(position));
+                    ((MainActivity) getActivity()).getPresenter().filter(date, filters.get(position));
                     updateList();
                 }
 
@@ -97,14 +95,14 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
             new ListView.OnItemClickListener(){
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if(selectedItem == position){
+                    if(((MainActivity) getActivity()).isTwoPaneMode() && selectedItem == position){
                         listViewTransactions.setAdapter(transactionsAdapter);
                         selectedItem = -1;
                         TransactionDetailFragment detailFragment = new TransactionDetailFragment();
                         Bundle bundle = new Bundle();
-                        bundle.putString("global", presenter.getAccount().getBudget() + "");
-                        bundle.putString("limit", presenter.getAccount().getOverallLimit() + "");
-                        bundle.putString("month", presenter.getAccount().getOverallLimit() + "");
+                        bundle.putString("global", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
+                        bundle.putString("limit", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit() + "");
+                        bundle.putString("month", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit() + "");
                         bundle.putString("dodavanje", "da");
                         detailFragment.setArguments(bundle);
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transaction_details, detailFragment).commit();
@@ -120,15 +118,15 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                     args.putSerializable("type", t.getType());
                     args.putString("description", t.getItemDescription());
                     args.putString("interval", t.getTransactionInterval() + "");
-                    args.putString("global", presenter.getAccount().getBudget() + "");  //budzet
-                    args.putString("month", presenter.getAccount().getMonthlyLimit()+ "");  //monthLimit
-                    args.putString("limit", presenter.getAccount().getOverallLimit() + ""); //overallLimit
+                    args.putString("global", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");  //budzet
+                    args.putString("month", ((MainActivity) getActivity()).getPresenter().getAccount().getMonthlyLimit()+ "");  //monthLimit
+                    args.putString("limit", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit() + ""); //overallLimit
                     args.putString("id", t.getId() + "");   //jedinstveni id po kojem se razlikuju transakcije radi lakseg update-a
                     if(t.getEndDate() != null) {
                         args.putString("endDate", new SimpleDateFormat("dd.MM.yyyy").format(t.getEndDate().getTime()));
                     }
                     detailFragment.setArguments(args);
-                    if(getActivity().findViewById(R.id.transaction_details) != null){
+                    if(((MainActivity) getActivity()).isTwoPaneMode()){
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transaction_details, detailFragment).commit();
                     }else {
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailFragment).addToBackStack(null).commit();
@@ -142,11 +140,11 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                     TransactionDetailFragment detailFragment = new TransactionDetailFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("dodavanje", "da");
-                    bundle.putString("global", presenter.getAccount().getBudget() + "");
-                    bundle.putString("limit", presenter.getAccount().getOverallLimit() + "");
-                    bundle.putString("month", presenter.getAccount().getMonthlyLimit() + "");
+                    bundle.putString("global", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
+                    bundle.putString("limit", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit() + "");
+                    bundle.putString("month", ((MainActivity) getActivity()).getPresenter().getAccount().getMonthlyLimit() + "");
                     detailFragment.setArguments(bundle);
-                    if(getActivity().findViewById(R.id.transaction_details) != null){
+                    if(((MainActivity) getActivity()).isTwoPaneMode()){
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transaction_details, detailFragment).addToBackStack(null).commit();
                     }else{
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailFragment).addToBackStack(null).commit();
@@ -188,8 +186,8 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         textDate.setText(format.format(date.getTime()));
         setSortList();
         setFilterList();
-        textBudget.setText(presenter.getAccount().getBudget() + "");
-        textLimit.setText(presenter.getAccount().getOverallLimit() + "");
+        textBudget.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
+        textLimit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit() + "");
 
         spinSortAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, sorts);
         spinnerSort.setAdapter(spinSortAdapter);
@@ -197,8 +195,8 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         spinFilterAdapter = new TypeListAdapter(getContext(), R.layout.type_element, filters);
         spinnerFilter.setAdapter(spinFilterAdapter);
 
-        presenter.transactionsForCurrentDate(date);
-        transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
+        ((MainActivity) getActivity()).getPresenter().transactionsForCurrentDate(date);
+        transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
 
         leftBtn.setOnClickListener(listenerLeft);
@@ -224,23 +222,17 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                         double deltaX = oldTouchValue - event.getX();
                         if(Math.abs(deltaX) > MIN_DISTANCE) {
                             if (deltaX < 0) {
-                                if (getActivity().findViewById(R.id.transaction_details) != null) {
+                                if (((MainActivity) getActivity()).isTwoPaneMode()) {
                                     return false;
                                 }
                                 GraphsFragment graphsFragment = new GraphsFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("transaction", presenter);
-                                graphsFragment.setArguments(bundle);
                                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).commit();
                             }
                             if (deltaX > 0) {
-                                if (getActivity().findViewById(R.id.transaction_details) != null) {
+                                if (((MainActivity) getActivity()).isTwoPaneMode()) {
                                     return false;
                                 }
                                 AccountDetailsFragment detailsFragment = new AccountDetailsFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("transaction", presenter);
-                                detailsFragment.setArguments(bundle);
                                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).commit();
                             }
                             return true;
@@ -254,11 +246,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         return view;
     }
     public void updateList(){
-        transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, presenter.getCurrentDateTransactions());
+        transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
-    }
-
-    public TransactionPresenter getPresenter() {
-        return presenter;
     }
 }
