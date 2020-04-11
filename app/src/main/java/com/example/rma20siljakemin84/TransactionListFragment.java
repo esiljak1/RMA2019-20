@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import java.text.SimpleDateFormat;
@@ -28,6 +29,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
     private TextView textBudget, textLimit, textDate;
     private Button addTransactionBtn;
     private ImageButton leftBtn, rightBtn;
+    private ConstraintLayout transactionList;
     private int selectedItem = -1;
 
     private TransactionPresenter presenter = new TransactionPresenter(new MainActivity());
@@ -248,6 +250,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                 return false;
             }
         });
+
         return view;
     }
     public void updateList(){

@@ -25,7 +25,7 @@ public class GraphsFragment extends Fragment implements ITransactionView{
     private static final int MIN_DISTANCE = 900;
     private static final int mjeseci = 12;
     private static final int dani = 365;
-    private static final int sedmice = 52; //nisam siguran koliko sedmica
+    private static final int sedmice = 52;
 
     private Spinner spinnerGraphicChooser;
     private BarChart spendingChart, incomeChart, totalChart;
