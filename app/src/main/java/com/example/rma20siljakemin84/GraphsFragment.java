@@ -24,8 +24,8 @@ import java.util.Calendar;
 public class GraphsFragment extends Fragment implements ITransactionView{
     private static final int MIN_DISTANCE = 900;
     private static final int mjeseci = 12;
-    private static final int dani = 365;
-    private static final int sedmice = 52;
+    private static int dani = 30;
+    private static int sedmice = 4;
 
     private Spinner spinnerGraphicChooser;
     private BarChart spendingChart, incomeChart, totalChart;
@@ -106,6 +106,24 @@ public class GraphsFragment extends Fragment implements ITransactionView{
                 }
             };
 
+    private void setDays(int month){
+        if(month < 7 && month % 2 == 0) dani = 31;
+        else if(month >= 7 && month % 2 == 1) dani = 31;
+        else if(month == 1) {
+            dani = 28;
+            if(Calendar.getInstance().get(Calendar.YEAR) % 4 == 0) dani++;
+        }
+        else dani = 30;
+    }
+
+    private void setWeeks(int month){
+        Calendar prvi = Calendar.getInstance();
+        prvi.set(Calendar.MONTH, month);
+        prvi.set(Calendar.DAY_OF_MONTH, 1);
+
+        sedmice = prvi.getActualMaximum(Calendar.WEEK_OF_MONTH);
+    }
+
     private boolean checkNumberOfWeeks(){
         Calendar calendar = Calendar.getInstance();
         if(calendar.get(Calendar.YEAR) % 4 == 0){
@@ -170,12 +188,9 @@ public class GraphsFragment extends Fragment implements ITransactionView{
     }
 
     private void setIncomeChartForWeeks(){
-        int vel = sedmice;
+        setWeeks(Calendar.getInstance().get(Calendar.MONTH));
         barEntryArrayList = new ArrayList<>();
-        if(checkNumberOfWeeks()){
-            vel++;
-        }
-        for(int i = 0; i < vel; i++){
+        for(int i = 0; i < sedmice; i++){
             double vrijednost = presenter.getIncomeForWeek(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float)vrijednost));
         }
@@ -188,12 +203,9 @@ public class GraphsFragment extends Fragment implements ITransactionView{
     }
 
     private void setSpendingChartForWeeks(){
-        int vel = sedmice;
+        setWeeks(Calendar.getInstance().get(Calendar.MONTH));
         barEntryArrayList = new ArrayList<>();
-        if(checkNumberOfWeeks()){
-            vel++;
-        }
-        for(int i = 0; i < vel; i++){
+        for(int i = 0; i < sedmice; i++){
             double vrijednost = presenter.getSpendingForWeek(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float)vrijednost));
         }
@@ -206,13 +218,10 @@ public class GraphsFragment extends Fragment implements ITransactionView{
     }
 
     private void setTotalChartForWeeks(){
-        int vel = sedmice;
-        double vrijednost = 0;
+        setWeeks(Calendar.getInstance().get(Calendar.MONTH));
         barEntryArrayList = new ArrayList<>();
-        if(checkNumberOfWeeks()){
-            vel++;
-        }
-        for(int i = 0; i < vel; i++){
+        double vrijednost = 0;
+        for(int i = 0; i < sedmice; i++){
             vrijednost += presenter.getIncomeForWeek(i);
             vrijednost -= presenter.getSpendingForWeek(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
@@ -226,12 +235,9 @@ public class GraphsFragment extends Fragment implements ITransactionView{
     }
 
     private void setIncomeChartForDays(){
-        int vel = dani;
+        setDays(Calendar.getInstance().get(Calendar.MONTH));
         barEntryArrayList = new ArrayList<>();
-        if(Calendar.getInstance().get(Calendar.YEAR) % 4 == 0){
-            vel++;
-        }
-        for(int i = 0; i < vel; i++){
+        for(int i = 0; i < dani; i++){
             double vrijednost = presenter.getIncomeForDay(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
         }
@@ -244,12 +250,9 @@ public class GraphsFragment extends Fragment implements ITransactionView{
     }
 
     private void setSpendingChartForDays(){
-        int vel = dani;
+        setDays(Calendar.getInstance().get(Calendar.MONTH));
         barEntryArrayList = new ArrayList<>();
-        if(Calendar.getInstance().get(Calendar.YEAR) % 4 == 0){
-            vel++;
-        }
-        for(int i = 0; i < vel; i++){
+        for(int i = 0; i < dani; i++){
             double vrijednost = presenter.getSpendingForDay(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
         }
@@ -262,13 +265,10 @@ public class GraphsFragment extends Fragment implements ITransactionView{
     }
 
     private void setTotalChartForDays(){
-        int vel = dani;
-        double vrijednost = 0;
+        setDays(Calendar.getInstance().get(Calendar.MONTH));
         barEntryArrayList = new ArrayList<>();
-        if(Calendar.getInstance().get(Calendar.YEAR) % 4 == 0){
-            vel++;
-        }
-        for(int i = 0; i < vel; i++){
+        double vrijednost = 0;
+        for(int i = 0; i < dani; i++){
             vrijednost += presenter.getIncomeForDay(i);
             vrijednost -= presenter.getSpendingForDay(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
