@@ -226,6 +226,10 @@ public class TransactionDetailFragment extends Fragment{
     private boolean checkIfFieldIsNotRed(EditText text){
         try{
             if(text.isEnabled()) {
+                if(text.getText().toString().trim().isEmpty()){
+                    text.setBackgroundColor(Color.RED);
+                    return false;
+                }
                 if (((ColorDrawable) text.getBackground()).getColor() == Color.RED)
                     return false;
             }
@@ -235,7 +239,9 @@ public class TransactionDetailFragment extends Fragment{
     }
 
     private boolean checkFields(){
-        return checkIfFieldIsNotRed(date) && checkIfFieldIsNotRed(amount) && checkIfFieldIsNotRed(title) && checkIfFieldIsNotRed(description) && checkIfFieldIsNotRed(interval) && checkIfFieldIsNotRed(endDate);
+        boolean dateUslov = checkIfFieldIsNotRed(date), amountUslov = checkIfFieldIsNotRed(amount), titleUslov = checkIfFieldIsNotRed(title), descriptionUslov = checkIfFieldIsNotRed(description),
+                intervalUslov = checkIfFieldIsNotRed(interval), endDateUslov = checkIfFieldIsNotRed(endDate);
+        return  dateUslov && amountUslov && titleUslov && descriptionUslov && intervalUslov && endDateUslov;
     }
 
     private void napuniSpinner(){
