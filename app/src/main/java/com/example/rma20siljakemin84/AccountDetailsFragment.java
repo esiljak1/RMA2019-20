@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 
 
 public class AccountDetailsFragment extends Fragment implements IAccountView{
-    private static final int MIN_DISTANCE = 800;
+    private static final int MIN_DISTANCE = 800;        //pomocna varijabla kod swipe-a ukoliko nema ovog i najmanji pokret dovodi do swipe-a
 
     private TextView budgetAccountDetails;
     private EditText globalLimitAccountDetails, monthLimitAccountDetails;
@@ -29,6 +29,42 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
                 public void onClick(View v) {
                     account.setOverallLimit(Double.parseDouble(globalLimitAccountDetails.getText().toString()));
                     account.setMonthlyLimit(Double.parseDouble(monthLimitAccountDetails.getText().toString()));
+                }
+            };
+    private View.OnTouchListener swipeListener =
+            new View.OnTouchListener(){
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()){
+                        case MotionEvent.ACTION_DOWN:
+                        {
+                            oldTouchValue = event.getX();
+                            return true;
+                        }
+                        case MotionEvent.ACTION_UP:
+                        {
+                            double deltaX = oldTouchValue - event.getX();
+                            if(Math.abs(deltaX) > MIN_DISTANCE) {
+                                if (deltaX < 0) {
+                                    if (getActivity().findViewById(R.id.transaction_details) != null) {
+                                        return false;
+                                    }
+                                    TransactionListFragment listFragment = new TransactionListFragment();
+                                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).commit();
+                                }
+                                if (deltaX > 0) {
+                                    if (getActivity().findViewById(R.id.transaction_details) != null) {
+                                        return false;
+                                    }
+                                    GraphsFragment graphsFragment = new GraphsFragment();
+                                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).commit();
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
                 }
             };
 
@@ -47,40 +83,7 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
         monthLimitAccountDetails.setText(account.getMonthlyLimit() + "");
 
         saveBtnAccountDetails.setOnClickListener(saveListener);
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()){
-                    case MotionEvent.ACTION_DOWN:
-                    {
-                        oldTouchValue = event.getX();
-                        return true;
-                    }
-                    case MotionEvent.ACTION_UP:
-                    {
-                        double deltaX = oldTouchValue - event.getX();
-                        if(Math.abs(deltaX) > MIN_DISTANCE) {
-                            if (deltaX < 0) {
-                                if (getActivity().findViewById(R.id.transaction_details) != null) {
-                                    return false;
-                                }
-                                TransactionListFragment listFragment = new TransactionListFragment();
-                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, listFragment).commit();
-                            }
-                            if (deltaX > 0) {
-                                if (getActivity().findViewById(R.id.transaction_details) != null) {
-                                    return false;
-                                }
-                                GraphsFragment graphsFragment = new GraphsFragment();
-                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).commit();
-                            }
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        });
+        view.setOnTouchListener(swipeListener);
 
         return view;
     }

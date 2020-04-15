@@ -151,6 +151,42 @@ public class TransactionListFragment extends Fragment{
                     }
                 }
             };
+    private View.OnTouchListener swipeListener =
+            new View.OnTouchListener(){
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()){
+                        case MotionEvent.ACTION_DOWN:
+                        {
+                            oldTouchValue = event.getX();
+                            return true;
+                        }
+                        case MotionEvent.ACTION_UP:
+                        {
+                            double deltaX = oldTouchValue - event.getX();
+                            if(Math.abs(deltaX) > MIN_DISTANCE) {
+                                if (deltaX < 0) {
+                                    if (((MainActivity) getActivity()).isTwoPaneMode()) {
+                                        return false;
+                                    }
+                                    GraphsFragment graphsFragment = new GraphsFragment();
+                                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).commit();
+                                }
+                                if (deltaX > 0) {
+                                    if (((MainActivity) getActivity()).isTwoPaneMode()) {
+                                        return false;
+                                    }
+                                    AccountDetailsFragment detailsFragment = new AccountDetailsFragment();
+                                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).commit();
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            };
 
     private void setSortList(){
         sorts.add("Sort by");
@@ -208,40 +244,7 @@ public class TransactionListFragment extends Fragment{
         listViewTransactions.setOnItemClickListener(itemClickListener);
         addTransactionBtn.setOnClickListener(addTransactionListener);
 
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()){
-                    case MotionEvent.ACTION_DOWN:
-                    {
-                        oldTouchValue = event.getX();
-                        return true;
-                    }
-                    case MotionEvent.ACTION_UP:
-                    {
-                        double deltaX = oldTouchValue - event.getX();
-                        if(Math.abs(deltaX) > MIN_DISTANCE) {
-                            if (deltaX < 0) {
-                                if (((MainActivity) getActivity()).isTwoPaneMode()) {
-                                    return false;
-                                }
-                                GraphsFragment graphsFragment = new GraphsFragment();
-                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, graphsFragment).commit();
-                            }
-                            if (deltaX > 0) {
-                                if (((MainActivity) getActivity()).isTwoPaneMode()) {
-                                    return false;
-                                }
-                                AccountDetailsFragment detailsFragment = new AccountDetailsFragment();
-                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.transactions_list, detailsFragment).commit();
-                            }
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        });
+        view.setOnTouchListener(swipeListener);
 
         return view;
     }

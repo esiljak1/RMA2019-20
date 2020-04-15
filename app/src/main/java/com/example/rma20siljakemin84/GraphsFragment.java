@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -106,7 +107,7 @@ public class GraphsFragment extends Fragment implements ITransactionView{
                 }
             };
 
-    private void setDays(int month){
+    private void setDays(int month){        //postavlja broj dana u zavisnosti od mjeseca
         if(month < 7 && month % 2 == 0) dani = 31;
         else if(month >= 7 && month % 2 == 1) dani = 31;
         else if(month == 1) {
@@ -116,25 +117,12 @@ public class GraphsFragment extends Fragment implements ITransactionView{
         else dani = 30;
     }
 
-    private void setWeeks(int month){
+    private void setWeeks(int month){       //postavlja broj sedmica u zavisnosti od mjeseca
         Calendar prvi = Calendar.getInstance();
         prvi.set(Calendar.MONTH, month);
         prvi.set(Calendar.DAY_OF_MONTH, 1);
 
         sedmice = prvi.getActualMaximum(Calendar.WEEK_OF_MONTH);
-    }
-
-    private boolean checkNumberOfWeeks(){
-        Calendar calendar = Calendar.getInstance();
-        if(calendar.get(Calendar.YEAR) % 4 == 0){
-            calendar.set(Calendar.MONTH, Calendar.JANUARY);
-            calendar.set(Calendar.DAY_OF_MONTH, 1);
-            return calendar.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY;
-        }else{
-            calendar.set(Calendar.MONTH, Calendar.JANUARY);
-            calendar.set(Calendar.DAY_OF_MONTH, 1);
-            return calendar.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY;
-        }
     }
 
     private void setSpinnerData(){
@@ -149,6 +137,9 @@ public class GraphsFragment extends Fragment implements ITransactionView{
             double vrijednost = presenter.getIncomeForMonth(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
         }
+        Description description = new Description();
+        description.setText("Income");
+        incomeChart.setDescription(description);
         BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Income");
         barDataSet.setColor(Color.GREEN);
         BarData barData = new BarData(barDataSet);
@@ -163,6 +154,9 @@ public class GraphsFragment extends Fragment implements ITransactionView{
             double vrijednost = presenter.getSpendingForMonth(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
         }
+        Description description = new Description();
+        description.setText("Spending");
+        spendingChart.setDescription(description);
         BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Spending");
         barDataSet.setColor(Color.RED);
         BarData barData = new BarData(barDataSet);
@@ -179,6 +173,9 @@ public class GraphsFragment extends Fragment implements ITransactionView{
             vrijednost -= presenter.getSpendingForMonth(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
         }
+        Description description = new Description();
+        description.setText("Total");
+        totalChart.setDescription(description);
         BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Total");
         barDataSet.setColor(Color.BLUE);
         BarData barData = new BarData(barDataSet);
@@ -194,6 +191,9 @@ public class GraphsFragment extends Fragment implements ITransactionView{
             double vrijednost = presenter.getIncomeForWeek(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float)vrijednost));
         }
+        Description description = new Description();
+        description.setText("Income");
+        incomeChart.setDescription(description);
         BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Income");
         barDataSet.setColor(Color.GREEN);
         BarData barData = new BarData(barDataSet);
@@ -209,6 +209,9 @@ public class GraphsFragment extends Fragment implements ITransactionView{
             double vrijednost = presenter.getSpendingForWeek(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float)vrijednost));
         }
+        Description description = new Description();
+        description.setText("Spending");
+        spendingChart.setDescription(description);
         BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Spending");
         barDataSet.setColor(Color.RED);
         BarData barData = new BarData(barDataSet);
@@ -226,6 +229,9 @@ public class GraphsFragment extends Fragment implements ITransactionView{
             vrijednost -= presenter.getSpendingForWeek(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
         }
+        Description description = new Description();
+        description.setText("Total");
+        totalChart.setDescription(description);
         BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Total");
         barDataSet.setColor(Color.BLUE);
         BarData barData = new BarData(barDataSet);
@@ -241,6 +247,9 @@ public class GraphsFragment extends Fragment implements ITransactionView{
             double vrijednost = presenter.getIncomeForDay(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
         }
+        Description description = new Description();
+        description.setText("Income");
+        incomeChart.setDescription(description);
         BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Income");
         barDataSet.setColor(Color.GREEN);
         BarData barData = new BarData(barDataSet);
@@ -256,6 +265,9 @@ public class GraphsFragment extends Fragment implements ITransactionView{
             double vrijednost = presenter.getSpendingForDay(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
         }
+        Description description = new Description();
+        description.setText("Spending");
+        spendingChart.setDescription(description);
         BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Spending");
         barDataSet.setColor(Color.RED);
         BarData barData = new BarData(barDataSet);
@@ -273,6 +285,9 @@ public class GraphsFragment extends Fragment implements ITransactionView{
             vrijednost -= presenter.getSpendingForDay(i);
             barEntryArrayList.add(new BarEntry(i + 1, (float) vrijednost));
         }
+        Description description = new Description();
+        description.setText("Total");
+        totalChart.setDescription(description);
         BarDataSet barDataSet = new BarDataSet(barEntryArrayList, "Total");
         barDataSet.setColor(Color.BLUE);
         BarData barData = new BarData(barDataSet);

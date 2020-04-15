@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentManager;
 
 public class MainActivity extends AppCompatActivity implements ITransactionView{
     private boolean twoPaneMode = false;
-    private TransactionPresenter presenter = new TransactionPresenter(this);
+    private TransactionPresenter presenter = new TransactionPresenter(this);    //presenter drzimo u mainu da mu mozemo pristupati iz svih fragmenata
 
     public TransactionPresenter getPresenter() {
         return presenter;
