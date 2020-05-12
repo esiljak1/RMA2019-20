@@ -1,8 +1,10 @@
 package com.example.rma20siljakemin84;
 
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,6 +34,7 @@ public class TransactionDetailFragment extends Fragment{
     private Spinner spinnerType;
     private TextView budgetEdit, limitEdit;
     private View view;
+    private DatePickerDialog dialog;
 
     private ArrayList<Type> typeList = new ArrayList<>();
     private ArrayAdapter<Type> typeListAdapter;
@@ -41,6 +45,54 @@ public class TransactionDetailFragment extends Fragment{
     private double monthLimit;
     private double oldAmount = 0;
 
+    private EditText.OnClickListener dateListener =
+            new EditText.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Calendar instance = Calendar.getInstance();
+                    int day = instance.get(Calendar.DAY_OF_MONTH);
+                    int month = instance.get(Calendar.MONTH);
+                    int year = instance.get(Calendar.YEAR);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        dialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                date.setText(dayOfMonth + "." + (month + 1) + "." + year);
+                            }
+                        }, year, month, day);
+                    }
+                    dialog.show();
+                }
+            };
+    private EditText.OnClickListener endDateListener =
+            new EditText.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    Date date = null;
+                    if(endDate.getText().toString().trim().isEmpty()){
+                        date = Calendar.getInstance().getTime();
+                    }else{
+                        try {
+                            date = new SimpleDateFormat("dd.MM.yyyy").parse(endDate.getText().toString());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    int day = date.getDate();
+                    int month = date.getMonth();
+                    int year = date.getYear() + 1900;
+
+                    dialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            endDate.setText(dayOfMonth + "." + (month + 1) + "." + year);
+                        }
+                    }, year, month, day);
+                    dialog.show();
+                }
+            };
     private Button.OnClickListener closeListener =
             new Button.OnClickListener(){
                 @Override
@@ -433,6 +485,8 @@ public class TransactionDetailFragment extends Fragment{
         });
         deleteBtn.setOnClickListener(deleteListener);
         closeBtn.setOnClickListener(closeListener);
+        date.setOnClickListener(dateListener);
+        endDate.setOnClickListener(endDateListener);
 
         return view;
     }
