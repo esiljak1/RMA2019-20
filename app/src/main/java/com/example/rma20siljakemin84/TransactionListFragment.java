@@ -84,6 +84,7 @@ public class TransactionListFragment extends Fragment{
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     ((MainActivity) getActivity()).getPresenter().filter(date, filters.get(position));
+                    spinnerSort.setSelection(0);
                     updateList();
                 }
 
