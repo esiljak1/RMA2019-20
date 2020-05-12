@@ -118,7 +118,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
                 };
             }
             Collections.sort(currentDateTransactions, comparator);
-        } else if (temp[0].equals("Title")) {
+        } else if (temp[0].equals("Title ")) {
             if (temp[1].equals(" Ascending")) {
                 comparator = new Comparator<TransactionModel>() {
                     @Override

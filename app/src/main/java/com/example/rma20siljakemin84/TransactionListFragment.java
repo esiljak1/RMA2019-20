@@ -47,7 +47,7 @@ public class TransactionListFragment extends Fragment{
             new ImageButton.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    date.add(Calendar.MONTH, -1);       //pritiskom ili na lijevoili na desno dugme vrsi se ponovno filtiranje/sortiranje u zavisnosti koji je item
+                    date.add(Calendar.MONTH, -1);       //pritiskom ili na lijevo ili na desno dugme vrsi se ponovno filtiranje/sortiranje u zavisnosti koji je item
                     textDate.setText(format.format(date.getTime())); //selectovan u spinnerima
                     ((MainActivity) getActivity()).getPresenter().transactionsForCurrentDate(date);
                     ((MainActivity) getActivity()).getPresenter().filter(date, (Type)spinnerFilter.getSelectedItem());
@@ -190,6 +190,7 @@ public class TransactionListFragment extends Fragment{
             };
 
     private void setSortList(){
+        sorts.clear();
         sorts.add("Sort by");
         sorts.add("Price - Ascending");
         sorts.add("Price - Descending");
@@ -197,14 +198,17 @@ public class TransactionListFragment extends Fragment{
         sorts.add("Title - Descending");
         sorts.add("Date - Ascending");
         sorts.add("Date - Descending");
+        spinSortAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, sorts);
     }
     private void setFilterList(){
+        filters.clear();
         filters.add(Type.Dummy);
         filters.add(Type.INDIVIDUALPAYMENT);
         filters.add(Type.REGULARPAYMENT);
         filters.add(Type.PURCHASE);
         filters.add(Type.INDIVIDUALINCOME);
         filters.add(Type.REGULARINCOME);
+        spinFilterAdapter = new TypeListAdapter(getContext(), R.layout.type_element, filters);
     }
 
     @Override
