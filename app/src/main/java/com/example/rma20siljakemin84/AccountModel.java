@@ -1,6 +1,7 @@
 package com.example.rma20siljakemin84;
 
 public class AccountModel implements IAccountModel {
+    private int id = 0;
     private double budget = 100000;
     private double totalLimit = 100000;
     private double monthLimit = 10000;
@@ -43,5 +44,13 @@ public class AccountModel implements IAccountModel {
 
     public static AccountModel getInstance(){
         return instance;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
