@@ -109,6 +109,17 @@ public class TransactionModel implements ITransactionModel {
     public TransactionModel() {
     }
 
+    public TransactionModel(int id, Calendar date, double amount, String title, Type type, String itemDescription, int transactionInterval, Calendar endDate) {
+        this.id = id;
+        this.date = date;
+        this.amount = amount;
+        this.title = title;
+        this.type = type;
+        this.itemDescription = itemDescription;
+        this.transactionInterval = transactionInterval;
+        this.endDate = endDate;
+    }
+
     public TransactionModel(Calendar date, double amount, String title, Type type, String itemDescription, int transactionInterval, Calendar endDate) {
         this.id = maxId++;
         this.date = date;

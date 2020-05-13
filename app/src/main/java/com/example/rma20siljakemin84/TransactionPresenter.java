@@ -8,17 +8,17 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class TransactionPresenter implements ITransactionPresenter, Parcelable {
-    private MainActivity view;
-    private TransactionInteractor interactor;
-    private AccountPresenter account;
+public class TransactionPresenter implements ITransactionPresenter, Parcelable, TransactionInteractor.OnTransactionSearchDone {
+    private ITransactionView view;
+    private ITransactionInteractor interactor;
+    private IAccountPresenter account;
 
     private ArrayList<TransactionModel> currentDateTransactions = new ArrayList<>();
 
-    public TransactionPresenter(MainActivity view) {
+    public TransactionPresenter(ITransactionView view) {
         this.view = view;
         this.interactor = new TransactionInteractor();
-        this.account = new AccountPresenter(view);
+        this.account = new AccountPresenter();
     }
 
     protected TransactionPresenter(Parcel in) {
@@ -88,7 +88,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
     public void transactionsForCurrentDate(Calendar date){
         currentDateTransactions = new ArrayList<>();
         boolean uslov = true;
-        for(TransactionModel t : interactor.get()){
+        for(TransactionModel t : interactor.getTransactions()){
             if(t.getType().equals(Type.REGULARINCOME) || t.getType().equals(Type.REGULARPAYMENT)){
                 if(checkRegular(t, date)) currentDateTransactions.add(t);
             }
@@ -182,7 +182,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
 
     public double getAmountforDate(Calendar date){
         double ret = 0;
-        for(TransactionModel tm : interactor.get()){
+        for(TransactionModel tm : interactor.getTransactions()){
             if(tm.getType().equals(Type.REGULARPAYMENT) || tm.getType().equals(Type.REGULARINCOME)){
                 if(checkRegular(tm, date)){
                     if(tm.getType().equals(Type.REGULARPAYMENT)) {
@@ -204,7 +204,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
 
     public double getAllAmounts(){
         double ret = 0;
-        for(TransactionModel tm : interactor.get()){
+        for(TransactionModel tm : interactor.getTransactions()){
             if(tm.getType().equals(Type.INDIVIDUALINCOME) || tm.getType().equals(Type.REGULARINCOME)){
                 ret -= tm.getAmount();
             }else{
@@ -218,7 +218,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
         account.updateBudget(iznos);
     }
     public AccountPresenter getAccount() {
-        return account;
+        return ((AccountPresenter) account);
     }
 
     public void setAccount(AccountPresenter account) {
@@ -232,7 +232,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(account, flags);
+        dest.writeParcelable(((AccountPresenter) account), flags);
     }
 
     public double getIncomeForMonth(int month){
@@ -241,7 +241,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
 
         double amount = 0;
 
-        for(TransactionModel t : interactor.get()){
+        for(TransactionModel t : interactor.getTransactions()){
             if(t.getType().equals(Type.INDIVIDUALINCOME)){
                 if(t.getDate().get(Calendar.MONTH) == month && t.getDate().get(Calendar.YEAR) == calendar.get(Calendar.YEAR)){
                     amount += t.getAmount();
@@ -259,7 +259,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
         calendar.set(Calendar.MONTH, month);
 
         double amount = 0;
-        for(TransactionModel t : interactor.get()){
+        for(TransactionModel t : interactor.getTransactions()){
             if(t.getType().equals(Type.INDIVIDUALPAYMENT) || t.getType().equals(Type.PURCHASE)){
                 if(t.getDate().get(Calendar.MONTH) == month && t.getDate().get(Calendar.YEAR) == calendar.get(Calendar.YEAR)){
                     amount += t.getAmount();
@@ -278,7 +278,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
 
         double amount = 0;
 
-        for(TransactionModel t : interactor.get()){
+        for(TransactionModel t : interactor.getTransactions()){
             if(t.getType().equals(Type.INDIVIDUALINCOME)){
                 if(t.getDate().get(Calendar.WEEK_OF_MONTH) == week && t.getDate().get(Calendar.MONTH) == calendar.get(Calendar.MONTH) && t.getDate().get(Calendar.YEAR) == calendar.get(Calendar.YEAR)){
                     amount += t.getAmount();
@@ -296,7 +296,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
         calendar.set(Calendar.WEEK_OF_MONTH, week);
 
         double amount = 0;
-        for(TransactionModel t : interactor.get()){
+        for(TransactionModel t : interactor.getTransactions()){
             if(t.getType().equals(Type.INDIVIDUALPAYMENT) || t.getType().equals(Type.PURCHASE)){
                 if(t.getDate().get(Calendar.WEEK_OF_MONTH) == week && t.getDate().get(Calendar.MONTH) == calendar.get(Calendar.MONTH) && t.getDate().get(Calendar.YEAR) == calendar.get(Calendar.YEAR)){
                     amount += t.getAmount();
@@ -315,7 +315,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
 
         double amount = 0;
 
-        for(TransactionModel t : interactor.get()){
+        for(TransactionModel t : interactor.getTransactions()){
             if(t.getType().equals(Type.INDIVIDUALINCOME)){
                 if(t.getDate().get(Calendar.DAY_OF_MONTH) == day && t.getDate().get(Calendar.MONTH) == calendar.get(Calendar.MONTH) && t.getDate().get(Calendar.YEAR) == calendar.get(Calendar.YEAR)){
                     amount += t.getAmount();
@@ -333,7 +333,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
         calendar.set(Calendar.DAY_OF_MONTH, day);
 
         double amount = 0;
-        for(TransactionModel t : interactor.get()){
+        for(TransactionModel t : interactor.getTransactions()){
             if(t.getType().equals(Type.INDIVIDUALPAYMENT) || t.getType().equals(Type.PURCHASE)){
                 if(t.getDate().get(Calendar.DAY_OF_MONTH) == day && t.getDate().get(Calendar.MONTH) == calendar.get(Calendar.MONTH) && t.getDate().get(Calendar.YEAR) == calendar.get(Calendar.YEAR)){
                     amount += t.getAmount();
@@ -344,5 +344,17 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable {
                 }
             }
         }return amount;
+    }
+
+    @Override
+    public void onDone(ArrayList<TransactionModel> result) {
+        interactor.setTransactions(result);
+        view.notifyTransactionsChanged();
+    }
+    public void getTransactions(){
+        new TransactionInteractor((TransactionInteractor.OnTransactionSearchDone)this).execute("");
+    }
+    public void setTransactions(ArrayList<TransactionModel> transactions){
+        interactor.setTransactions(transactions);
     }
 }

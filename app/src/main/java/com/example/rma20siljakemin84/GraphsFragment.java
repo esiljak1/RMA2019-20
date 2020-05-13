@@ -317,4 +317,9 @@ public class GraphsFragment extends Fragment implements ITransactionView{
 
         return view;
     }
+
+    @Override
+    public void notifyTransactionsChanged() {
+
+    }
 }

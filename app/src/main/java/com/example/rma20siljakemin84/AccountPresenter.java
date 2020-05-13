@@ -5,11 +5,15 @@ import android.os.Parcelable;
 
 public class AccountPresenter implements IAccountPresenter, Parcelable {
 
-    private MainActivity view;
+    private IAccountView view;
     private AccountInteractor interactor;
 
-    public AccountPresenter(MainActivity view) {
+    public AccountPresenter(IAccountView view) {
         this.view = view;
+        interactor = new AccountInteractor();
+    }
+
+    public AccountPresenter() {
         interactor = new AccountInteractor();
     }
 

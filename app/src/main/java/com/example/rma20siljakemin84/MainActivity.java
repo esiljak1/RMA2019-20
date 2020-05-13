@@ -8,9 +8,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 
-public class MainActivity extends AppCompatActivity implements ITransactionView{
+public class MainActivity extends AppCompatActivity implements ITransactionView, IAccountView{
     private boolean twoPaneMode = false;
-    private TransactionPresenter presenter = new TransactionPresenter(this);    //presenter drzimo u mainu da mu mozemo pristupati iz svih fragmenata
+    private boolean transactionsSet = false;
+    
+    private TransactionPresenter presenter;    //presenter drzimo u mainu da mu mozemo pristupati iz svih fragmenata
 
     public TransactionPresenter getPresenter() {
         return presenter;
@@ -28,11 +30,20 @@ public class MainActivity extends AppCompatActivity implements ITransactionView{
         this.twoPaneMode = twoPaneMode;
     }
 
+    public boolean isTransactionsSet() {
+        return transactionsSet;
+    }
+
+    public void setTransactionsSet(boolean transactionsSet) {
+        this.transactionsSet = transactionsSet;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("RMA Spirala");
+
 
         FragmentManager fm = getSupportFragmentManager();
 
@@ -58,6 +69,11 @@ public class MainActivity extends AppCompatActivity implements ITransactionView{
             twoPaneMode = false;
         }
 
+
+    }
+
+    @Override
+    public void notifyTransactionsChanged() {
 
     }
 }

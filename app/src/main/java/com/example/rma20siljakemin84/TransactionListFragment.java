@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class TransactionListFragment extends Fragment{
+public class TransactionListFragment extends Fragment implements ITransactionView{
     private static final int MIN_DISTANCE = 800;
 
     private ListView listViewTransactions;
@@ -215,6 +215,10 @@ public class TransactionListFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(view == null) view = inflater.inflate(R.layout.fragment_transaction_list, container, false);
 
+        if(((MainActivity) getActivity()).getPresenter() == null){
+            ((MainActivity) getActivity()).setPresenter(new TransactionPresenter(this));
+        }
+
         listViewTransactions = (ListView)view.findViewById(R.id.listViewTransactions);
         spinnerSort = (Spinner)view.findViewById(R.id.spinnerSort);
         spinnerFilter = (Spinner)view.findViewById(R.id.spinnerFilter);
@@ -240,6 +244,11 @@ public class TransactionListFragment extends Fragment{
         transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
 
+        if(!((MainActivity)getActivity()).isTransactionsSet()){
+            ((MainActivity)getActivity()).getPresenter().getTransactions();
+            ((MainActivity)getActivity()).setTransactionsSet(true);
+        }
+
         leftBtn.setOnClickListener(listenerLeft);
         rightBtn.setOnClickListener(listenerRight);
 
@@ -254,6 +263,14 @@ public class TransactionListFragment extends Fragment{
         return view;
     }
     public void updateList(){
+        transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
+        listViewTransactions.setAdapter(transactionsAdapter);
+    }
+
+    @Override
+    public void notifyTransactionsChanged() {
+        System.out.println("Ovdje sam i trebam biti samo jednom");
+        ((MainActivity)getActivity()).getPresenter().transactionsForCurrentDate(date);
         transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
     }
