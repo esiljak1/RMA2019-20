@@ -126,8 +126,8 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
     }
 
     public void update(TransactionModel newTransaction){
-        model.removeTransaction(newTransaction);
-        model.addTransaction(newTransaction);
+        transactions.remove(newTransaction);
+        transactions.add(newTransaction);
     }
     public void delete(TransactionModel transaction){
         model.removeTransaction(transaction);
