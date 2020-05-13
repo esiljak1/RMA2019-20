@@ -37,19 +37,20 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable, 
         }
     };
 
-    private boolean checkRegular(TransactionModel transaction, Calendar date){
+    private int checkRegular(TransactionModel transaction, Calendar date){
         Calendar temp = Calendar.getInstance();
         temp.set(Calendar.DATE, transaction.getDate().get(Calendar.DATE));
         temp.set(Calendar.MONTH, transaction.getDate().get(Calendar.MONTH));
         temp.set(Calendar.YEAR, transaction.getDate().get(Calendar.YEAR));
+        int brojPonavljanjaUMjesecu = 0;
         while (temp.get(Calendar.YEAR) <= date.get(Calendar.YEAR) && temp.get(Calendar.MONTH) <= date.get(Calendar.MONTH)){
             if(transaction.getEndDate() != null && temp.compareTo(transaction.getEndDate()) > 0){
-                return false;
+                return brojPonavljanjaUMjesecu;
             }
             if(temp.get(Calendar.MONTH) == date.get(Calendar.MONTH) && temp.get(Calendar.YEAR) == date.get(Calendar.YEAR)){
-                return true;
+                brojPonavljanjaUMjesecu++;
             }temp.add(Calendar.DATE, transaction.getTransactionInterval());
-        }return false;
+        }return brojPonavljanjaUMjesecu;
     }
 
     private boolean checkRegularWeek(TransactionModel transaction, Calendar date){
@@ -90,7 +91,8 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable, 
         boolean uslov = true;
         for(TransactionModel t : interactor.getTransactions()){
             if(t.getType().equals(Type.REGULARINCOME) || t.getType().equals(Type.REGULARPAYMENT)){
-                if(checkRegular(t, date)) currentDateTransactions.add(t);
+                int broj = checkRegular(t, date);
+                for(int i = 0; i < broj; i++) currentDateTransactions.add(t);
             }
             else if(uslov && t.getDate().get(Calendar.MONTH) == date.get(Calendar.MONTH) && t.getDate().get(Calendar.YEAR) == date.get(Calendar.YEAR)){
                 currentDateTransactions.add(t);
@@ -184,11 +186,14 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable, 
         double ret = 0;
         for(TransactionModel tm : interactor.getTransactions()){
             if(tm.getType().equals(Type.REGULARPAYMENT) || tm.getType().equals(Type.REGULARINCOME)){
-                if(checkRegular(tm, date)){
+                int broj = checkRegular(tm, date);
+                if(broj != 0){
                     if(tm.getType().equals(Type.REGULARPAYMENT)) {
-                        ret += tm.getAmount();
+                        for(int i = 0; i < broj; i++)
+                            ret += tm.getAmount();
                     }else{
-                        ret -= tm.getAmount();
+                        for(int i = 0; i < broj; i++)
+                            ret -= tm.getAmount();
                     }
                 }
             }else if(date.get(Calendar.MONTH) == tm.getDate().get(Calendar.MONTH) && date.get(Calendar.YEAR) == tm.getDate().get(Calendar.YEAR)) {
@@ -247,7 +252,8 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable, 
                     amount += t.getAmount();
                 }
             }else if(t.getType().equals(Type.REGULARINCOME)){
-                if(checkRegular(t, calendar)){
+                int broj = checkRegular(t, calendar);
+                for(int i = 0; i < broj; i++){
                     amount += t.getAmount();
                 }
             }
@@ -265,7 +271,8 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable, 
                     amount += t.getAmount();
                 }
             }else if(t.getType().equals(Type.REGULARPAYMENT)){
-                if(checkRegular(t, calendar)){
+                int broj = checkRegular(t, calendar);
+                for(int i = 0; i < broj; i++){
                     amount += t.getAmount();
                 }
             }
