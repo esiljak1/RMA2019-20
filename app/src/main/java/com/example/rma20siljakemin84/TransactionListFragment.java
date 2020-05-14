@@ -69,8 +69,8 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
             new Spinner.OnItemSelectedListener(){
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(filters.get(position)),
-                            getSortKey(((String) spinnerSort.getSelectedItem())), getMonthKey(), getYearKey());
+                    ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
+                            getSortKey(sorts.get(position)), getMonthKey(), getYearKey());
                     updateList();
                 }
 
@@ -82,8 +82,8 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
             new Spinner.OnItemSelectedListener(){
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
-                            getSortKey(sorts.get(position)), getMonthKey(), getYearKey());
+                    ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(filters.get(position)),
+                            getSortKey(((String) spinnerSort.getSelectedItem())), getMonthKey(), getYearKey());
                     spinnerSort.setSelection(0);
                     updateList();
                 }
@@ -192,8 +192,8 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
     private void setSortList(){
         sorts.clear();
         sorts.add("Sort by");
-        sorts.add("Price - Ascending");
-        sorts.add("Price - Descending");
+        sorts.add("Amount - Ascending");
+        sorts.add("Amount - Descending");
         sorts.add("Title - Ascending");
         sorts.add("Title - Descending");
         sorts.add("Date - Ascending");
@@ -299,7 +299,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         }else{
             String[] arr = sortBy.split("-");
             String ret = arr[0].trim().toLowerCase();
-            ret += "." + arr[1].split("c")[0] + "c";
+            ret += "." + arr[1].trim().toLowerCase().split("c")[0] + "c";
             return ret;
         }
     }
