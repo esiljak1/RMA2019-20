@@ -76,4 +76,9 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
     public void notifyTransactionsChanged() {
 
     }
+
+    @Override
+    public void notifyAccountDetailsChanged() {
+
+    }
 }

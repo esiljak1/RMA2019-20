@@ -18,7 +18,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable, 
     public TransactionPresenter(ITransactionView view) {
         this.view = view;
         this.interactor = new TransactionInteractor();
-        this.account = new AccountPresenter();
+        this.account = new AccountPresenter(((IAccountView) view));
     }
 
     protected TransactionPresenter(Parcel in) {

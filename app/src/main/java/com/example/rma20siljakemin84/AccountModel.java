@@ -2,13 +2,20 @@ package com.example.rma20siljakemin84;
 
 public class AccountModel implements IAccountModel {
     private int id = 0;
-    private double budget = 100000;
-    private double totalLimit = 100000;
-    private double monthLimit = 10000;
+    private double budget = 0;
+    private double totalLimit = 0;
+    private double monthLimit = 0;
 
     private static AccountModel instance = new AccountModel();
 
     private AccountModel() {
+    }
+
+    public AccountModel(int id, double budget, double totalLimit, double monthLimit) {
+        this.id = id;
+        setBudget(budget);
+        setTotalLimit(totalLimit);
+        setMonthLimit(monthLimit);
     }
 
     private void notNegativeNumberTest(double number){

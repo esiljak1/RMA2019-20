@@ -87,4 +87,9 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
 
         return view;
     }
+
+    @Override
+    public void notifyAccountDetailsChanged() {
+
+    }
 }

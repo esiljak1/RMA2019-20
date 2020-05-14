@@ -23,8 +23,8 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
     public interface OnTransactionSearchDone{
         void onDone(ArrayList<TransactionModel> result);
     }
-    private static final String ROOT = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com";
-    private static final String API_KEY = "6e8e09ce-5c99-4f3d-a9bd-d0d60b65a5d3";
+    public static final String ROOT = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com";
+    public static final String API_KEY = "6e8e09ce-5c99-4f3d-a9bd-d0d60b65a5d3";
     private TransactionModel model = new TransactionModel();
     private ArrayList<TransactionModel> transactions = new ArrayList<>();
     private OnTransactionSearchDone osd;
@@ -37,7 +37,7 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
 
     }
 
-    public String convertStreamToString(InputStream is){
+    public static String convertStreamToString(InputStream is){
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
         String line = null;

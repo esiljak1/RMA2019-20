@@ -3,7 +3,7 @@ package com.example.rma20siljakemin84;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class AccountPresenter implements IAccountPresenter, Parcelable {
+public class AccountPresenter implements IAccountPresenter, Parcelable, AccountInteractor.OnAccountSearchDone {
 
     private IAccountView view;
     private AccountInteractor interactor;
@@ -33,25 +33,25 @@ public class AccountPresenter implements IAccountPresenter, Parcelable {
     };
 
     public double getMonthlyLimit(){
-        return interactor.get().getMonthLimit();
+        return interactor.getAccount().getMonthLimit();
     }
     public double getOverallLimit(){
-        return interactor.get().getTotalLimit();
+        return interactor.getAccount().getTotalLimit();
     }
     public double getBudget() {
-        return interactor.get().getBudget();
+        return interactor.getAccount().getBudget();
     }
     public void updateBudget(double iznos){
-        interactor.get().setBudget(interactor.get().getBudget() - iznos);
+        interactor.getAccount().setBudget(interactor.getAccount().getBudget() - iznos);
     }
     public void setBudget(double budget){
-        interactor.get().setBudget(budget);
+        interactor.getAccount().setBudget(budget);
     }
     public void setOverallLimit(double limit){
-        interactor.get().setTotalLimit(limit);
+        interactor.getAccount().setTotalLimit(limit);
     }
     public void setMonthlyLimit(double limit){
-        interactor.get().setMonthLimit(limit);
+        interactor.getAccount().setMonthLimit(limit);
     }
 
     @Override
@@ -61,5 +61,15 @@ public class AccountPresenter implements IAccountPresenter, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+    }
+
+    @Override
+    public void onDone(AccountModel account) {
+        ((AccountInteractor) interactor).setAccount(account);
+        view.notifyAccountDetailsChanged();
+    }
+
+    public void getDetailsFromWeb(){
+        new AccountInteractor((AccountInteractor.OnAccountSearchDone)this).execute("");
     }
 }

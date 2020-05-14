@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class TransactionListFragment extends Fragment implements ITransactionView{
+public class TransactionListFragment extends Fragment implements ITransactionView, IAccountView{
     private static final int MIN_DISTANCE = 800;
 
     private ListView listViewTransactions;
@@ -231,6 +231,9 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         textDate.setText(format.format(date.getTime()));
         setSortList();
         setFilterList();
+
+        ((MainActivity)getActivity()).getPresenter().getAccount().getDetailsFromWeb();
+
         textBudget.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
         textLimit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit() + "");
 
@@ -269,9 +272,15 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
 
     @Override
     public void notifyTransactionsChanged() {
-        System.out.println("Ovdje sam i trebam biti samo jednom");
+        //System.out.println("Ovdje sam i trebam biti samo jednom");
         ((MainActivity)getActivity()).getPresenter().transactionsForCurrentDate(date);
         transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
+    }
+
+    @Override
+    public void notifyAccountDetailsChanged() {
+        textBudget.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
+        textLimit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit() + "");
     }
 }
