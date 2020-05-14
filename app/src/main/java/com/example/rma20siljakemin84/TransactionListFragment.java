@@ -49,9 +49,8 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                 public void onClick(View v) {
                     date.add(Calendar.MONTH, -1);       //pritiskom ili na lijevo ili na desno dugme vrsi se ponovno filtiranje/sortiranje u zavisnosti koji je item
                     textDate.setText(format.format(date.getTime())); //selectovan u spinnerima
-                    ((MainActivity) getActivity()).getPresenter().transactionsForCurrentDate(date);
-                    ((MainActivity) getActivity()).getPresenter().filter(date, (Type)spinnerFilter.getSelectedItem());
-                    ((MainActivity) getActivity()).getPresenter().sort((String) spinnerSort.getSelectedItem());
+                    ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
+                            getSortKey(((String) spinnerSort.getSelectedItem())), getMonthKey(), getYearKey());
                     updateList();
                 }
             };
@@ -61,9 +60,8 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                 public void onClick(View v) {
                     date.add(Calendar.MONTH, 1);
                     textDate.setText(format.format(date.getTime()));
-                    ((MainActivity) getActivity()).getPresenter().transactionsForCurrentDate(date);
-                    ((MainActivity) getActivity()).getPresenter().filter(date, (Type)spinnerFilter.getSelectedItem());
-                    ((MainActivity) getActivity()).getPresenter().sort((String) spinnerSort.getSelectedItem());
+                    ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
+                            getSortKey(((String) spinnerSort.getSelectedItem())), getMonthKey(), getYearKey());
                     updateList();
                 }
             };
@@ -71,7 +69,8 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
             new Spinner.OnItemSelectedListener(){
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    ((MainActivity) getActivity()).getPresenter().sort(sorts.get(position));
+                    ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(filters.get(position)),
+                            getSortKey(((String) spinnerSort.getSelectedItem())), getMonthKey(), getYearKey());
                     updateList();
                 }
 
@@ -83,7 +82,8 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
             new Spinner.OnItemSelectedListener(){
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    ((MainActivity) getActivity()).getPresenter().filter(date, filters.get(position));
+                    ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
+                            getSortKey(sorts.get(position)), getMonthKey(), getYearKey());
                     spinnerSort.setSelection(0);
                     updateList();
                 }
