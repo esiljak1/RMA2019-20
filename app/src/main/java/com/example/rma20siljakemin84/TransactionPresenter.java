@@ -356,10 +356,11 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable, 
     @Override
     public void onDone(ArrayList<TransactionModel> result) {
         interactor.setTransactions(result);
+        currentDateTransactions = new ArrayList<>(result);
         view.notifyTransactionsChanged();
     }
-    public void getTransactions(){
-        new TransactionInteractor((TransactionInteractor.OnTransactionSearchDone)this).execute("");
+    public void getTransactions(String transactionTypeId, String sort, String month, String year){
+        new TransactionInteractor((TransactionInteractor.OnTransactionSearchDone)this).execute(transactionTypeId, sort, month, year);
     }
     public void setTransactions(ArrayList<TransactionModel> transactions){
         interactor.setTransactions(transactions);

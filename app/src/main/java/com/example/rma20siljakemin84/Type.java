@@ -16,6 +16,10 @@ public enum Type {
         this.value = value;
     }
 
+    public int getValue() {
+        return value;
+    }
+
     public static Type fromId(int id){
         for(Type type : values()){
             if(type.value == id){

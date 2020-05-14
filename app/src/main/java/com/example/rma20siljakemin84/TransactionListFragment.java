@@ -248,7 +248,8 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         listViewTransactions.setAdapter(transactionsAdapter);
 
         if(!((MainActivity)getActivity()).isTransactionsSet()){
-            ((MainActivity)getActivity()).getPresenter().getTransactions();
+            ((MainActivity)getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
+                    getSortKey(((String) spinnerSort.getSelectedItem())), getMonthKey(), getYearKey());
             ((MainActivity)getActivity()).setTransactionsSet(true);
         }
 
@@ -273,7 +274,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
     @Override
     public void notifyTransactionsChanged() {
         //System.out.println("Ovdje sam i trebam biti samo jednom");
-        ((MainActivity)getActivity()).getPresenter().transactionsForCurrentDate(date);
+       // ((MainActivity)getActivity()).getPresenter().transactionsForCurrentDate(date);
         transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
     }
@@ -282,5 +283,39 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
     public void notifyAccountDetailsChanged() {
         textBudget.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
         textLimit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit() + "");
+    }
+
+    private String getTransactionTypeStringKey(Type type){
+        if(type.equals(Type.Dummy)){
+            return "";
+        }else{
+            return type.getValue() + "";
+        }
+    }
+
+    private String getSortKey(String sortBy){
+        if(sortBy.equals("Sort by")){
+            return "";
+        }else{
+            String[] arr = sortBy.split("-");
+            String ret = arr[0].trim().toLowerCase();
+            ret += "." + arr[1].split("c")[0] + "c";
+            return ret;
+        }
+    }
+
+    private String getDoubleDigit(int number){
+        if(number < 10){
+            return "0" + number;
+        }return number + "";
+    }
+
+    private String getMonthKey(){
+        int month = date.get(Calendar.MONTH) + 1;
+        return getDoubleDigit(month);
+    }
+
+    private String getYearKey(){
+        return date.get(Calendar.YEAR) + "";
     }
 }

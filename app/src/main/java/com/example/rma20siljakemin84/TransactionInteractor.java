@@ -63,6 +63,10 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
 
     @Override
     protected Void doInBackground(String... strings) {
+        if(strings.length == 4){
+            filterTransactions(strings[0], strings[1], strings[2], strings[3]);
+            return null;
+        }
         String url1 = ROOT + "/account/" + API_KEY + "/transactions?page=";
         ArrayList<TransactionModel> list = new ArrayList<>(transactions);
         transactions.clear();
@@ -79,30 +83,7 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
 
                 for(int j = 0; j < 5; j++){
                     JSONObject transaction = results.getJSONObject(j);
-                    Integer id = transaction.getInt("id");
-                    Calendar date = Calendar.getInstance();
-                    date.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(transaction.getString("date")));
-                    String title = transaction.getString("title");
-                    Double amount = transaction.getDouble("amount");
-                    String itemDescription = transaction.getString("itemDescription");
-                    String tInterval = null;
-                    tInterval = transaction.getString("transactionInterval");
-                    Integer transactionInterval = 0;
-                    if(!tInterval.equals("null")){
-                        transactionInterval = Integer.parseInt(tInterval);
-                    }
-                    String eDate = transaction.getString("endDate");
-                    Calendar endDate = null;
-                    Integer type_id = transaction.getInt("TransactionTypeId");
-                    Type type = null;
-                    if(type_id != null){
-                        type = Type.fromId(type_id);
-                    }
-                    if(!eDate.equals("null")){
-                        endDate = Calendar.getInstance();
-                        endDate.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(eDate));
-                    }
-                    transactions.add(new TransactionModel(id, date, amount, title, type, itemDescription, transactionInterval, endDate));
+                    transactions.add(getTransactionFromJSON(transaction));
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -136,5 +117,92 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
     @Override
     public void setTransactions(ArrayList<TransactionModel> transactions) {
         this.transactions = transactions;
+    }
+
+    private String setParameter(String name, String parameter){
+        String ret = "";
+        if(parameter != null && !parameter.trim().isEmpty()){
+            ret += "&" + name + "=" + parameter;
+        }
+        return ret;
+    }
+
+    private String setParameters(String transactionTypeId, String sort, String month, String year){
+        String ret = "";
+        ret += setParameter("typeId", transactionTypeId);
+        ret += setParameter("sort", sort);
+        ret += setParameter("month", month);
+        ret += setParameter("year", year);
+        return ret;
+    }
+
+    private TransactionModel getTransactionFromJSON(JSONObject json) throws JSONException, ParseException {
+        Integer id = json.getInt("id");
+        Calendar date = Calendar.getInstance();
+        date.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(json.getString("date")));
+        String title = json.getString("title");
+        Double amount = json.getDouble("amount");
+        String itemDescription = json.getString("itemDescription");
+        String tInterval = null;
+        tInterval = json.getString("transactionInterval");
+        Integer transactionInterval = 0;
+        if(!tInterval.equals("null")){
+            transactionInterval = Integer.parseInt(tInterval);
+        }
+        String eDate = json.getString("endDate");
+        Calendar endDate = null;
+        Integer type_id = json.getInt("TransactionTypeId");
+        Type type = null;
+        if(type_id != null){
+            type = Type.fromId(type_id);
+        }
+        if(!eDate.equals("null")){
+            endDate = Calendar.getInstance();
+            endDate.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(eDate));
+        }
+        TransactionModel transaction = new TransactionModel(id, date, amount, title, type, itemDescription, transactionInterval, endDate);
+        return transaction;
+    }
+
+    private void filterTransactions(String transactionTypeId, String sort, String month, String year){
+        String url1 = ROOT + "/account/" + API_KEY + "/transactions/filter?page=";
+        ArrayList<TransactionModel> before = new ArrayList<>(transactions);
+        transactions.clear();
+        int i = 0;
+        while(true){
+            String temp = url1 + i;
+            temp += setParameters(transactionTypeId, sort, month, year);
+
+            try {
+                URL url = new URL(temp);
+                HttpURLConnection urlConnection = ((HttpURLConnection) url.openConnection());
+                InputStream is = new BufferedInputStream(urlConnection.getInputStream());
+
+                String result = convertStreamToString(is);
+
+                JSONObject jo = new JSONObject(result);
+                JSONArray array = jo.getJSONArray("transactions");
+                if(array.length() == 0) break;
+
+                for(int j = 0; j < array.length(); j++){
+                    JSONObject transaction = array.getJSONObject(j);
+                    transactions.add(getTransactionFromJSON(transaction));
+                }
+                i++;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                transactions = new ArrayList<>(before);
+            } catch (IOException e) {
+                e.printStackTrace();
+                transactions = new ArrayList<>(before);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                transactions = new ArrayList<>(before);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                transactions = new ArrayList<>(before);
+            }
+        }
     }
 }
