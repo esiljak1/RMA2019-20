@@ -27,8 +27,13 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
             new Button.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    account.setOverallLimit(Double.parseDouble(globalLimitAccountDetails.getText().toString()));
-                    account.setMonthlyLimit(Double.parseDouble(monthLimitAccountDetails.getText().toString()));
+                    try {
+                        account.setOverallLimit(Double.parseDouble(globalLimitAccountDetails.getText().toString()));
+                        account.setMonthlyLimit(Double.parseDouble(monthLimitAccountDetails.getText().toString()));
+                    } catch (IllegalAmountException e) {
+                        e.printStackTrace();
+                    }
+                    //TODO dodati error na baceni izuzetak
                 }
             };
     private View.OnTouchListener swipeListener =

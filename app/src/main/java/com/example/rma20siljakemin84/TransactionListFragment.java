@@ -250,7 +250,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         if(!((MainActivity)getActivity()).isTransactionsSet()){
             ((MainActivity)getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
                     getSortKey(((String) spinnerSort.getSelectedItem())), getMonthKey(), getYearKey());
-            ((MainActivity)getActivity()).setTransactionsSet(true);
+            //((MainActivity)getActivity()).setTransactionsSet(true);
         }
 
         leftBtn.setOnClickListener(listenerLeft);
@@ -266,10 +266,6 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
 
         return view;
     }
-//    public void updateList(){
-//        transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
-//        listViewTransactions.setAdapter(transactionsAdapter);
-//    }
 
     @Override
     public void notifyTransactionsChanged() {

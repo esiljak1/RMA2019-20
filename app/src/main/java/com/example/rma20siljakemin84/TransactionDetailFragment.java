@@ -196,13 +196,24 @@ public class TransactionDetailFragment extends Fragment{
         transaction = new TransactionModel(cal, Double.parseDouble(amount.getText().toString()), title.getText().toString(), (Type) spinnerType.getSelectedItem(),
                 description.isEnabled() ? description.getText().toString() : null,
                 interval.isEnabled() ? Integer.parseInt(interval.getText().toString()) : 0, end);
-        if(id != -1) {
-            transaction.setId(id);
-        }else{
-            id = transaction.getId();       //postavljamo id ukoliko dodajemo novu transakciju da bismo odmah mogli i update/delete po potrebi tu transakciju
+//        if(id != -1) {
+//            transaction.setId(id);
+//        }else{
+//            id = transaction.getId();       //postavljamo id ukoliko dodajemo novu transakciju da bismo odmah mogli i update/delete po potrebi tu transakciju
+//        }
+
+        String datum = date.getText().toString(), endDatum = "", itemDescription = "", transactionInterval = "";
+        if(endDate.isEnabled()){
+            endDatum = endDate.getText().toString();
+        }
+        if(description.isEnabled()){
+            itemDescription = description.getText().toString();
+        }
+        if(interval.isEnabled()){
+            transactionInterval = interval.getText().toString();
         }
 
-        ((MainActivity) getActivity()).getPresenter().updateTransaction(transaction);
+        ((MainActivity) getActivity()).getPresenter().addTransaction(datum, transaction.getTitle(), transaction.getAmount() + "", endDatum, itemDescription, transactionInterval, transaction.getType().getValue() + "");
 
         if(((MainActivity) getActivity()).isTwoPaneMode()){
             TransactionListFragment listFragment = new TransactionListFragment();
@@ -254,6 +265,9 @@ public class TransactionDetailFragment extends Fragment{
                                 budgetEdit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
                             } catch (ParseException e) {
                                 e.printStackTrace();
+                            } catch (IllegalAmountException e) {
+                                e.printStackTrace();
+                                //TODO dodati error na baceni izuzetak
                             }
                         }
                     }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -271,6 +285,8 @@ public class TransactionDetailFragment extends Fragment{
                 ((MainActivity) getActivity()).getPresenter().subtractFromAccountBudget(iznos*znak);
                 budgetEdit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
             } catch (ParseException e) {
+                e.printStackTrace();
+            } catch (IllegalAmountException e) {
                 e.printStackTrace();
             }
         }

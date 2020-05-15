@@ -58,6 +58,8 @@ public class AccountInteractor extends AsyncTask<String, Integer, Void> implemen
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (IllegalAmountException e) {
+            e.printStackTrace();
         }
         return null;
     }

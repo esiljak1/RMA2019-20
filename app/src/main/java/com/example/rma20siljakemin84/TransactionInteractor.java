@@ -85,12 +85,17 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
                 Double amount = Double.parseDouble(strings[2]);
                 int typeId = Integer.parseInt(strings[6]);
 
+                String itemDescription = null;
+                if(strings[4] != ""){
+                    itemDescription = strings[4];
+                }
+
                 int transactionInterval = 0;
                 if(!strings[5].equals("")){
                     transactionInterval = Integer.parseInt(strings[5]);
                 }
 
-                addNewTransaction(new TransactionModel(date, amount, strings[1], Type.fromId(typeId), strings[4], transactionInterval, endDate));
+                addNewTransaction(new TransactionModel(date, amount, strings[1], Type.fromId(typeId), itemDescription, transactionInterval, endDate));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -232,11 +237,11 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
     private HashMap<String, String> putParametersInMap(TransactionModel transaction){
         HashMap<String, String> ret = new HashMap<>();
 
-        ret.put("date", new SimpleDateFormat("yyyy-MM-dd").format(transaction.getDate()));
+        ret.put("date", new SimpleDateFormat("yyyy-MM-dd").format(transaction.getDate().getTime()));
         ret.put("title", transaction.getTitle());
         ret.put("amount", transaction.getAmount() + "");
         if(transaction.getEndDate() != null){
-            ret.put("endDate", new SimpleDateFormat("yyyy-MM-dd").format(transaction.getEndDate()));
+            ret.put("endDate", new SimpleDateFormat("yyyy-MM-dd").format(transaction.getEndDate().getTime()));
         }
         if(transaction.getItemDescription() != null){
             ret.put("itemDescription", transaction.getItemDescription());

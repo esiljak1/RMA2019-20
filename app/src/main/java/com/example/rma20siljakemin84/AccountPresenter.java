@@ -41,16 +41,16 @@ public class AccountPresenter implements IAccountPresenter, Parcelable, AccountI
     public double getBudget() {
         return interactor.getAccount().getBudget();
     }
-    public void updateBudget(double iznos){
+    public void updateBudget(double iznos) throws IllegalAmountException {
         interactor.getAccount().setBudget(interactor.getAccount().getBudget() - iznos);
     }
-    public void setBudget(double budget){
+    public void setBudget(double budget) throws IllegalAmountException {
         interactor.getAccount().setBudget(budget);
     }
-    public void setOverallLimit(double limit){
+    public void setOverallLimit(double limit) throws IllegalAmountException {
         interactor.getAccount().setTotalLimit(limit);
     }
-    public void setMonthlyLimit(double limit){
+    public void setMonthlyLimit(double limit) throws IllegalAmountException {
         interactor.getAccount().setMonthLimit(limit);
     }
 
