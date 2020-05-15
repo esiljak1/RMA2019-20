@@ -8,16 +8,23 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TransactionInteractor extends AsyncTask<String, Integer, Void> implements ITransactionInteractor {
     public interface OnTransactionSearchDone{
@@ -64,39 +71,28 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
     @Override
     protected Void doInBackground(String... strings) {
         if(strings.length == 4){
-            filterTransactions(strings[0], strings[1], strings[2], strings[3]);
+            getFilteredTransactions(strings[0], strings[1], strings[2], strings[3]);
             return null;
         }
-        String url1 = ROOT + "/account/" + API_KEY + "/transactions?page=";
-        ArrayList<TransactionModel> list = new ArrayList<>(transactions);
-        transactions.clear();
-        for(int i = 0; i < 4; i++){
-            String temp = url1 + i;
+        else if(strings.length == 7){
+            Calendar date = Calendar.getInstance(), endDate = null;
             try {
-                URL url = new URL(temp);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                String rezultat = convertStreamToString(in);
-
-                JSONObject jo = new JSONObject(rezultat);
-                JSONArray results = jo.getJSONArray("transactions");
-
-                for(int j = 0; j < 5; j++){
-                    JSONObject transaction = results.getJSONObject(j);
-                    transactions.add(getTransactionFromJSON(transaction));
+                date.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(strings[0]));
+                if(!strings[3].equals("")){
+                    endDate = Calendar.getInstance();
+                    endDate.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(strings[3]));
                 }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                transactions = new ArrayList<>(list);
-            } catch (IOException e) {
-                e.printStackTrace();
-                transactions = new ArrayList<>(list);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                transactions = new ArrayList<>(list);
+                Double amount = Double.parseDouble(strings[2]);
+                int typeId = Integer.parseInt(strings[6]);
+
+                int transactionInterval = 0;
+                if(!strings[5].equals("")){
+                    transactionInterval = Integer.parseInt(strings[5]);
+                }
+
+                addNewTransaction(new TransactionModel(date, amount, strings[1], Type.fromId(typeId), strings[4], transactionInterval, endDate));
             } catch (ParseException e) {
                 e.printStackTrace();
-                transactions = new ArrayList<>(list);
             }
         }
         return null;
@@ -164,7 +160,7 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
         return transaction;
     }
 
-    private void filterTransactions(String transactionTypeId, String sort, String month, String year){
+    private void getFilteredTransactions(String transactionTypeId, String sort, String month, String year){
         String url1 = ROOT + "/account/" + API_KEY + "/transactions/filter?page=";
         ArrayList<TransactionModel> before = new ArrayList<>(transactions);
         transactions.clear();
@@ -204,5 +200,71 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
                 transactions = new ArrayList<>(before);
             }
         }
+    }
+
+    private void addNewTransaction(TransactionModel transaction){
+        String url1 = ROOT + "/account/" + API_KEY + "/transactions";
+
+        try {
+            URL url = new URL(url1);
+            HttpURLConnection urlConnection = ((HttpURLConnection) url.openConnection());
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+
+            OutputStream os = urlConnection.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "utf-8"));
+            writer.write(getPostDataString(putParametersInMap(transaction)));
+
+            writer.flush();
+            writer.close();
+            os.close();
+
+            urlConnection.connect();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private HashMap<String, String> putParametersInMap(TransactionModel transaction){
+        HashMap<String, String> ret = new HashMap<>();
+
+        ret.put("date", new SimpleDateFormat("yyyy-MM-dd").format(transaction.getDate()));
+        ret.put("title", transaction.getTitle());
+        ret.put("amount", transaction.getAmount() + "");
+        if(transaction.getEndDate() != null){
+            ret.put("endDate", new SimpleDateFormat("yyyy-MM-dd").format(transaction.getEndDate()));
+        }
+        if(transaction.getItemDescription() != null){
+            ret.put("itemDescription", transaction.getItemDescription());
+        }
+        if(transaction.getTransactionInterval() != 0){
+            ret.put("transactionInterval", transaction.getTransactionInterval() + "");
+        }
+        ret.put("typeId", transaction.getType().getValue() + "");
+
+        return ret;
+    }
+
+    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+
+        for(Map.Entry<String, String> entry : params.entrySet()){
+            if(first){
+                first = false;
+            }else{
+                result.append("&");
+            }
+
+            result.append(URLEncoder.encode(entry.getKey(), "utf-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "utf-8"));
+        }
+
+        return result.toString();
     }
 }

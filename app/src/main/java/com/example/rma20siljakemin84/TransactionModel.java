@@ -151,8 +151,8 @@ public class TransactionModel implements ITransactionModel {
         return title;
     }
 
-    public void setTitle(String title) {
-        if(title.length() <= 3 || title.length() >= 15) throw new IllegalArgumentException("Title must be between 3 and 15 characters long");
+    public void setTitle(String title) throws IllegalTransactionArgumentException {
+        if(title.length() <= 3 || title.length() >= 15) throw new IllegalTransactionArgumentException("Title must be between 3 and 15 characters long");
         this.title = title;
     }
 

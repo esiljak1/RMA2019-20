@@ -11,22 +11,22 @@ public class AccountModel implements IAccountModel {
     private AccountModel() {
     }
 
-    public AccountModel(int id, double budget, double totalLimit, double monthLimit) {
+    public AccountModel(int id, double budget, double totalLimit, double monthLimit) throws IllegalAmountException {
         this.id = id;
         setBudget(budget);
         setTotalLimit(totalLimit);
         setMonthLimit(monthLimit);
     }
 
-    private void notNegativeNumberTest(double number){
-        if(number < 0) throw new IllegalArgumentException("Can't be negative");
+    private void notNegativeNumberTest(double number) throws IllegalAmountException {
+        if(number < 0) throw new IllegalAmountException("Can't be negative");
     }
 
     public double getBudget() {
         return budget;
     }
 
-    public void setBudget(double budget) {
+    public void setBudget(double budget) throws IllegalAmountException {
         notNegativeNumberTest(budget);
         this.budget = budget;
     }
@@ -35,7 +35,7 @@ public class AccountModel implements IAccountModel {
         return totalLimit;
     }
 
-    public void setTotalLimit(double totalLimit) {
+    public void setTotalLimit(double totalLimit) throws IllegalAmountException {
         notNegativeNumberTest(totalLimit);
         this.totalLimit = totalLimit;
     }
@@ -44,7 +44,7 @@ public class AccountModel implements IAccountModel {
         return monthLimit;
     }
 
-    public void setMonthLimit(double monthLimit) {
+    public void setMonthLimit(double monthLimit) throws IllegalAmountException {
         notNegativeNumberTest(monthLimit);
         this.monthLimit = monthLimit;
     }

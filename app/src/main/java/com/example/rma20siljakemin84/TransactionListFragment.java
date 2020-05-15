@@ -51,7 +51,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                     textDate.setText(format.format(date.getTime())); //selectovan u spinnerima
                     ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
                             getSortKey(((String) spinnerSort.getSelectedItem())), getMonthKey(), getYearKey());
-                    updateList();
+                    notifyTransactionsChanged();
                 }
             };
     private ImageButton.OnClickListener listenerRight =
@@ -62,7 +62,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                     textDate.setText(format.format(date.getTime()));
                     ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
                             getSortKey(((String) spinnerSort.getSelectedItem())), getMonthKey(), getYearKey());
-                    updateList();
+                    notifyTransactionsChanged();
                 }
             };
     private Spinner.OnItemSelectedListener listenerSort =
@@ -71,7 +71,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
                             getSortKey(sorts.get(position)), getMonthKey(), getYearKey());
-                    updateList();
+                    notifyTransactionsChanged();
                 }
 
                 @Override
@@ -85,7 +85,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                     ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(filters.get(position)),
                             getSortKey(((String) spinnerSort.getSelectedItem())), getMonthKey(), getYearKey());
                     spinnerSort.setSelection(0);
-                    updateList();
+                    notifyTransactionsChanged();
                 }
 
                 @Override
@@ -243,7 +243,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         spinFilterAdapter = new TypeListAdapter(getContext(), R.layout.type_element, filters);
         spinnerFilter.setAdapter(spinFilterAdapter);
 
-        ((MainActivity) getActivity()).getPresenter().transactionsForCurrentDate(date);
+        //((MainActivity) getActivity()).getPresenter().transactionsForCurrentDate(date);
         transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
 
@@ -266,15 +266,13 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
 
         return view;
     }
-    public void updateList(){
-        transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
-        listViewTransactions.setAdapter(transactionsAdapter);
-    }
+//    public void updateList(){
+//        transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
+//        listViewTransactions.setAdapter(transactionsAdapter);
+//    }
 
     @Override
     public void notifyTransactionsChanged() {
-        //System.out.println("Ovdje sam i trebam biti samo jednom");
-       // ((MainActivity)getActivity()).getPresenter().transactionsForCurrentDate(date);
         transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
     }
