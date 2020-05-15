@@ -35,6 +35,14 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable, 
         }
     };
 
+    public ITransactionView getView() {
+        return view;
+    }
+
+    public void setView(ITransactionView view) {
+        this.view = view;
+    }
+
     private int checkRegular(TransactionModel transaction, Calendar date){
         Calendar temp = Calendar.getInstance();
         temp.set(Calendar.DATE, transaction.getDate().get(Calendar.DATE));
@@ -285,7 +293,8 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable, 
     }
 
     @Override
-    public void onDone(ArrayList<TransactionModel> result) {
+    public void onDone(ArrayList<TransactionModel> result, boolean isPost) {
+        if(isPost) return;
         interactor.setTransactions(result);
         currentDateTransactions = new ArrayList<>(result);
         view.notifyTransactionsChanged();

@@ -218,6 +218,9 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         if(((MainActivity) getActivity()).getPresenter() == null){
             ((MainActivity) getActivity()).setPresenter(new TransactionPresenter(this));
         }
+        else{
+            ((MainActivity) getActivity()).getPresenter().setView(this);
+        }
 
         listViewTransactions = (ListView)view.findViewById(R.id.listViewTransactions);
         spinnerSort = (Spinner)view.findViewById(R.id.spinnerSort);
@@ -271,6 +274,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
     public void notifyTransactionsChanged() {
         transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
+        listViewTransactions.refreshDrawableState();
     }
 
     @Override

@@ -28,13 +28,14 @@ import java.util.Map;
 
 public class TransactionInteractor extends AsyncTask<String, Integer, Void> implements ITransactionInteractor {
     public interface OnTransactionSearchDone{
-        void onDone(ArrayList<TransactionModel> result);
+        void onDone(ArrayList<TransactionModel> result, boolean isPost);
     }
     public static final String ROOT = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com";
     public static final String API_KEY = "6e8e09ce-5c99-4f3d-a9bd-d0d60b65a5d3";
     private TransactionModel model = new TransactionModel();
     private ArrayList<TransactionModel> transactions = new ArrayList<>();
     private OnTransactionSearchDone osd;
+    private boolean isPost = false;
 
     public TransactionInteractor(OnTransactionSearchDone osd) {
         this.osd = osd;
@@ -65,16 +66,18 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        osd.onDone(transactions);
+        osd.onDone(transactions, isPost);
     }
 
     @Override
     protected Void doInBackground(String... strings) {
         if(strings.length == 4){
+            isPost = false;
             getFilteredTransactions(strings[0], strings[1], strings[2], strings[3]);
             return null;
         }
         else if(strings.length == 7){
+            isPost = true;
             Calendar date = Calendar.getInstance(), endDate = null;
             try {
                 date.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(strings[0]));
@@ -177,6 +180,7 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
             try {
                 URL url = new URL(temp);
                 HttpURLConnection urlConnection = ((HttpURLConnection) url.openConnection());
+                urlConnection.setRequestMethod("GET");
                 InputStream is = new BufferedInputStream(urlConnection.getInputStream());
 
                 String result = convertStreamToString(is);
