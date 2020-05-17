@@ -6,8 +6,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -100,6 +102,13 @@ public class AccountInteractor extends AsyncTask<String, Integer, Void> implemen
 
             byte[] input = jsonString.getBytes("utf-8");
             os.write(input, 0, input.length);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "utf-8"));
+            StringBuilder response = new StringBuilder();
+            String responseLine = null;
+            while((responseLine = br.readLine()) != null){
+                response.append(responseLine.trim());
+            }
 
         } catch (MalformedURLException e) {
             e.printStackTrace();

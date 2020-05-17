@@ -196,11 +196,6 @@ public class TransactionDetailFragment extends Fragment{
         transaction = new TransactionModel(cal, Double.parseDouble(amount.getText().toString()), title.getText().toString(), (Type) spinnerType.getSelectedItem(),
                 description.isEnabled() ? description.getText().toString() : null,
                 interval.isEnabled() ? Integer.parseInt(interval.getText().toString()) : 0, end);
-//        if(id != -1) {
-//            transaction.setId(id);
-//        }else{
-//            id = transaction.getId();       //postavljamo id ukoliko dodajemo novu transakciju da bismo odmah mogli i update/delete po potrebi tu transakciju
-//        }
 
         String datum = date.getText().toString(), endDatum = "", itemDescription = "", transactionInterval = "";
         if(endDate.isEnabled()){

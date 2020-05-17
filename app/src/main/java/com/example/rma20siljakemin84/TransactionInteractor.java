@@ -222,6 +222,13 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
             byte[] input = jsonString.getBytes("utf-8");
             os.write(input, 0, input.length);
 
+            BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "utf-8"));
+            StringBuilder response = new StringBuilder();
+            String responseLine = null;
+            while((responseLine = br.readLine()) != null){
+                response.append(responseLine.trim());
+            }
+
         } catch (MalformedURLException e) {
             System.out.println("Izuzetak: " + e.getMessage());
         } catch (IOException e) {
