@@ -8,23 +8,17 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TransactionInteractor extends AsyncTask<String, Integer, Void> implements ITransactionInteractor {
     public interface OnTransactionSearchDone{
@@ -150,7 +144,7 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
         String tInterval = null;
         tInterval = json.getString("transactionInterval");
         Integer transactionInterval = 0;
-        if(!tInterval.equals("null")){
+        if(tInterval != null && !tInterval.equals("null")){
             transactionInterval = Integer.parseInt(tInterval);
         }
         String eDate = json.getString("endDate");
@@ -160,7 +154,7 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
         if(type_id != null){
             type = Type.fromId(type_id);
         }
-        if(!eDate.equals("null")){
+        if(eDate != null && !eDate.equals("null")){
             endDate = Calendar.getInstance();
             endDate.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(eDate));
         }
@@ -169,7 +163,7 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
     }
 
     private void getFilteredTransactions(String transactionTypeId, String sort, String month, String year){
-        String url1 = ROOT + "/account/" + API_KEY + "/transactions/filter?page=";
+        String url1 = ROOT + "/account/" + API_KEY + "/transactions/filter/?page=";
         ArrayList<TransactionModel> before = new ArrayList<>(transactions);
         transactions.clear();
         int i = 0;
@@ -218,62 +212,54 @@ public class TransactionInteractor extends AsyncTask<String, Integer, Void> impl
             URL url = new URL(url1);
             HttpURLConnection urlConnection = ((HttpURLConnection) url.openConnection());
             urlConnection.setRequestMethod("POST");
-            urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setRequestProperty("Accept", "application/json");
+            //urlConnection.connect();
 
             OutputStream os = urlConnection.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "utf-8"));
-            writer.write(getPostDataString(putParametersInMap(transaction)));
 
-            writer.flush();
-            writer.close();
-            os.close();
+            String jsonString = getJSONObject(transaction).toString();
+            byte[] input = jsonString.getBytes("utf-8");
+            os.write(input, 0, input.length);
 
-            urlConnection.connect();
+            BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "utf-8"));
+            StringBuilder response = new StringBuilder();
+            String responseLine = null;
+            while((responseLine = br.readLine()) != null){
+                response.append(responseLine.trim());
+            }
 
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            System.out.println("Izuzetak: " + e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Izuzetak: " + e.getMessage());
+        } catch (JSONException e) {
+            System.out.println("Izuzetak: " + e.getMessage());
         }
     }
 
-    private HashMap<String, String> putParametersInMap(TransactionModel transaction){
-        HashMap<String, String> ret = new HashMap<>();
+    private JSONObject getJSONObject(TransactionModel transaction) throws JSONException {
+        JSONObject ret = new JSONObject();
 
-        ret.put("date", new SimpleDateFormat("yyyy-MM-dd").format(transaction.getDate().getTime()));
+        ret.put("date", getStringDate(transaction.getDate()));
         ret.put("title", transaction.getTitle());
-        ret.put("amount", transaction.getAmount() + "");
+        ret.put("amount", transaction.getAmount());
         if(transaction.getEndDate() != null){
-            ret.put("endDate", new SimpleDateFormat("yyyy-MM-dd").format(transaction.getEndDate().getTime()));
+            ret.put("endDate", getStringDate(transaction.getEndDate()));
         }
         if(transaction.getItemDescription() != null){
             ret.put("itemDescription", transaction.getItemDescription());
         }
         if(transaction.getTransactionInterval() != 0){
-            ret.put("transactionInterval", transaction.getTransactionInterval() + "");
+            ret.put("transactionInterval", transaction.getTransactionInterval());
         }
-        ret.put("typeId", transaction.getType().getValue() + "");
+        ret.put("typeId", transaction.getType().getValue());
 
         return ret;
     }
 
-    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-
-        for(Map.Entry<String, String> entry : params.entrySet()){
-            if(first){
-                first = false;
-            }else{
-                result.append("&");
-            }
-
-            result.append(URLEncoder.encode(entry.getKey(), "utf-8"));
-            result.append("=");
-            result.append(URLEncoder.encode(entry.getValue(), "utf-8"));
-        }
-
-        return result.toString();
+    private String getStringDate(Calendar cal){
+        return new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
     }
 }

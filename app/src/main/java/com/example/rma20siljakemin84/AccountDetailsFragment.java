@@ -28,6 +28,10 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
                 @Override
                 public void onClick(View v) {
                     try {
+                        double budget = account.getBudget();
+                        double totalLimit = Double.parseDouble(globalLimitAccountDetails.getText().toString());
+                        double monthLimit = Double.parseDouble(monthLimitAccountDetails.getText().toString());
+                        ((MainActivity) getActivity()).getPresenter().getAccount().updateAccount(budget, totalLimit, monthLimit);
                         account.setOverallLimit(Double.parseDouble(globalLimitAccountDetails.getText().toString()));
                         account.setMonthlyLimit(Double.parseDouble(monthLimitAccountDetails.getText().toString()));
                     } catch (IllegalAmountException e) {
@@ -76,6 +80,8 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_account_details, container, false);
+
+        ((MainActivity) getActivity()).getPresenter().getAccount().setView(this);
 
         budgetAccountDetails = view.findViewById(R.id.budgetAccountDetails);
         globalLimitAccountDetails = view.findViewById(R.id.globalLimitAccountDetails);

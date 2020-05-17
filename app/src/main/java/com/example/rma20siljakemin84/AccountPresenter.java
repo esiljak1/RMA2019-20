@@ -70,6 +70,18 @@ public class AccountPresenter implements IAccountPresenter, Parcelable, AccountI
     }
 
     public void getDetailsFromWeb(){
-        new AccountInteractor((AccountInteractor.OnAccountSearchDone)this).execute("");
+        new AccountInteractor((AccountInteractor.OnAccountSearchDone)this).execute();
+    }
+
+    public void updateAccount(double budget, double totalLimit, double monthLimit){
+        new AccountInteractor(this).execute(budget + "", totalLimit + "", monthLimit + "");
+    }
+
+    public IAccountView getView() {
+        return view;
+    }
+
+    public void setView(IAccountView view) {
+        this.view = view;
     }
 }

@@ -235,6 +235,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         setSortList();
         setFilterList();
 
+        ((MainActivity) getActivity()).getPresenter().getAccount().setView(this);
         ((MainActivity)getActivity()).getPresenter().getAccount().getDetailsFromWeb();
 
         textBudget.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
