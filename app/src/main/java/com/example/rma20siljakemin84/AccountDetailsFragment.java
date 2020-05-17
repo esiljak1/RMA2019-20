@@ -101,6 +101,12 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
 
     @Override
     public void notifyAccountDetailsChanged() {
-
+        try {
+            account.setBudget(((MainActivity) getActivity()).getPresenter().getAccount().getBudget());
+            account.setOverallLimit(((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit());
+            account.setMonthlyLimit(((MainActivity) getActivity()).getPresenter().getAccount().getMonthlyLimit());
+        } catch (IllegalAmountException e) {
+            e.printStackTrace();
+        }
     }
 }

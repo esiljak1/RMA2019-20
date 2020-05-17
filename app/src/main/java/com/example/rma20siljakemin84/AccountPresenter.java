@@ -17,6 +17,7 @@ public class AccountPresenter implements IAccountPresenter, Parcelable, AccountI
         interactor = new AccountInteractor();
     }
 
+
     protected AccountPresenter(Parcel in) {
     }
 
