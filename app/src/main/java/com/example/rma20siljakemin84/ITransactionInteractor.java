@@ -7,4 +7,8 @@ public interface ITransactionInteractor {
     void update(TransactionModel transactionModel);
     void delete(TransactionModel transactionModel);
     void setTransactions(ArrayList<TransactionModel> transactions);
+    void setPresenter(TransactionPresenter presenter);
+    TransactionPresenter getPresenter();
+    void getFilteredTransactions(String typeId, String sort, String month, String year);
+    void addTransaction(String ... strings);
 }

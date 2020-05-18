@@ -33,6 +33,7 @@ public class GETFilteredTransactions extends AsyncTask<String, Integer, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        ots.onGetDone(transactions);
     }
 
     @Override

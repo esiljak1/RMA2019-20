@@ -31,6 +31,7 @@ public class POSTTransaction extends AsyncTask<String, Integer, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        otp.onPostDone(transaction);
     }
 
     @Override
@@ -85,6 +86,7 @@ public class POSTTransaction extends AsyncTask<String, Integer, Void> {
             while((responseLine = br.readLine()) != null){
                 response.append(responseLine.trim());
             }
+            getAddedTransaction(response.toString());
 
         } catch (MalformedURLException e) {
             System.out.println("Izuzetak: " + e.getMessage());
@@ -92,6 +94,8 @@ public class POSTTransaction extends AsyncTask<String, Integer, Void> {
             System.out.println("Izuzetak: " + e.getMessage());
         } catch (JSONException e) {
             System.out.println("Izuzetak: " + e.getMessage());
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 
@@ -117,5 +121,35 @@ public class POSTTransaction extends AsyncTask<String, Integer, Void> {
 
     private String getStringDate(Calendar cal){
         return new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+    }
+
+    private void getAddedTransaction(String string) throws JSONException, ParseException {
+        JSONObject json = new JSONObject(string);
+
+        Integer id = json.getInt("id");
+        Calendar date = Calendar.getInstance();
+        date.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(json.getString("date")));
+        String title = json.getString("title");
+        Double amount = json.getDouble("amount");
+        String itemDescription = json.getString("itemDescription");
+        String tInterval = null;
+        tInterval = json.getString("transactionInterval");
+        Integer transactionInterval = 0;
+        if(tInterval != null && !tInterval.equals("null")){
+            transactionInterval = Integer.parseInt(tInterval);
+        }
+        String eDate = json.getString("endDate");
+        Calendar endDate = null;
+        Integer type_id = json.getInt("TransactionTypeId");
+        Type type = null;
+        if(type_id != null){
+            type = Type.fromId(type_id);
+        }
+        if(eDate != null && !eDate.equals("null")){
+            endDate = Calendar.getInstance();
+            endDate.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(eDate));
+        }
+
+        transaction = new TransactionModel(id, date, amount, title, type, itemDescription, transactionInterval, endDate);
     }
 }

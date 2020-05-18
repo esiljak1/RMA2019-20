@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class TransactionPresenter implements ITransactionPresenter, Parcelable, TransactionInteractor.OnTransactionSearchDone {
+public class TransactionPresenter implements ITransactionPresenter, Parcelable{
     private ITransactionView view;
     private ITransactionInteractor interactor;
     private IAccountPresenter account;
@@ -292,23 +292,25 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable, 
         }return amount;
     }
 
-    @Override
-    public void onDone(ArrayList<TransactionModel> result, boolean isPost) {
+    public void dodanaTransakcija(TransactionModel transaction){
+        account.updateAccount(account.getBudget(), account.getOverallLimit(), account.getMonthlyLimit());
+    }
+
+    public void filtriraneTransakcije(ArrayList<TransactionModel> result) {
         interactor.setTransactions(result);
         currentDateTransactions = new ArrayList<>(result);
         view.notifyTransactionsChanged();
-        if(isPost){
-            account.updateAccount(account.getBudget(), account.getOverallLimit(), account.getMonthlyLimit());
-        }
     }
     public void getTransactions(String transactionTypeId, String sort, String month, String year){
-        new TransactionInteractor((TransactionInteractor.OnTransactionSearchDone)this).execute(transactionTypeId, sort, month, year);
+        interactor.setPresenter(this);
+        interactor.getFilteredTransactions(transactionTypeId, sort, month, year);
     }
     public void setTransactions(ArrayList<TransactionModel> transactions){
         interactor.setTransactions(transactions);
     }
 
     public void addTransaction(String ... strings){
-        new TransactionInteractor(this).execute(strings);
+        interactor.setPresenter(this);
+        interactor.addTransaction(strings);
     }
 }
