@@ -238,8 +238,8 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         ((MainActivity) getActivity()).getPresenter().getAccount().setView(this);
         ((MainActivity)getActivity()).getPresenter().getAccount().getDetailsFromWeb();
 
-        textBudget.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
-        textLimit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit() + "");
+        textBudget.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
+        textLimit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit()));
 
         spinSortAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, sorts);
         spinnerSort.setAdapter(spinSortAdapter);
@@ -281,8 +281,8 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
 
     @Override
     public void notifyAccountDetailsChanged() {
-        textBudget.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
-        textLimit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit() + "");
+        textBudget.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
+        textLimit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit()));
     }
 
     private String getTransactionTypeStringKey(Type type){

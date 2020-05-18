@@ -257,7 +257,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                                     znak = -1;                                                                                                                  //jer minus puta minus daju plus
                                 }
                                 ((MainActivity) getActivity()).getPresenter().subtractFromAccountBudget(iznos*znak);
-                                budgetEdit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
+                                budgetEdit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             } catch (IllegalAmountException e) {
@@ -278,7 +278,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                     znak = -1;
                 }
                 ((MainActivity) getActivity()).getPresenter().subtractFromAccountBudget(iznos*znak);
-                budgetEdit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
+                budgetEdit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
             } catch (ParseException e) {
                 e.printStackTrace();
             } catch (IllegalAmountException e) {
@@ -376,8 +376,8 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
             description.setBackgroundColor(Color.GREEN);
             deleteBtn.setEnabled(false);
         }
-        budgetEdit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
-        limitEdit.setText(((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit() + "");
+        budgetEdit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
+        limitEdit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit()));
         budget = Double.parseDouble(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
         monthLimit = Double.parseDouble(((MainActivity) getActivity()).getPresenter().getAccount().getMonthlyLimit() + "");
 

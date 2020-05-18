@@ -23,7 +23,6 @@ public class POSTUpdateAccount extends AsyncTask<String, Integer, Void> {
 
     public POSTUpdateAccount(OnAccountUpdateDone oaud) {
         this.oaud = oaud;
-        oaud.onUpdateDone(account);
     }
 
     @Override
