@@ -21,7 +21,7 @@ import java.util.Calendar;
 
 public class GETFilteredTransactions extends AsyncTask<String, Integer, Void> {
     public interface OnTransactionSearchDone{
-        void onDone(ArrayList<TransactionModel> transactions);
+        void onGetDone(ArrayList<TransactionModel> transactions);
     }
     private OnTransactionSearchDone ots;
     private ArrayList<TransactionModel> transactions = new ArrayList<>();
