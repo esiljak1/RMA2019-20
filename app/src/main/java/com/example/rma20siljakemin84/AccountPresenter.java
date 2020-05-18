@@ -3,7 +3,7 @@ package com.example.rma20siljakemin84;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class AccountPresenter implements IAccountPresenter, Parcelable, AccountInteractor.OnAccountSearchDone {
+public class AccountPresenter implements IAccountPresenter, Parcelable {
 
     private IAccountView view;
     private AccountInteractor interactor;
@@ -64,18 +64,19 @@ public class AccountPresenter implements IAccountPresenter, Parcelable, AccountI
     public void writeToParcel(Parcel dest, int flags) {
     }
 
-    @Override
-    public void onDone(AccountModel account) {
-        ((AccountInteractor) interactor).setAccount(account);
+    public void fetchedAccountDetails(AccountModel account) {
+        interactor.setAccount(account);
         view.notifyAccountDetailsChanged();
     }
 
     public void getDetailsFromWeb(){
-        new AccountInteractor((AccountInteractor.OnAccountSearchDone)this).execute();
+        interactor.setPresenter(this);
+        interactor.getAccountDetails();
     }
 
     public void updateAccount(double budget, double totalLimit, double monthLimit){
-        new AccountInteractor(this).execute(budget + "", totalLimit + "", monthLimit + "");
+        interactor.setPresenter(this);
+        interactor.updateAccount(budget + "", totalLimit + "", monthLimit + "");
     }
 
     public IAccountView getView() {

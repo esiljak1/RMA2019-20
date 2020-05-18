@@ -133,12 +133,19 @@ public class POSTTransaction extends AsyncTask<String, Integer, Void> {
         Double amount = json.getDouble("amount");
         String itemDescription = json.getString("itemDescription");
         String tInterval = null;
-        tInterval = json.getString("transactionInterval");
+        try {
+            tInterval = json.getString("transactionInterval");
+        }catch (Exception e){
+        }
         Integer transactionInterval = 0;
         if(tInterval != null && !tInterval.equals("null")){
             transactionInterval = Integer.parseInt(tInterval);
         }
-        String eDate = json.getString("endDate");
+        String eDate = null;
+        try{
+            eDate = json.getString("endDate");
+        }catch(Exception e){
+        }
         Calendar endDate = null;
         Integer type_id = json.getInt("TransactionTypeId");
         Type type = null;
