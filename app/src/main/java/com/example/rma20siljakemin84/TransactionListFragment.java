@@ -218,7 +218,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         if(((MainActivity) getActivity()).getPresenter() == null){
             ((MainActivity) getActivity()).setPresenter(new TransactionPresenter(this));
         }
-        else{
+        else if(!((MainActivity) getActivity()).isTwoPaneMode()){
             ((MainActivity) getActivity()).getPresenter().setView(this);
         }
 
@@ -247,15 +247,11 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         spinFilterAdapter = new TypeListAdapter(getContext(), R.layout.type_element, filters);
         spinnerFilter.setAdapter(spinFilterAdapter);
 
-        //((MainActivity) getActivity()).getPresenter().transactionsForCurrentDate(date);
         transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
 
-        if(!((MainActivity)getActivity()).isTransactionsSet()){
             ((MainActivity)getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
                     getSortKey(((String) spinnerSort.getSelectedItem())), getMonthKey(), getYearKey());
-            //((MainActivity)getActivity()).setTransactionsSet(true);
-        }
 
         leftBtn.setOnClickListener(listenerLeft);
         rightBtn.setOnClickListener(listenerRight);
@@ -276,6 +272,11 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
         listViewTransactions.refreshDrawableState();
+    }
+
+    @Override
+    public void notifyAddedTransaction(TransactionModel transaction) {
+
     }
 
     @Override

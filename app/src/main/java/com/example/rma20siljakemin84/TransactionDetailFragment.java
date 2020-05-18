@@ -318,6 +318,12 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(view == null) view = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
 
+        if(((MainActivity) getActivity()).getPresenter() == null){
+            ((MainActivity) getActivity()).setPresenter(new TransactionPresenter(this));
+        }else {
+            ((MainActivity) getActivity()).getPresenter().setView(this);
+        }
+
         napuniSpinner();
         typeListAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, typeList);
 
@@ -505,5 +511,10 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
     @Override
     public void notifyTransactionsChanged() {
 
+    }
+
+    @Override
+    public void notifyAddedTransaction(TransactionModel transaction) {
+        this.transaction.setId(transaction.getId());
     }
 }
