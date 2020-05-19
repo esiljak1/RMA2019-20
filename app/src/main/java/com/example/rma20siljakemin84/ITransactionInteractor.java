@@ -11,4 +11,5 @@ public interface ITransactionInteractor {
     TransactionPresenter getPresenter();
     void getFilteredTransactions(String typeId, String sort, String month, String year);
     void addTransaction(String ... strings);
+    void updateTransaction(String ... strings);
 }

@@ -6,7 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-public class TransactionInteractor implements ITransactionInteractor, GETFilteredTransactions.OnTransactionSearchDone, POSTTransaction.OnTransactionPostDone {
+public class TransactionInteractor implements ITransactionInteractor, GETFilteredTransactions.OnTransactionSearchDone,
+                                                                      POSTTransaction.OnTransactionPostDone,
+                                                                      POSTTransactionUpdate.OnTransactionUpdateDone {
     public static final String ROOT = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com";
     public static final String API_KEY = "6e8e09ce-5c99-4f3d-a9bd-d0d60b65a5d3";
     private TransactionModel model = new TransactionModel();
@@ -76,6 +78,16 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
 
     @Override
     public void onPostDone(TransactionModel transaction) {
+        presenter.dodanaTransakcija(transaction);
+    }
+
+    @Override
+    public void updateTransaction(String... strings) {
+        new POSTTransactionUpdate(this).execute(strings);
+    }
+
+    @Override
+    public void OnUpdateDone(TransactionModel transaction) {
         presenter.dodanaTransakcija(transaction);
     }
 }

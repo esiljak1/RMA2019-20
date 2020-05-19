@@ -320,4 +320,9 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
         interactor.getFilteredTransactions(Type.REGULARINCOME.getValue() + "", "", "", "");
         interactor.getFilteredTransactions(Type.REGULARPAYMENT.getValue() + "", "", "", "");
     }
+
+    public void updateTransaction(String id, String date, String title, String amount, String endDate, String itemDescription, String transactionInterval, String typeId){
+        interactor.setPresenter(this);
+        interactor.updateTransaction(id, date, title, amount, endDate, itemDescription, transactionInterval, typeId);
+    }
 }
