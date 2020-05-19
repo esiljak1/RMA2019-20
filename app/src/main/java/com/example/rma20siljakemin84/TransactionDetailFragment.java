@@ -207,8 +207,13 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
         if(interval.isEnabled()){
             transactionInterval = interval.getText().toString();
         }
-
-        ((MainActivity) getActivity()).getPresenter().addTransaction(datum, transaction.getTitle(), transaction.getAmount() + "", endDatum, itemDescription, transactionInterval, transaction.getType().getValue() + "");
+        if(id != -1){
+            ((MainActivity) getActivity()).getPresenter().updateTransaction(id + "", datum, transaction.getTitle(), transaction.getAmount() + "", endDatum,
+                    itemDescription, transactionInterval, transaction.getType().getValue() + "");
+        }else{
+            ((MainActivity) getActivity()).getPresenter().addTransaction(datum, transaction.getTitle(), transaction.getAmount() + "", endDatum,
+                    itemDescription, transactionInterval, transaction.getType().getValue() + "");
+        }
 
         if(((MainActivity) getActivity()).isTwoPaneMode()){
             TransactionListFragment listFragment = new TransactionListFragment();

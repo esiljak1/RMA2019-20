@@ -62,6 +62,8 @@ public class POSTTransactionUpdate extends AsyncTask<String, Integer, Void> {
                 response.append(responseLine.trim());
             }
 
+            System.out.println("Odgovor: " + response.toString());
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -79,6 +81,8 @@ public class POSTTransactionUpdate extends AsyncTask<String, Integer, Void> {
 
     private void setUpTransaction(String id, String date, String title, String amount, String endDate, String itemDescription, String transactionInterval, String typeId) throws ParseException, IllegalTransactionArgumentException {
         transaction = new TransactionModel();
+
+        System.out.println("Tip transakcije: " + Type.fromId(Integer.parseInt(typeId)));
 
         transaction.setId(Integer.parseInt(id));
         Calendar temp = Calendar.getInstance();
@@ -121,6 +125,8 @@ public class POSTTransactionUpdate extends AsyncTask<String, Integer, Void> {
         json.put("amount", transaction.getAmount());
         json.put("typeId", transaction.getType().getValue());
 
+        System.out.println("U json type je: " + transaction.getType());
+
         if(transaction.getEndDate() != null){
             json.put("endDate", transaction.getEndDate());
         }
@@ -134,6 +140,6 @@ public class POSTTransactionUpdate extends AsyncTask<String, Integer, Void> {
     }
 
     private String getStringDate(Calendar date){
-        return new SimpleDateFormat("dd.MM.yyyy").format(date.getTime());
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(date.getTime());
     }
 }
