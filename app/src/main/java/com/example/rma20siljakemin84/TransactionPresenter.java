@@ -325,4 +325,8 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
         interactor.setPresenter(this);
         interactor.updateTransaction(id, date, title, amount, endDate, itemDescription, transactionInterval, typeId);
     }
+
+    public void deleteTransactionWithId(int id){
+        interactor.setPresenter(this);
+    }
 }

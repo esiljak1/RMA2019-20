@@ -87,6 +87,11 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
     }
 
     @Override
+    public void deleteTransaction(int id) {
+
+    }
+
+    @Override
     public void OnUpdateDone(TransactionModel transaction) {
         presenter.dodanaTransakcija(transaction);
     }
