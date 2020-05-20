@@ -125,6 +125,12 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    try {
+                                        izmijeniAkaunt();
+                                    } catch (IllegalAmountException e) {
+                                        e.printStackTrace();
+                                        //TODO dodati error za postavljanje budzeta ispod 0
+                                    }
                                     ((MainActivity) getActivity()).getPresenter().deleteTransactionWithId(id);
                                     if(getActivity().findViewById(R.id.transaction_details) != null){
                                         TransactionDetailFragment detailFragment = new TransactionDetailFragment();
@@ -177,6 +183,20 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                 public void onNothingSelected(AdapterView<?> parent) {
                 }
             };
+
+    private void izmijeniAkaunt() throws IllegalAmountException {
+        double vrijednost = Double.parseDouble(amount.getText().toString());
+        if(spinnerType.getSelectedItem().equals(Type.REGULARINCOME) || spinnerType.getSelectedItem().equals(Type.INDIVIDUALINCOME)){
+            vrijednost*=-1;
+        }
+        ((MainActivity) getActivity()).getPresenter().getAccount()
+                .setBudget(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + vrijednost);
+        double d1 = ((MainActivity) getActivity()).getPresenter().getAccount().getBudget();
+        double d2 = ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit();
+        double d3 = ((MainActivity) getActivity()).getPresenter().getAccount().getMonthlyLimit();
+
+        ((MainActivity) getActivity()).getPresenter().getAccount().updateAccount(d1, d2, d3);
+    }
 
     private void changeTransaction() throws ParseException {
         Date temp = new SimpleDateFormat("dd.MM.yyyy").parse(date.getText().toString());
@@ -521,10 +541,6 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
 
     @Override
     public void notifyAddedTransaction(TransactionModel transaction) {
-//        if(oldView != null){
-//            ((MainActivity) getActivity()).getPresenter().setView(oldView);
-//            oldView.notifyAddedTransaction(transaction);
-//        }
         this.transaction.setId(transaction.getId());
     }
 }
