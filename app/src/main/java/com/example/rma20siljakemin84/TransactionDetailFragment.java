@@ -125,9 +125,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    transaction = new TransactionModel();
-                                    transaction.setId(id);      //postavljamo id da bi se trazena transakcija izbrisala iz liste
-                                    ((MainActivity) getActivity()).getPresenter().deleteTransaction(transaction);
+                                    ((MainActivity) getActivity()).getPresenter().deleteTransactionWithId(id);
                                     if(getActivity().findViewById(R.id.transaction_details) != null){
                                         TransactionDetailFragment detailFragment = new TransactionDetailFragment();
                                         Bundle bundle = new Bundle();

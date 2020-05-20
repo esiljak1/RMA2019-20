@@ -88,7 +88,7 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
 
     @Override
     public void deleteTransaction(int id) {
-
+        new DELETETransaction().execute(id);
     }
 
     @Override

@@ -328,5 +328,6 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
 
     public void deleteTransactionWithId(int id){
         interactor.setPresenter(this);
+        interactor.deleteTransaction(id);
     }
 }
