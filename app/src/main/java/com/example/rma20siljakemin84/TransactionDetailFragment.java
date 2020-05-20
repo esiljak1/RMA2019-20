@@ -205,6 +205,9 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
         if(interval.isEnabled()){
             transactionInterval = interval.getText().toString();
         }
+
+        ((MainActivity) getActivity()).getPresenter().setView(this);
+
         if(id != -1){
             ((MainActivity) getActivity()).getPresenter().updateTransaction(id + "", datum, transaction.getTitle(), transaction.getAmount() + "", endDatum,
                     itemDescription, transactionInterval, transaction.getType().getValue() + "");
@@ -321,11 +324,11 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(view == null) view = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
 
-        if(((MainActivity) getActivity()).getPresenter() == null){
-            ((MainActivity) getActivity()).setPresenter(new TransactionPresenter(this));
-        }else {
-            ((MainActivity) getActivity()).getPresenter().setView(this);
-        }
+//        if(((MainActivity) getActivity()).getPresenter() == null){
+//            ((MainActivity) getActivity()).setPresenter(new TransactionPresenter(this));
+//        }else {
+//            ((MainActivity) getActivity()).getPresenter().setView(this);
+//        }
 
         napuniSpinner();
         typeListAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, typeList);
@@ -513,11 +516,15 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
 
     @Override
     public void notifyTransactionsChanged() {
-
+        System.out.println("Tu sam");
     }
 
     @Override
     public void notifyAddedTransaction(TransactionModel transaction) {
+//        if(oldView != null){
+//            ((MainActivity) getActivity()).getPresenter().setView(oldView);
+//            oldView.notifyAddedTransaction(transaction);
+//        }
         this.transaction.setId(transaction.getId());
     }
 }

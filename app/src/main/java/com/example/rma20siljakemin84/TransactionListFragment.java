@@ -218,7 +218,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         if(((MainActivity) getActivity()).getPresenter() == null){
             ((MainActivity) getActivity()).setPresenter(new TransactionPresenter(this));
         }
-        else if(!((MainActivity) getActivity()).isTwoPaneMode()){
+        else{
             ((MainActivity) getActivity()).getPresenter().setView(this);
         }
 
@@ -235,7 +235,9 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         setSortList();
         setFilterList();
 
-        ((MainActivity) getActivity()).getPresenter().getAccount().setView(this);
+        if(!((MainActivity) getActivity()).isTwoPaneMode()){
+            ((MainActivity) getActivity()).getPresenter().getAccount().setView(this);
+        }
         ((MainActivity)getActivity()).getPresenter().getAccount().getDetailsFromWeb();
 
         textBudget.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
@@ -269,6 +271,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
 
     @Override
     public void notifyTransactionsChanged() {
+        if(((MainActivity) getActivity()).getPresenter() == null) return;
         transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
         listViewTransactions.refreshDrawableState();
@@ -276,11 +279,16 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
 
     @Override
     public void notifyAddedTransaction(TransactionModel transaction) {
+        date.set(Calendar.MONTH, Calendar.getInstance().get(Calendar.MONTH));
+        ((MainActivity)getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
+                getSortKey(((String) spinnerSort.getSelectedItem())), getMonthKey(), getYearKey());
 
+        System.out.println("Mjesec: " + getMonthKey());
     }
 
     @Override
     public void notifyAccountDetailsChanged() {
+        if(((MainActivity) getActivity()).getPresenter() == null) return;
         textBudget.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
         textLimit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit()));
     }
