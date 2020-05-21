@@ -79,27 +79,29 @@ public class GraphsFragment extends Fragment implements ITransactionView{
 
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    switch (position){
-                        case 0:
-                        {
-                            setIncomeChartForDays();
-                            setSpendingChartForDays();
-                            setTotalChartForDays();
-                            break;
-                        } case 1:
-                        {
-                            setIncomeChartForWeeks();
-                            setSpendingChartForWeeks();
-                            setTotalChartForWeeks();
-                            break;
-                        }
-                        case 2:
-                        {
-                            setIncomeChartForMonths();
-                            setSpendingChartForMonths();
-                            setTotalChartForMonths();
-                        }
-                    }
+                    ((MainActivity) getActivity()).getPresenter().setView(GraphsFragment.this);
+                    ((MainActivity) getActivity()).getPresenter().getTransactions("", "", "", "");
+//                    switch (position){
+//                        case 0:
+//                        {
+//                            setIncomeChartForDays();
+//                            setSpendingChartForDays();
+//                            setTotalChartForDays();
+//                            break;
+//                        } case 1:
+//                        {
+//                            setIncomeChartForWeeks();
+//                            setSpendingChartForWeeks();
+//                            setTotalChartForWeeks();
+//                            break;
+//                        }
+//                        case 2:
+//                        {
+//                            setIncomeChartForMonths();
+//                            setSpendingChartForMonths();
+//                            setTotalChartForMonths();
+//                        }
+//                    }
                 }
 
                 @Override
@@ -320,7 +322,23 @@ public class GraphsFragment extends Fragment implements ITransactionView{
 
     @Override
     public void notifyTransactionsChanged() {
-
+        int broj = ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions().size();
+        if(spinnerGraphicChooser.getSelectedItem().equals("by day")){
+            System.out.println("Velicina: " + broj);
+            setIncomeChartForDays();
+            setSpendingChartForDays();
+            setTotalChartForDays();
+        }else if(spinnerGraphicChooser.getSelectedItem().equals("by week")){
+            System.out.println("Velicina: " + broj);
+            setIncomeChartForWeeks();
+            setSpendingChartForWeeks();
+            setTotalChartForWeeks();
+        }else{
+            System.out.println("Velicina: " + broj);
+            setIncomeChartForMonths();
+            setSpendingChartForMonths();
+            setTotalChartForMonths();
+        }
     }
 
     @Override
