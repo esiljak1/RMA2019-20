@@ -91,7 +91,7 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
         saveBtnAccountDetails = view.findViewById(R.id.saveBtnAccountDetails);
 
         account = ((MainActivity) getActivity()).getPresenter().getAccount();
-        budgetAccountDetails.setText(account.getBudget() + "");
+        budgetAccountDetails.setText(String.format("%.2f", account.getBudget()));
         globalLimitAccountDetails.setText(account.getOverallLimit() + "");
         monthLimitAccountDetails.setText(account.getMonthlyLimit() + "");
 

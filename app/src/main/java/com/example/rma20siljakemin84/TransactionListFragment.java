@@ -271,7 +271,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
 
     @Override
     public void notifyTransactionsChanged() {
-        if(((MainActivity) getActivity()).getPresenter() == null) return;
+        if(getActivity() == null || ((MainActivity) getActivity()).getPresenter() == null) return;
         ((MainActivity) getActivity()).getPresenter().transactionsForCurrentDate(date);
         transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
@@ -286,7 +286,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
 
     @Override
     public void notifyAccountDetailsChanged() {
-        if(((MainActivity) getActivity()).getPresenter() == null) return;
+        if(getActivity() == null || ((MainActivity) getActivity()).getPresenter() == null) return;
         textBudget.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
         textLimit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit()));
     }

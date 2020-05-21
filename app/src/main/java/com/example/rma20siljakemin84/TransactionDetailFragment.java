@@ -396,11 +396,12 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
             description.setBackgroundColor(Color.GREEN);
             deleteBtn.setEnabled(false);
         }
-        budgetEdit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
-        limitEdit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit()));
-        budget = Double.parseDouble(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + "");
-        monthLimit = Double.parseDouble(((MainActivity) getActivity()).getPresenter().getAccount().getMonthlyLimit() + "");
-
+        if(((MainActivity) getActivity()).getPresenter() != null) {
+            budgetEdit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
+            limitEdit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit()));
+            budget = ((MainActivity) getActivity()).getPresenter().getAccount().getBudget();
+            monthLimit = ((MainActivity) getActivity()).getPresenter().getAccount().getMonthlyLimit();
+        }
         if(getActivity().findViewById(R.id.transaction_details) != null){
             closeBtn.setEnabled(false);
         }
