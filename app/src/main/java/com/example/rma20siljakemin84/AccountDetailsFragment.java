@@ -1,5 +1,7 @@
 package com.example.rma20siljakemin84;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -36,8 +38,8 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
                         account.setMonthlyLimit(Double.parseDouble(monthLimitAccountDetails.getText().toString()));
                     } catch (IllegalAmountException e) {
                         e.printStackTrace();
+                        errorScreen();
                     }
-                    //TODO dodati error na baceni izuzetak
                 }
             };
     private View.OnTouchListener swipeListener =
@@ -108,5 +110,14 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
         } catch (IllegalAmountException e) {
             e.printStackTrace();
         }
+    }
+
+    public void errorScreen(){
+        new AlertDialog.Builder(getContext()).setTitle("Illegal limit").setMessage("Cannot set limit amount to negative value").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
     }
 }

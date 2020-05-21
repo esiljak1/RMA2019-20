@@ -129,7 +129,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                                         izmijeniAkaunt();
                                     } catch (IllegalAmountException e) {
                                         e.printStackTrace();
-                                        //TODO dodati error za postavljanje budzeta ispod 0
+                                        errorScreen();
                                     }
                                     ((MainActivity) getActivity()).getPresenter().deleteTransactionWithId(id);
                                     if(getActivity().findViewById(R.id.transaction_details) != null){
@@ -288,7 +288,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                                 e.printStackTrace();
                             } catch (IllegalAmountException e) {
                                 e.printStackTrace();
-                                //TODO dodati error na baceni izuzetak
+                                errorScreen();
                             }
                         }
                     }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -343,12 +343,6 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(view == null) view = inflater.inflate(R.layout.fragment_transaction_detail, container, false);
-
-//        if(((MainActivity) getActivity()).getPresenter() == null){
-//            ((MainActivity) getActivity()).setPresenter(new TransactionPresenter(this));
-//        }else {
-//            ((MainActivity) getActivity()).getPresenter().setView(this);
-//        }
 
         napuniSpinner();
         typeListAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, typeList);
@@ -532,6 +526,14 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
         endDate.setOnClickListener(endDateListener);
 
         return view;
+    }
+
+    private void errorScreen(){
+        new AlertDialog.Builder(getContext()).setTitle("Insufficient funds").setMessage("You don't have enough funds to complete this transaction").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
     }
 
     @Override
