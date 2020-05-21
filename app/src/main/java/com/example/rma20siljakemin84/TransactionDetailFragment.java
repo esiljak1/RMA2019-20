@@ -536,12 +536,10 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
 
     @Override
     public void notifyTransactionsChanged() {
-        System.out.println("Tu sam");
     }
 
     @Override
     public void notifyAddedTransaction(TransactionModel transaction) {
-        System.out.println("Transakcija dodana/azurirana sa id: " + transaction.getId());
         this.id = transaction.getId();
         this.oldAmount = transaction.getAmount();
     }

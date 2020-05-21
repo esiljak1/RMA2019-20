@@ -92,19 +92,19 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
     }
 
 
-//    public void transactionsForCurrentDate(Calendar date){
-//        currentDateTransactions = new ArrayList<>();
-//        boolean uslov = true;
-//        for(TransactionModel t : interactor.getTransactions()){
-//            if(t.getType().equals(Type.REGULARINCOME) || t.getType().equals(Type.REGULARPAYMENT)){
-//                int broj = checkRegular(t, date);
-//                for(int i = 0; i < broj; i++) currentDateTransactions.add(t);
-//            }
-//            else if(uslov && t.getDate().get(Calendar.MONTH) == date.get(Calendar.MONTH) && t.getDate().get(Calendar.YEAR) == date.get(Calendar.YEAR)){
-//                currentDateTransactions.add(t);
-//            }
-//        }
-//    }
+    public void transactionsForCurrentDate(Calendar date){
+        currentDateTransactions = new ArrayList<>();
+        boolean uslov = true;
+        for(TransactionModel t : interactor.getTransactions()){
+            if(t.getType().equals(Type.REGULARINCOME) || t.getType().equals(Type.REGULARPAYMENT)){
+                int broj = checkRegular(t, date);
+                for(int i = 0; i < broj; i++) currentDateTransactions.add(t);
+            }
+            else if(uslov && t.getDate().get(Calendar.MONTH) == date.get(Calendar.MONTH) && t.getDate().get(Calendar.YEAR) == date.get(Calendar.YEAR)){
+                currentDateTransactions.add(t);
+            }
+        }
+    }
 
     public void updateTransaction(TransactionModel newTransaction){
         interactor.update(newTransaction);
