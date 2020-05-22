@@ -44,6 +44,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
     private double budget;
     private double monthLimit;
     private double oldAmount = 0;
+    private Type oldType;
 
     private EditText.OnClickListener dateListener =
             new EditText.OnClickListener(){
@@ -198,6 +199,14 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
         ((MainActivity) getActivity()).getPresenter().getAccount().updateAccount(d1, d2, d3);
     }
 
+    private boolean checkIfOutcome(Type type){
+        return type.equals(Type.INDIVIDUALPAYMENT) || type.equals(Type.REGULARPAYMENT) || type.equals(Type.PURCHASE);
+    }
+
+    private boolean checkIfIncome(Type type){
+        return type.equals(Type.INDIVIDUALINCOME) || type.equals(Type.REGULARINCOME);
+    }
+
     private void changeTransaction() throws ParseException {
         Date temp = new SimpleDateFormat("dd.MM.yyyy").parse(date.getText().toString());
         Calendar cal = Calendar.getInstance(), end = null;
@@ -228,9 +237,29 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
 
         ((MainActivity) getActivity()).getPresenter().setView(this);
 
+        if(oldType == null){
+            oldType = ((Type) spinnerType.getSelectedItem());
+        }
+
         if(id != -1){
             ((MainActivity) getActivity()).getPresenter().updateTransaction(id + "", datum, transaction.getTitle(), transaction.getAmount() + "", endDatum,
                     itemDescription, transactionInterval, transaction.getType().getValue() + "");
+
+            if(checkIfOutcome(oldType) && checkIfIncome(((Type) spinnerType.getSelectedItem()))){
+                try {
+                    ((MainActivity) getActivity()).getPresenter().subtractFromAccountBudget(transaction.getAmount() * -2);
+                } catch (IllegalAmountException e) {
+                    e.printStackTrace();
+                    errorScreen();
+                }
+            }else if(checkIfIncome(oldType) && checkIfOutcome(((Type) spinnerType.getSelectedItem()))){
+                try {
+                    ((MainActivity) getActivity()).getPresenter().subtractFromAccountBudget(transaction.getAmount() * 2);
+                } catch (IllegalAmountException e) {
+                    e.printStackTrace();
+                    errorScreen();
+                }
+            }
         }else{
             ((MainActivity) getActivity()).getPresenter().addTransaction(datum, transaction.getTitle(), transaction.getAmount() + "", endDatum,
                     itemDescription, transactionInterval, transaction.getType().getValue() + "");
@@ -371,6 +400,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
             oldAmount = Double.parseDouble(amount.getText().toString());
             title.setText(arguments.getString("title"));
             spinnerType.setSelection(typeList.indexOf(arguments.getSerializable("type")));
+            oldType = ((Type) arguments.getSerializable("type"));
             if (arguments.getString("description") != null) {
                 description.setText(arguments.getString("description"));
             } else {

@@ -81,27 +81,6 @@ public class GraphsFragment extends Fragment implements ITransactionView{
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     ((MainActivity) getActivity()).getPresenter().setView(GraphsFragment.this);
                     ((MainActivity) getActivity()).getPresenter().getTransactions("", "", "", "");
-//                    switch (position){
-//                        case 0:
-//                        {
-//                            setIncomeChartForDays();
-//                            setSpendingChartForDays();
-//                            setTotalChartForDays();
-//                            break;
-//                        } case 1:
-//                        {
-//                            setIncomeChartForWeeks();
-//                            setSpendingChartForWeeks();
-//                            setTotalChartForWeeks();
-//                            break;
-//                        }
-//                        case 2:
-//                        {
-//                            setIncomeChartForMonths();
-//                            setSpendingChartForMonths();
-//                            setTotalChartForMonths();
-//                        }
-//                    }
                 }
 
                 @Override
