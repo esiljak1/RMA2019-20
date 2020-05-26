@@ -78,7 +78,7 @@ public class GETFilteredTransactions extends AsyncTask<String, Integer, Void> {
     }
 
     private void getFilteredTransactions(String transactionTypeId, String sort, String month, String year){
-        String url1 = TransactionInteractor.ROOT + "/account/" + TransactionInteractor.API_KEY + "/transactions/filter/?page=";
+        String url1 = TransactionInteractor.getROOT() + "/account/" + TransactionInteractor.getApiKey() + "/transactions/filter/?page=";
         ArrayList<TransactionModel> before = new ArrayList<>(transactions);
         transactions.clear();
         int i = 0;

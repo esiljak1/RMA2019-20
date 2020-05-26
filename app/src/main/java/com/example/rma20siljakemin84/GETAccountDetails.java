@@ -32,7 +32,7 @@ public class GETAccountDetails extends AsyncTask<String, Integer, Void> {
 
     @Override
     protected Void doInBackground(String... strings) {
-        String url1 =   TransactionInteractor.ROOT + "/account/" + TransactionInteractor.API_KEY;
+        String url1 =   TransactionInteractor.getROOT() + "/account/" + TransactionInteractor.getApiKey();
         try {
             URL url = new URL(url1);
             HttpURLConnection urlConnection = ((HttpURLConnection) url.openConnection());
@@ -48,13 +48,13 @@ public class GETAccountDetails extends AsyncTask<String, Integer, Void> {
 
             account = new AccountModel(id, budget, totalLimit, monthLimit);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            System.out.println("Izuzetak: " + e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Izuzetak: " + e.getMessage());
         } catch (JSONException e) {
-            e.printStackTrace();
+            System.out.println("Izuzetak: " + e.getMessage());
         } catch (IllegalAmountException e) {
-            e.printStackTrace();
+            System.out.println("Izuzetak: " + e.getMessage());
         }
         return null;
     }

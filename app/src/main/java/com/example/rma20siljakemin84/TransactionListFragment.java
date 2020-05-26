@@ -216,7 +216,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         if(view == null) view = inflater.inflate(R.layout.fragment_transaction_list, container, false);
 
         if(((MainActivity) getActivity()).getPresenter() == null){
-            ((MainActivity) getActivity()).setPresenter(new TransactionPresenter(this));
+            ((MainActivity) getActivity()).setPresenter(new TransactionPresenter(this, getString(R.string.root), getString(R.string.api_id)));
         }
         else{
             ((MainActivity) getActivity()).getPresenter().setView(this);

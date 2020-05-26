@@ -47,7 +47,7 @@ public class POSTUpdateAccount extends AsyncTask<String, Integer, Void> {
     }
 
     private void updateAccount(){
-        String url1 = TransactionInteractor.ROOT + "/account/" + TransactionInteractor.API_KEY;
+        String url1 = TransactionInteractor.getROOT() + "/account/" + TransactionInteractor.getApiKey();
 
         try {
             URL url = new URL(url1);

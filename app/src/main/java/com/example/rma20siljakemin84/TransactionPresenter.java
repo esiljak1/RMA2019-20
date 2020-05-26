@@ -13,9 +13,9 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
 
     private ArrayList<TransactionModel> currentDateTransactions = new ArrayList<>();
 
-    public TransactionPresenter(ITransactionView view) {
+    public TransactionPresenter(ITransactionView view, String root, String api) {
         this.view = view;
-        this.interactor = new TransactionInteractor();
+        this.interactor = new TransactionInteractor(root, api);
         this.account = new AccountPresenter(((IAccountView) view));
     }
 

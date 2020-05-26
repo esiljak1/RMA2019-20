@@ -64,7 +64,7 @@ public class POSTTransaction extends AsyncTask<String, Integer, Void> {
     }
 
     private void addNewTransaction(TransactionModel transaction){
-        String url1 = TransactionInteractor.ROOT + "/account/" + TransactionInteractor.API_KEY + "/transactions";
+        String url1 = TransactionInteractor.getROOT() + "/account/" + TransactionInteractor.getApiKey() + "/transactions";
 
         try {
             URL url = new URL(url1);

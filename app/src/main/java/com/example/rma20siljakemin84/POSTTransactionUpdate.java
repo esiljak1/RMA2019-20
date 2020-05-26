@@ -37,7 +37,7 @@ public class POSTTransactionUpdate extends AsyncTask<String, Integer, Void> {
 
     @Override
     protected Void doInBackground(String... strings) {
-        String url1 = TransactionInteractor.ROOT + "/account/" + TransactionInteractor.API_KEY + "/transactions/" + strings[0];
+        String url1 = TransactionInteractor.getROOT() + "/account/" + TransactionInteractor.getApiKey() + "/transactions/" + strings[0];
 
         try {
             URL url = new URL(url1);

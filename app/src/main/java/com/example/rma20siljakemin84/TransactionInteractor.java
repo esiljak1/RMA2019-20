@@ -9,8 +9,8 @@ import java.util.ArrayList;
 public class TransactionInteractor implements ITransactionInteractor, GETFilteredTransactions.OnTransactionSearchDone,
                                                                       POSTTransaction.OnTransactionPostDone,
                                                                       POSTTransactionUpdate.OnTransactionUpdateDone {
-    public static final String ROOT = "http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com";
-    public static final String API_KEY = "6e8e09ce-5c99-4f3d-a9bd-d0d60b65a5d3";
+    private static String ROOT;
+    private static String API_KEY;
     private TransactionModel model = new TransactionModel();
     private ArrayList<TransactionModel> transactions = new ArrayList<>();
     private TransactionPresenter presenter;
@@ -24,7 +24,17 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         this.presenter = presenter;
     }
 
-    public TransactionInteractor(){
+    public TransactionInteractor(String root, String api){
+        ROOT = root;
+        API_KEY = api;
+    }
+
+    public static String getROOT() {
+        return ROOT;
+    }
+
+    public static String getApiKey() {
+        return API_KEY;
     }
 
     public static String convertStreamToString(InputStream is){

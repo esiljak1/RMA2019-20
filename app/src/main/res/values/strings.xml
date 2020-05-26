@@ -4,5 +4,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="api_id">6e8e09ce-5c99-4f3d-a9bd-d0d60b65a5d3</string>
-    <string name="root">http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com/</string>
+    <string name="root">http://rma20-app-rmaws.apps.us-west-1.starter.openshift-online.com</string>
 </resources>

@@ -17,7 +17,7 @@ public class DELETETransaction extends AsyncTask<Integer, Integer, Void> {
 
     @Override
     protected Void doInBackground(Integer... integers) {
-        String url1 = TransactionInteractor.ROOT + "/account/" + TransactionInteractor.API_KEY + "/transactions/" + integers[0];
+        String url1 = TransactionInteractor.getROOT() + "/account/" + TransactionInteractor.getApiKey() + "/transactions/" + integers[0];
 
         try {
 
