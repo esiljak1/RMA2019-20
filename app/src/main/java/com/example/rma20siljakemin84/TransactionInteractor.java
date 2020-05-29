@@ -204,6 +204,8 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
 
             transactions.remove(transactionModel);
             transactions.add(transactionModel);
+
+            presenter.dodanaTransakcija(transactionModel);
         }
     }
 
@@ -211,6 +213,19 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
     public void deleteTransaction(int id, boolean isConnectedToInternet) {
         if(isConnectedToInternet) {
             new DELETETransaction().execute(id);
+        }else{
+            transactionDBOpenHelper = new TransactionDBOpenHelper(((Context) presenter.getView()));
+            database = transactionDBOpenHelper.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put(TransactionDBOpenHelper.TRANSACTION_ID, id);
+
+            if(isInDatabaseTable(database, TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, id)){
+                database.delete(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, TransactionDBOpenHelper.TRANSACTION_ID + " =?",
+                        new String[]{id + ""});
+            }else{
+                database.insert(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, null, values);
+            }
         }
     }
 
