@@ -34,26 +34,36 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
     }
 
     private TransactionModel getTransactionFromStrings(String ... strings){
+        int i = 0;
+        int id = 0;
+        if(strings.length == 8){
+            id = Integer.parseInt(strings[i]);
+            i++;
+        }
         Calendar date = Calendar.getInstance(), endDate = null;
         try {
-            date.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(strings[0]));
-            if(!strings[3].equals("")){
+            date.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(strings[i]));
+            i+=3;
+            if(!strings[i].equals("")){
                 endDate = Calendar.getInstance();
-                endDate.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(strings[3]));
+                endDate.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(strings[i]));
             }
-            Double amount = Double.parseDouble(strings[2]);
-            int typeId = Integer.parseInt(strings[6]);
-
+            i--;
+            Double amount = Double.parseDouble(strings[i]);
+            i+=4;
+            int typeId = Integer.parseInt(strings[i]);
+            i-=2;
             String itemDescription = null;
-            if(strings[4] != ""){
-                itemDescription = strings[4];
+            if(strings[i] != ""){
+                itemDescription = strings[i];
             }
-
+            i++;
             int transactionInterval = 0;
-            if(!strings[5].equals("")){
-                transactionInterval = Integer.parseInt(strings[5]);
+            if(!strings[i].equals("")){
+                transactionInterval = Integer.parseInt(strings[i]);
             }
-            return new TransactionModel(date, amount, strings[1], Type.fromId(typeId), itemDescription, transactionInterval, endDate);
+            i-=4;
+            return new TransactionModel(id, date, amount, strings[i], Type.fromId(typeId), itemDescription, transactionInterval, endDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -169,6 +179,31 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
     public void updateTransaction(boolean isConnectedToInternet, String... strings) {
         if(isConnectedToInternet) {
             new POSTTransactionUpdate(this).execute(strings);
+        }else{
+            transactionDBOpenHelper = new TransactionDBOpenHelper(((Context) presenter.getView()));
+            database = transactionDBOpenHelper.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            TransactionModel transactionModel = getTransactionFromStrings(strings);
+
+            values.put(TransactionDBOpenHelper.TRANSACTION_DATE, convertDateToString(transactionModel.getDate().getTime()));
+            values.put(TransactionDBOpenHelper.TRANSACTION_AMOUNT, transactionModel.getAmount());
+            values.put(TransactionDBOpenHelper.TRANSACTION_TITLE, transactionModel.getTitle());
+            values.put(TransactionDBOpenHelper.TRANSACTION_END_DATE, convertDateToString(transactionModel.getEndDate().getTime()));
+            values.put(TransactionDBOpenHelper.TRANSACTION_INTERVAL, transactionModel.getTransactionInterval());
+            values.put(TransactionDBOpenHelper.TRANSACTION_ITEM_DESCRIPTION, transactionModel.getItemDescription());
+            values.put(TransactionDBOpenHelper.TRANSACTION_TYPE, transactionModel.getType().getValue());
+
+            if(isInDatabaseTable(database, TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE, transactionModel.getId())){
+                database.update(TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE, values, TransactionDBOpenHelper.TRANSACTION_ID + " =?"
+                        , new String[]{transactionModel.getId() + ""});
+            }else{
+                database.insert(TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE, null, values);
+            }
+            database.close();
+
+            transactions.remove(transactionModel);
+            transactions.add(transactionModel);
         }
     }
 
