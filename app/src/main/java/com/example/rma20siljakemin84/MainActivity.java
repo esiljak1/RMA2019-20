@@ -1,5 +1,8 @@
 package com.example.rma20siljakemin84;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
@@ -85,5 +88,10 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
     @Override
     public void notifyAccountDetailsChanged() {
 
+    }
+    public boolean isConnectedToTheInternet(){
+        ConnectivityManager cm = ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE));
+        return cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED
+                || cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED;
     }
 }

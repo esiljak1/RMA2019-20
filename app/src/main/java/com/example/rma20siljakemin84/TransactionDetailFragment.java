@@ -196,7 +196,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
         double d2 = ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit();
         double d3 = ((MainActivity) getActivity()).getPresenter().getAccount().getMonthlyLimit();
 
-        ((MainActivity) getActivity()).getPresenter().getAccount().updateAccount(d1, d2, d3);
+        ((MainActivity) getActivity()).getPresenter().getAccount().updateAccount(d1, d2, d3, ((MainActivity) getActivity()).isConnectedToTheInternet());
     }
 
     private boolean checkIfOutcome(Type type){

@@ -238,7 +238,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         if(!((MainActivity) getActivity()).isTwoPaneMode()){
             ((MainActivity) getActivity()).getPresenter().getAccount().setView(this);
         }
-        ((MainActivity)getActivity()).getPresenter().getAccount().getDetailsFromWeb();
+        ((MainActivity)getActivity()).getPresenter().getAccount().getDetailsForAccount(((MainActivity) getActivity()).isConnectedToTheInternet());
 
         textBudget.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
         textLimit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit()));

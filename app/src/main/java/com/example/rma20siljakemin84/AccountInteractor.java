@@ -1,8 +1,15 @@
 package com.example.rma20siljakemin84;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
 public class AccountInteractor implements IAccountInteractor, GETAccountDetails.OnAccountSearchDone, POSTUpdateAccount.OnAccountUpdateDone {
     private AccountModel model = AccountModel.getInstance();
     private AccountPresenter presenter;
+    private TransactionDBOpenHelper transactionDBOpenHelper;
+    private SQLiteDatabase database;
 
     public AccountModel getAccount(){
         return model;
@@ -26,13 +33,50 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
     }
 
     @Override
-    public void getAccountDetails() {
-        new GETAccountDetails(this).execute();
+    public void getAccountDetails(boolean connectedToInternet) {
+        if(connectedToInternet){
+            new GETAccountDetails(this).execute();
+        }else{
+            transactionDBOpenHelper = new TransactionDBOpenHelper((Context) presenter.getView());
+            database = transactionDBOpenHelper.getWritableDatabase();
+            String query = "SELECT *" + " FROM "
+                    + TransactionDBOpenHelper.ACCOUNT_TABLE + " ORDER BY " + TransactionDBOpenHelper.ACCOUNT_INTERNAL_ID;
+            Cursor cursor = database.rawQuery(query, null);
+            if(cursor.moveToFirst()){
+                int idPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.ACCOUNT_ID);
+                int amountPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.ACCOUNT_AMOUNT);
+                int totalLimitPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.ACCOUNT_TOTAL_LIMIT);
+                int monthLimitPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.ACCOUNT_MONTH_LIMIT);
+                try {
+                    presenter.fetchedAccountDetails(new AccountModel(cursor.getInt(idPos), cursor.getDouble(amountPos),
+                            cursor.getDouble(totalLimitPos), cursor.getDouble(monthLimitPos)));
+                } catch (IllegalAmountException e) {
+                    e.printStackTrace();
+                }
+            }
+            cursor.close();
+            database.close();
+        }
     }
 
     @Override
-    public void updateAccount(String budget, String totalLimit, String monthLimit) {
-        new POSTUpdateAccount(this).execute(budget, totalLimit, monthLimit);
+    public void updateAccount(String budget, String totalLimit, String monthLimit, boolean connectedToInternet) {
+        if(connectedToInternet){
+            new POSTUpdateAccount(this).execute(budget, totalLimit, monthLimit);
+        }else{
+            transactionDBOpenHelper = new TransactionDBOpenHelper((Context) presenter.getView());
+            database = transactionDBOpenHelper.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put(TransactionDBOpenHelper.ACCOUNT_AMOUNT, Double.parseDouble(budget));
+            values.put(TransactionDBOpenHelper.ACCOUNT_TOTAL_LIMIT, Double.parseDouble(totalLimit));
+            values.put(TransactionDBOpenHelper.ACCOUNT_MONTH_LIMIT, Double.parseDouble(monthLimit));
+
+            database.update(TransactionDBOpenHelper.ACCOUNT_TABLE, values, TransactionDBOpenHelper.ACCOUNT_ID + " = ?", new String[] {TransactionInteractor.getApiKey()});
+            database.close();
+
+            getAccountDetails(false);
+        }
     }
 
     @Override

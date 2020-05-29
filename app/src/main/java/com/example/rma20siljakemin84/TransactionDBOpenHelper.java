@@ -48,7 +48,7 @@ public class TransactionDBOpenHelper extends SQLiteOpenHelper {
     public static final String ACCOUNT_MONTH_LIMIT = "monthLimit";
     private static final String ACCOUNT_TABLE_CREATE =
             "CREATE TABLE IF NOT EXISTS " + ACCOUNT_TABLE + " (" + ACCOUNT_INTERNAL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + ACCOUNT_ID + " INTEGER UNIQUE, "
+            + ACCOUNT_ID + " TEXT UNIQUE, "
             + ACCOUNT_AMOUNT + " REAL, "
             + ACCOUNT_TOTAL_LIMIT + " REAL, "
             + ACCOUNT_MONTH_LIMIT + " REAL);";

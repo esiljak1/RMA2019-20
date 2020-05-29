@@ -8,6 +8,7 @@ public class AccountPresenter implements IAccountPresenter, Parcelable {
     private IAccountView view;
     private AccountInteractor interactor;
 
+
     public AccountPresenter(IAccountView view) {
         this.view = view;
         interactor = new AccountInteractor();
@@ -69,14 +70,14 @@ public class AccountPresenter implements IAccountPresenter, Parcelable {
         view.notifyAccountDetailsChanged();
     }
 
-    public void getDetailsFromWeb(){
+    public void getDetailsForAccount(boolean connectedToTheInternet){
         interactor.setPresenter(this);
-        interactor.getAccountDetails();
+        interactor.getAccountDetails(connectedToTheInternet);
     }
 
-    public void updateAccount(double budget, double totalLimit, double monthLimit){
+    public void updateAccount(double budget, double totalLimit, double monthLimit, boolean connectedToInternet){
         interactor.setPresenter(this);
-        interactor.updateAccount(budget + "", totalLimit + "", monthLimit + "");
+        interactor.updateAccount(budget + "", totalLimit + "", monthLimit + "", connectedToInternet);
     }
 
     public IAccountView getView() {
