@@ -9,8 +9,8 @@ public interface ITransactionInteractor {
     void setTransactions(ArrayList<TransactionModel> transactions);
     void setPresenter(TransactionPresenter presenter);
     TransactionPresenter getPresenter();
-    void getFilteredTransactions(String typeId, String sort, String month, String year);
-    void addTransaction(String ... strings);
-    void updateTransaction(String ... strings);
-    void deleteTransaction(int id);
+    void getFilteredTransactions(String typeId, String sort, String month, String year, boolean isConnected);
+    void addTransaction(boolean isConnected, String ... strings);
+    void updateTransaction(boolean isConnected, String ... strings);
+    void deleteTransaction(int id, boolean isConnected);
 }

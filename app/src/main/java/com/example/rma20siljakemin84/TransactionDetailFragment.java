@@ -132,7 +132,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                                         e.printStackTrace();
                                         errorScreen();
                                     }
-                                    ((MainActivity) getActivity()).getPresenter().deleteTransactionWithId(id);
+                                    ((MainActivity) getActivity()).getPresenter().deleteTransactionWithId(id, ((MainActivity) getActivity()).isConnectedToTheInternet());
                                     if(getActivity().findViewById(R.id.transaction_details) != null){
                                         TransactionDetailFragment detailFragment = new TransactionDetailFragment();
                                         Bundle bundle = new Bundle();
@@ -243,7 +243,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
 
         if(id != -1){
             ((MainActivity) getActivity()).getPresenter().updateTransaction(id + "", datum, transaction.getTitle(), transaction.getAmount() + "", endDatum,
-                    itemDescription, transactionInterval, transaction.getType().getValue() + "");
+                    itemDescription, transactionInterval, transaction.getType().getValue() + "", ((MainActivity) getActivity()).isConnectedToTheInternet());
 
             if(checkIfOutcome(oldType) && checkIfIncome(((Type) spinnerType.getSelectedItem()))){
                 try {
@@ -261,7 +261,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                 }
             }
         }else{
-            ((MainActivity) getActivity()).getPresenter().addTransaction(datum, transaction.getTitle(), transaction.getAmount() + "", endDatum,
+            ((MainActivity) getActivity()).getPresenter().addTransaction(((MainActivity) getActivity()).isConnectedToTheInternet(),datum, transaction.getTitle(), transaction.getAmount() + "", endDatum,
                     itemDescription, transactionInterval, transaction.getType().getValue() + "");
         }
 

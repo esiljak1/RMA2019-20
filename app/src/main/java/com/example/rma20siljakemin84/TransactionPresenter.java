@@ -294,7 +294,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
 
     public void dodanaTransakcija(TransactionModel transaction){
         //TODO promijeniti ovaj TODO u zavisnosti ima li konekcije
-        account.updateAccount(account.getBudget(), account.getOverallLimit(), account.getMonthlyLimit(), true);
+        account.updateAccount(account.getBudget(), account.getOverallLimit(), account.getMonthlyLimit(), new MainActivity().isConnectedToTheInternet());
         view.notifyAddedTransaction(transaction);
     }
 
@@ -305,7 +305,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
     }
     public void getTransactions(String transactionTypeId, String sort, String month, String year, boolean isConnectedToInternet){
         interactor.setPresenter(this);
-        interactor.getFilteredTransactions(transactionTypeId, sort, month, year);
+        interactor.getFilteredTransactions(transactionTypeId, sort, month, year, isConnectedToInternet);
     }
     public void setTransactions(ArrayList<TransactionModel> transactions){
         interactor.setTransactions(transactions);
@@ -313,16 +313,16 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
 
     public void addTransaction(boolean isConnectedToInternet, String ... strings){
         interactor.setPresenter(this);
-        interactor.addTransaction(strings);
+        interactor.addTransaction(isConnectedToInternet, strings);
     }
 
     public void updateTransaction(String id, String date, String title, String amount, String endDate, String itemDescription, String transactionInterval, String typeId, boolean isConnectedToInternet){
         interactor.setPresenter(this);
-        interactor.updateTransaction(id, date, title, amount, endDate, itemDescription, transactionInterval, typeId);
+        interactor.updateTransaction(isConnectedToInternet, id, date, title, amount, endDate, itemDescription, transactionInterval, typeId);
     }
 
     public void deleteTransactionWithId(int id, boolean isConnectedToInternet){
         interactor.setPresenter(this);
-        interactor.deleteTransaction(id);
+        interactor.deleteTransaction(id, isConnectedToInternet);
     }
 }

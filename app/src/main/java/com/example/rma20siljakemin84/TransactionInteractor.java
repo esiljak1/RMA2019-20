@@ -77,13 +77,17 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         presenter.filtriraneTransakcije(transactions);
     }
 
-    public void getFilteredTransactions(String transactionTypeId, String sort, String month, String year){
-        new GETFilteredTransactions(this).execute(transactionTypeId, sort, month, year);
+    public void getFilteredTransactions(String transactionTypeId, String sort, String month, String year, boolean isConnectedToInternet){
+        if(isConnectedToInternet) {
+            new GETFilteredTransactions(this).execute(transactionTypeId, sort, month, year);
+        }
     }
 
     @Override
-    public void addTransaction(String... strings) {
-        new POSTTransaction(this).execute(strings);
+    public void addTransaction(boolean isConnectedToInternet, String... strings) {
+        if(isConnectedToInternet) {
+            new POSTTransaction(this).execute(strings);
+        }
     }
 
     @Override
@@ -92,13 +96,17 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
     }
 
     @Override
-    public void updateTransaction(String... strings) {
-        new POSTTransactionUpdate(this).execute(strings);
+    public void updateTransaction(boolean isConnectedToInternet, String... strings) {
+        if(isConnectedToInternet) {
+            new POSTTransactionUpdate(this).execute(strings);
+        }
     }
 
     @Override
-    public void deleteTransaction(int id) {
-        new DELETETransaction().execute(id);
+    public void deleteTransaction(int id, boolean isConnectedToInternet) {
+        if(isConnectedToInternet) {
+            new DELETETransaction().execute(id);
+        }
     }
 
     @Override

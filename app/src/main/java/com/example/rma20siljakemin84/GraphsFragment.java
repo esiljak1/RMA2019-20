@@ -80,7 +80,7 @@ public class GraphsFragment extends Fragment implements ITransactionView{
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     ((MainActivity) getActivity()).getPresenter().setView(GraphsFragment.this);
-                    ((MainActivity) getActivity()).getPresenter().getTransactions("", "", "", "");
+                    ((MainActivity) getActivity()).getPresenter().getTransactions("", "", "", "", ((MainActivity) getActivity()).isConnectedToTheInternet());
                 }
 
                 @Override
