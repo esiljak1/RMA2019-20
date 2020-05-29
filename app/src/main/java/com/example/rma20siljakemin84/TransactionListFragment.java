@@ -50,7 +50,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                     date.add(Calendar.MONTH, -1);       //pritiskom ili na lijevo ili na desno dugme vrsi se ponovno filtiranje/sortiranje u zavisnosti koji je item
                     textDate.setText(format.format(date.getTime())); //selectovan u spinnerima
                     ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
-                            getSortKey(((String) spinnerSort.getSelectedItem())), "", "", ((MainActivity) getActivity()).isConnectedToTheInternet());
+                            getSortKey(((String) spinnerSort.getSelectedItem())), "", "", ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
                     //notifyTransactionsChanged();
                 }
             };
@@ -61,7 +61,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                     date.add(Calendar.MONTH, 1);
                     textDate.setText(format.format(date.getTime()));
                     ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
-                            getSortKey(((String) spinnerSort.getSelectedItem())), "", "", ((MainActivity) getActivity()).isConnectedToTheInternet());
+                            getSortKey(((String) spinnerSort.getSelectedItem())), "", "", ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
                     //notifyTransactionsChanged();
                 }
             };
@@ -70,7 +70,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
-                            getSortKey(sorts.get(position)), "", "", ((MainActivity) getActivity()).isConnectedToTheInternet());
+                            getSortKey(sorts.get(position)), "", "", ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
                     //notifyTransactionsChanged();
                 }
 
@@ -83,7 +83,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     ((MainActivity) getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(filters.get(position)),
-                            getSortKey(((String) spinnerSort.getSelectedItem())), "", "", ((MainActivity) getActivity()).isConnectedToTheInternet());
+                            getSortKey(((String) spinnerSort.getSelectedItem())), "", "", ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
                     spinnerSort.setSelection(0);
                     //notifyTransactionsChanged();
                 }
@@ -238,7 +238,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         if(!((MainActivity) getActivity()).isTwoPaneMode()){
             ((MainActivity) getActivity()).getPresenter().getAccount().setView(this);
         }
-        ((MainActivity)getActivity()).getPresenter().getAccount().getDetailsForAccount(((MainActivity) getActivity()).isConnectedToTheInternet());
+        ((MainActivity)getActivity()).getPresenter().getAccount().getDetailsForAccount(((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
 
         textBudget.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
         textLimit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit()));
@@ -253,7 +253,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
         listViewTransactions.setAdapter(transactionsAdapter);
 
             ((MainActivity)getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
-                    getSortKey(((String) spinnerSort.getSelectedItem())), "", "", ((MainActivity) getActivity()).isConnectedToTheInternet());
+                    getSortKey(((String) spinnerSort.getSelectedItem())), "", "", ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
 
         leftBtn.setOnClickListener(listenerLeft);
         rightBtn.setOnClickListener(listenerRight);
@@ -281,7 +281,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
     public void notifyAddedTransaction(TransactionModel transaction) {
         date.set(Calendar.MONTH, Calendar.getInstance().get(Calendar.MONTH));
         ((MainActivity)getActivity()).getPresenter().getTransactions("",
-                getSortKey(((String) spinnerSort.getSelectedItem())),"", "", ((MainActivity) getActivity()).isConnectedToTheInternet());
+                getSortKey(((String) spinnerSort.getSelectedItem())),"", "", ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
     }
 
     @Override

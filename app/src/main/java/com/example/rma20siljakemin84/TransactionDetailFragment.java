@@ -132,7 +132,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                                         e.printStackTrace();
                                         errorScreen();
                                     }
-                                    ((MainActivity) getActivity()).getPresenter().deleteTransactionWithId(id, ((MainActivity) getActivity()).isConnectedToTheInternet());
+                                    ((MainActivity) getActivity()).getPresenter().deleteTransactionWithId(id, ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
                                     if(getActivity().findViewById(R.id.transaction_details) != null){
                                         TransactionDetailFragment detailFragment = new TransactionDetailFragment();
                                         Bundle bundle = new Bundle();
@@ -196,7 +196,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
         double d2 = ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit();
         double d3 = ((MainActivity) getActivity()).getPresenter().getAccount().getMonthlyLimit();
 
-        ((MainActivity) getActivity()).getPresenter().getAccount().updateAccount(d1, d2, d3, ((MainActivity) getActivity()).isConnectedToTheInternet());
+        ((MainActivity) getActivity()).getPresenter().getAccount().updateAccount(d1, d2, d3, ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
     }
 
     private boolean checkIfOutcome(Type type){
@@ -243,7 +243,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
 
         if(id != -1){
             ((MainActivity) getActivity()).getPresenter().updateTransaction(id + "", datum, transaction.getTitle(), transaction.getAmount() + "", endDatum,
-                    itemDescription, transactionInterval, transaction.getType().getValue() + "", ((MainActivity) getActivity()).isConnectedToTheInternet());
+                    itemDescription, transactionInterval, transaction.getType().getValue() + "", ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
 
             if(checkIfOutcome(oldType) && checkIfIncome(((Type) spinnerType.getSelectedItem()))){
                 try {
@@ -261,7 +261,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                 }
             }
         }else{
-            ((MainActivity) getActivity()).getPresenter().addTransaction(((MainActivity) getActivity()).isConnectedToTheInternet(),datum, transaction.getTitle(), transaction.getAmount() + "", endDatum,
+            ((MainActivity) getActivity()).getPresenter().addTransaction(((MainActivity) getActivity()).isConnectedToTheInternet(), getContext(),datum, transaction.getTitle(), transaction.getAmount() + "", endDatum,
                     itemDescription, transactionInterval, transaction.getType().getValue() + "");
         }
 

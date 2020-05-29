@@ -1,7 +1,6 @@
 package com.example.rma20siljakemin84;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -43,7 +42,7 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
         if(connectedToInternet){
             new GETAccountDetails(this).execute();
         }else{
-            transactionDBOpenHelper = new TransactionDBOpenHelper((Context) presenter.getView());
+            transactionDBOpenHelper = new TransactionDBOpenHelper(presenter.getContext());
             database = transactionDBOpenHelper.getWritableDatabase();
             String query = "SELECT *" + " FROM "
                     + TransactionDBOpenHelper.ACCOUNT_TABLE + " ORDER BY " + TransactionDBOpenHelper.ACCOUNT_INTERNAL_ID;
@@ -70,7 +69,7 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
         if(connectedToInternet){
             new POSTUpdateAccount(this).execute(budget, totalLimit, monthLimit);
         }else{
-            transactionDBOpenHelper = new TransactionDBOpenHelper((Context) presenter.getView());
+            transactionDBOpenHelper = new TransactionDBOpenHelper(presenter.getContext());
             database = transactionDBOpenHelper.getWritableDatabase();
 
             ContentValues values = new ContentValues();
@@ -87,7 +86,7 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
 
     @Override
     public void onSearchDone(AccountModel account) {
-        transactionDBOpenHelper = new TransactionDBOpenHelper(((Context) presenter.getView()));
+        transactionDBOpenHelper = new TransactionDBOpenHelper(presenter.getContext());
         database = transactionDBOpenHelper.getWritableDatabase();
         if(isDatabaseEmpty(database)){
             ContentValues values = new ContentValues();

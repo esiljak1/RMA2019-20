@@ -33,7 +33,7 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
                         double budget = account.getBudget();
                         double totalLimit = Double.parseDouble(globalLimitAccountDetails.getText().toString());
                         double monthLimit = Double.parseDouble(monthLimitAccountDetails.getText().toString());
-                        ((MainActivity) getActivity()).getPresenter().getAccount().updateAccount(budget, totalLimit, monthLimit, ((MainActivity) getActivity()).isConnectedToTheInternet());
+                        ((MainActivity) getActivity()).getPresenter().getAccount().updateAccount(budget, totalLimit, monthLimit, ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
                         account.setOverallLimit(Double.parseDouble(globalLimitAccountDetails.getText().toString()));
                         account.setMonthlyLimit(Double.parseDouble(monthLimitAccountDetails.getText().toString()));
                     } catch (IllegalAmountException e) {

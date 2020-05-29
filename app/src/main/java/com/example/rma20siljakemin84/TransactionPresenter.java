@@ -1,5 +1,6 @@
 package com.example.rma20siljakemin84;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,6 +11,8 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
     private ITransactionView view;
     private ITransactionInteractor interactor;
     private IAccountPresenter account;
+
+    private Context context;
 
     private ArrayList<TransactionModel> currentDateTransactions = new ArrayList<>();
 
@@ -294,7 +297,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
 
     public void dodanaTransakcija(TransactionModel transaction){
         //TODO promijeniti ovaj TODO u zavisnosti ima li konekcije
-        account.updateAccount(account.getBudget(), account.getOverallLimit(), account.getMonthlyLimit(), new MainActivity().isConnectedToTheInternet());
+        account.updateAccount(account.getBudget(), account.getOverallLimit(), account.getMonthlyLimit(), new MainActivity().isConnectedToTheInternet(), context);
         view.notifyAddedTransaction(transaction);
     }
 
@@ -303,7 +306,8 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
         currentDateTransactions = new ArrayList<>(result);
         view.notifyTransactionsChanged();
     }
-    public void getTransactions(String transactionTypeId, String sort, String month, String year, boolean isConnectedToInternet){
+    public void getTransactions(String transactionTypeId, String sort, String month, String year, boolean isConnectedToInternet, Context context){
+        this.context = context;
         interactor.setPresenter(this);
         interactor.getFilteredTransactions(transactionTypeId, sort, month, year, isConnectedToInternet);
     }
@@ -311,18 +315,29 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
         interactor.setTransactions(transactions);
     }
 
-    public void addTransaction(boolean isConnectedToInternet, String ... strings){
+    public void addTransaction(boolean isConnectedToInternet, Context context, String ... strings){
+        this.context = context;
         interactor.setPresenter(this);
         interactor.addTransaction(isConnectedToInternet, strings);
     }
 
-    public void updateTransaction(String id, String date, String title, String amount, String endDate, String itemDescription, String transactionInterval, String typeId, boolean isConnectedToInternet){
+    public void updateTransaction(String id, String date, String title, String amount, String endDate, String itemDescription, String transactionInterval, String typeId, boolean isConnectedToInternet, Context context){
+        this.context = context;
         interactor.setPresenter(this);
         interactor.updateTransaction(isConnectedToInternet, id, date, title, amount, endDate, itemDescription, transactionInterval, typeId);
     }
 
-    public void deleteTransactionWithId(int id, boolean isConnectedToInternet){
+    public void deleteTransactionWithId(int id, boolean isConnectedToInternet, Context context){
+        this.context = context;
         interactor.setPresenter(this);
         interactor.deleteTransaction(id, isConnectedToInternet);
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 }

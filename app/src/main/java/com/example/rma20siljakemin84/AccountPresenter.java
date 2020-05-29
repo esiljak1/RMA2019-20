@@ -1,5 +1,6 @@
 package com.example.rma20siljakemin84;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,6 +8,7 @@ public class AccountPresenter implements IAccountPresenter, Parcelable {
 
     private IAccountView view;
     private AccountInteractor interactor;
+    private Context context;
 
 
     public AccountPresenter(IAccountView view) {
@@ -70,12 +72,14 @@ public class AccountPresenter implements IAccountPresenter, Parcelable {
         view.notifyAccountDetailsChanged();
     }
 
-    public void getDetailsForAccount(boolean connectedToTheInternet){
+    public void getDetailsForAccount(boolean connectedToTheInternet, Context context){
+        this.context = context;
         interactor.setPresenter(this);
         interactor.getAccountDetails(connectedToTheInternet);
     }
 
-    public void updateAccount(double budget, double totalLimit, double monthLimit, boolean connectedToInternet){
+    public void updateAccount(double budget, double totalLimit, double monthLimit, boolean connectedToInternet, Context context){
+        this.context = context;
         interactor.setPresenter(this);
         interactor.updateAccount(budget + "", totalLimit + "", monthLimit + "", connectedToInternet);
     }
@@ -86,5 +90,13 @@ public class AccountPresenter implements IAccountPresenter, Parcelable {
 
     public void setView(IAccountView view) {
         this.view = view;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 }

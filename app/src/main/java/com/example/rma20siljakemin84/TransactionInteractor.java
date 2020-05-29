@@ -1,7 +1,6 @@
 package com.example.rma20siljakemin84;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -149,7 +148,7 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         if(isConnectedToInternet) {
             new POSTTransaction(this).execute(strings);
         }else{
-            transactionDBOpenHelper = new TransactionDBOpenHelper(((Context) presenter.getView()));
+            transactionDBOpenHelper = new TransactionDBOpenHelper(presenter.getContext());
             database = transactionDBOpenHelper.getWritableDatabase();
 
             TransactionModel transactionModel = getTransactionFromStrings(strings);
@@ -180,7 +179,7 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         if(isConnectedToInternet) {
             new POSTTransactionUpdate(this).execute(strings);
         }else{
-            transactionDBOpenHelper = new TransactionDBOpenHelper(((Context) presenter.getView()));
+            transactionDBOpenHelper = new TransactionDBOpenHelper(presenter.getContext());
             database = transactionDBOpenHelper.getWritableDatabase();
 
             ContentValues values = new ContentValues();
@@ -214,7 +213,7 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         if(isConnectedToInternet) {
             new DELETETransaction().execute(id);
         }else{
-            transactionDBOpenHelper = new TransactionDBOpenHelper(((Context) presenter.getView()));
+            transactionDBOpenHelper = new TransactionDBOpenHelper(presenter.getContext());
             database = transactionDBOpenHelper.getWritableDatabase();
 
             ContentValues values = new ContentValues();
