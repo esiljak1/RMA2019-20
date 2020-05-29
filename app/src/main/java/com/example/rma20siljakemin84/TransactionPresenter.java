@@ -303,7 +303,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
         currentDateTransactions = new ArrayList<>(result);
         view.notifyTransactionsChanged();
     }
-    public void getTransactions(String transactionTypeId, String sort, String month, String year){
+    public void getTransactions(String transactionTypeId, String sort, String month, String year, boolean isConnectedToInternet){
         interactor.setPresenter(this);
         interactor.getFilteredTransactions(transactionTypeId, sort, month, year);
     }
@@ -311,23 +311,17 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
         interactor.setTransactions(transactions);
     }
 
-    public void addTransaction(String ... strings){
+    public void addTransaction(boolean isConnectedToInternet, String ... strings){
         interactor.setPresenter(this);
         interactor.addTransaction(strings);
     }
 
-    public void getRegularTransactions(){
-        interactor.setPresenter(this);
-        interactor.getFilteredTransactions(Type.REGULARINCOME.getValue() + "", "", "", "");
-        interactor.getFilteredTransactions(Type.REGULARPAYMENT.getValue() + "", "", "", "");
-    }
-
-    public void updateTransaction(String id, String date, String title, String amount, String endDate, String itemDescription, String transactionInterval, String typeId){
+    public void updateTransaction(String id, String date, String title, String amount, String endDate, String itemDescription, String transactionInterval, String typeId, boolean isConnectedToInternet){
         interactor.setPresenter(this);
         interactor.updateTransaction(id, date, title, amount, endDate, itemDescription, transactionInterval, typeId);
     }
 
-    public void deleteTransactionWithId(int id){
+    public void deleteTransactionWithId(int id, boolean isConnectedToInternet){
         interactor.setPresenter(this);
         interactor.deleteTransaction(id);
     }

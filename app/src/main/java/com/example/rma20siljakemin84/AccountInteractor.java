@@ -11,6 +11,12 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
     private TransactionDBOpenHelper transactionDBOpenHelper;
     private SQLiteDatabase database;
 
+    private boolean isDatabaseEmpty(SQLiteDatabase database){
+        String query = "SELECT * FROM " + TransactionDBOpenHelper.ACCOUNT_TABLE;
+        Cursor cursor = database.rawQuery(query, null);
+        return cursor.getCount() == 0;
+    }
+
     public AccountModel getAccount(){
         return model;
     }
@@ -81,6 +87,18 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
 
     @Override
     public void onSearchDone(AccountModel account) {
+        transactionDBOpenHelper = new TransactionDBOpenHelper(((Context) presenter.getView()));
+        database = transactionDBOpenHelper.getWritableDatabase();
+        if(isDatabaseEmpty(database)){
+            ContentValues values = new ContentValues();
+            values.put(TransactionDBOpenHelper.ACCOUNT_ID, TransactionInteractor.getApiKey());
+            values.put(TransactionDBOpenHelper.ACCOUNT_AMOUNT, account.getBudget());
+            values.put(TransactionDBOpenHelper.ACCOUNT_TOTAL_LIMIT, account.getTotalLimit());
+            values.put(TransactionDBOpenHelper.ACCOUNT_MONTH_LIMIT, account.getMonthLimit());
+
+            database.insert(TransactionDBOpenHelper.ACCOUNT_TABLE, null, values);
+            database.close();
+        }
         presenter.fetchedAccountDetails(account);
     }
 
