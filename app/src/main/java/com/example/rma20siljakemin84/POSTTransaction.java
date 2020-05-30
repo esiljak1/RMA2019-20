@@ -39,7 +39,7 @@ public class POSTTransaction extends AsyncTask<String, Integer, Void> {
         Calendar date = Calendar.getInstance(), endDate = null;
         try {
             date.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(strings[0]));
-            if(!strings[3].equals("")){
+            if(strings[3] != null && !strings[3].equals("")){
                 endDate = Calendar.getInstance();
                 endDate.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(strings[3]));
             }
@@ -47,12 +47,12 @@ public class POSTTransaction extends AsyncTask<String, Integer, Void> {
             int typeId = Integer.parseInt(strings[6]);
 
             String itemDescription = null;
-            if(strings[4] != ""){
+            if(strings[4] != null && strings[4] != ""){
                 itemDescription = strings[4];
             }
 
             int transactionInterval = 0;
-            if(!strings[5].equals("")){
+            if(strings[5] != null && !strings[5].equals("")){
                 transactionInterval = Integer.parseInt(strings[5]);
             }
 

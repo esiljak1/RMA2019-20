@@ -13,7 +13,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class TransactionInteractor implements ITransactionInteractor, GETFilteredTransactions.OnTransactionSearchDone,
                                                                       POSTTransaction.OnTransactionPostDone,
@@ -74,9 +73,9 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         return null;
     }
 
-    private String convertDateToString(Date date){
+    private String convertDateToString(Calendar date){
         if(date == null) return null;
-        return new SimpleDateFormat("yyyy-MM-dd").format(date);
+        return new SimpleDateFormat("dd.MM.yyyy").format(date.getTime());
     }
     public TransactionPresenter getPresenter() {
         return presenter;
@@ -159,12 +158,16 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
             TransactionModel transactionModel = getTransactionFromStrings(strings);
             ContentValues values = new ContentValues();
 
-            values.put(TransactionDBOpenHelper.TRANSACTION_DATE, convertDateToString(transactionModel.getDate().getTime()));
+            values.put(TransactionDBOpenHelper.TRANSACTION_DATE, convertDateToString(transactionModel.getDate()));
             values.put(TransactionDBOpenHelper.TRANSACTION_AMOUNT, transactionModel.getAmount());
             values.put(TransactionDBOpenHelper.TRANSACTION_TITLE, transactionModel.getTitle());
-            values.put(TransactionDBOpenHelper.TRANSACTION_END_DATE, convertDateToString(transactionModel.getEndDate().getTime()));
+            if(convertDateToString(transactionModel.getEndDate()) != null){
+                values.put(TransactionDBOpenHelper.TRANSACTION_END_DATE, convertDateToString(transactionModel.getEndDate()));
+            }
             values.put(TransactionDBOpenHelper.TRANSACTION_INTERVAL, transactionModel.getTransactionInterval());
-            values.put(TransactionDBOpenHelper.TRANSACTION_ITEM_DESCRIPTION, transactionModel.getItemDescription());
+            if(transactionModel.getItemDescription() != null) {
+                values.put(TransactionDBOpenHelper.TRANSACTION_ITEM_DESCRIPTION, transactionModel.getItemDescription());
+            }
             values.put(TransactionDBOpenHelper.TRANSACTION_TYPE, transactionModel.getType().getValue());
 
             database.insert(TransactionDBOpenHelper.CREATED_TRANSACTIONS_TABLE, null, values);
@@ -190,12 +193,16 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
             ContentValues values = new ContentValues();
             TransactionModel transactionModel = getTransactionFromStrings(strings);
 
-            values.put(TransactionDBOpenHelper.TRANSACTION_DATE, convertDateToString(transactionModel.getDate().getTime()));
+            values.put(TransactionDBOpenHelper.TRANSACTION_DATE, convertDateToString(transactionModel.getDate()));
             values.put(TransactionDBOpenHelper.TRANSACTION_AMOUNT, transactionModel.getAmount());
             values.put(TransactionDBOpenHelper.TRANSACTION_TITLE, transactionModel.getTitle());
-            values.put(TransactionDBOpenHelper.TRANSACTION_END_DATE, convertDateToString(transactionModel.getEndDate().getTime()));
+            if(convertDateToString(transactionModel.getEndDate()) != null){
+                values.put(TransactionDBOpenHelper.TRANSACTION_END_DATE, convertDateToString(transactionModel.getEndDate()));
+            }
             values.put(TransactionDBOpenHelper.TRANSACTION_INTERVAL, transactionModel.getTransactionInterval());
-            values.put(TransactionDBOpenHelper.TRANSACTION_ITEM_DESCRIPTION, transactionModel.getItemDescription());
+            if(transactionModel.getItemDescription() != null) {
+                values.put(TransactionDBOpenHelper.TRANSACTION_ITEM_DESCRIPTION, transactionModel.getItemDescription());
+            }
             values.put(TransactionDBOpenHelper.TRANSACTION_TYPE, transactionModel.getType().getValue());
 
             if(isInDatabaseTable(database, TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE, transactionModel.getId())){

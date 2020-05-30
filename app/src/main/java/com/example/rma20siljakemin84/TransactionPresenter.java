@@ -296,7 +296,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
     }
 
     public void dodanaTransakcija(TransactionModel transaction){
-        account.updateAccount(account.getBudget(), account.getOverallLimit(), account.getMonthlyLimit(), new MainActivity().isConnectedToTheInternet(), context);
+        account.updateAccount(account.getBudget(), account.getOverallLimit(), account.getMonthlyLimit(), ((MainActivity) context).isConnectedToTheInternet(), context);
         view.notifyAddedTransaction(transaction);
     }
 
