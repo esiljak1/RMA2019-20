@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 public class AccountDetailsFragment extends Fragment implements IAccountView{
     private static final int MIN_DISTANCE = 800;        //pomocna varijabla kod swipe-a ukoliko nema ovog i najmanji pokret dovodi do swipe-a
 
-    private TextView budgetAccountDetails;
+    private TextView budgetAccountDetails, onlineAccountText;
     private EditText globalLimitAccountDetails, monthLimitAccountDetails;
     private Button saveBtnAccountDetails;
 
@@ -89,11 +89,19 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
         globalLimitAccountDetails = view.findViewById(R.id.globalLimitAccountDetails);
         monthLimitAccountDetails = view.findViewById(R.id.monthLimitAccountDetails);
         saveBtnAccountDetails = view.findViewById(R.id.saveBtnAccountDetails);
+        onlineAccountText = view.findViewById(R.id.onlineAccountText);
 
         account = ((MainActivity) getActivity()).getPresenter().getAccount();
         budgetAccountDetails.setText(String.format("%.2f", account.getBudget()));
         globalLimitAccountDetails.setText(account.getOverallLimit() + "");
         monthLimitAccountDetails.setText(account.getMonthlyLimit() + "");
+
+        if(((MainActivity) getActivity()).isConnectedToTheInternet()){
+            onlineAccountText.setText("");
+        }else{
+            showOfflineAlert();
+            onlineAccountText.setText("Offline editing");
+        }
 
         saveBtnAccountDetails.setOnClickListener(saveListener);
         view.setOnTouchListener(swipeListener);
@@ -119,5 +127,14 @@ public class AccountDetailsFragment extends Fragment implements IAccountView{
 
             }
         });
+    }
+
+    private void showOfflineAlert(){
+        new AlertDialog.Builder(getContext()).setTitle("Offline mode").setMessage("You are currently browsing in offline mode")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).show();
     }
 }

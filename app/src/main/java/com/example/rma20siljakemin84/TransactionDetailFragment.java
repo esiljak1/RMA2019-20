@@ -32,7 +32,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
     private EditText date, amount, title, description, interval, endDate;
     private Button saveBtn, closeBtn, deleteBtn;
     private Spinner spinnerType;
-    private TextView budgetEdit, limitEdit;
+    private TextView budgetEdit, limitEdit, onlineText;
     private View view;
     private DatePickerDialog dialog;
 
@@ -389,6 +389,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
         spinnerType.setAdapter(typeListAdapter);
         budgetEdit = (TextView) view.findViewById(R.id.globalEdit);
         limitEdit = (TextView) view.findViewById(R.id.limitEdit);
+        onlineText = (TextView) view.findViewById(R.id.onlineText);
 
         Bundle arguments = getArguments();
 
@@ -417,6 +418,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                 endDate.setEnabled(false);
             }
             id = Integer.parseInt(arguments.getString("id"));
+            onlineText.setText("Offline editing");
         }else{
             spinnerType.setBackgroundColor(Color.GREEN);
             spinnerType.setSelection(0);
@@ -425,6 +427,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
             title.setBackgroundColor(Color.GREEN);
             description.setBackgroundColor(Color.GREEN);
             deleteBtn.setEnabled(false);
+            onlineText.setText("Offline addition");
         }
         if(((MainActivity) getActivity()).getPresenter() != null) {
             budgetEdit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
@@ -434,6 +437,11 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
         }
         if(getActivity().findViewById(R.id.transaction_details) != null){
             closeBtn.setEnabled(false);
+        }
+        if(((MainActivity) getActivity()).isConnectedToTheInternet()){
+            onlineText.setText("");
+        }else{
+            showOfflineAlert();
         }
 
         saveBtn.setOnClickListener(saveListener);
@@ -575,5 +583,14 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
     public void notifyAddedTransaction(TransactionModel transaction) {
         this.id = transaction.getId();
         this.oldAmount = transaction.getAmount();
+    }
+
+    private void showOfflineAlert(){
+        new AlertDialog.Builder(getContext()).setTitle("Offline mode").setMessage("You are currently browsing in offline mode")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).show();
     }
 }
