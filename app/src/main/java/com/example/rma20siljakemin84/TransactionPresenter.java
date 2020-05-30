@@ -296,7 +296,6 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
     }
 
     public void dodanaTransakcija(TransactionModel transaction){
-        //TODO promijeniti ovaj TODO u zavisnosti ima li konekcije
         account.updateAccount(account.getBudget(), account.getOverallLimit(), account.getMonthlyLimit(), new MainActivity().isConnectedToTheInternet(), context);
         view.notifyAddedTransaction(transaction);
     }
@@ -339,5 +338,12 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
 
     public void setContext(Context context) {
         this.context = context;
+    }
+
+    public void pokupiIzBaze(Context context, boolean connectedToInternet){
+        if(!connectedToInternet) return;
+        interactor.setPresenter(this);
+        interactor.updateFromDatabase(context);
+        account.updateOnlineAccount(context, true);
     }
 }

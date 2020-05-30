@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
         setContentView(R.layout.activity_main);
         setTitle("RMA Spirala");
 
+        presenter = new TransactionPresenter(this, getString(R.string.root), getString(R.string.api_id));
+        presenter.pokupiIzBaze(this, isConnectedToTheInternet());
 
         FragmentManager fm = getSupportFragmentManager();
 

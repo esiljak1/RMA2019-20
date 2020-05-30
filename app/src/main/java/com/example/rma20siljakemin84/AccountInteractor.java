@@ -1,6 +1,7 @@
 package com.example.rma20siljakemin84;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -104,5 +105,25 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
     @Override
     public void onUpdateDone(AccountModel account) {
         presenter.fetchedAccountDetails(account);
+    }
+
+    public void updateFromDatabase(Context context){
+        transactionDBOpenHelper = new TransactionDBOpenHelper(context);
+        database = transactionDBOpenHelper.getWritableDatabase();
+
+        String query = "SELECT * FROM " + TransactionDBOpenHelper.ACCOUNT_TABLE;
+        Cursor cursor = database.rawQuery(query, null);
+
+        if(cursor.moveToFirst()){
+            int amountPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.ACCOUNT_AMOUNT);
+            int totalLimitPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.ACCOUNT_TOTAL_LIMIT);
+            int monthLimitPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.ACCOUNT_MONTH_LIMIT);
+
+            updateAccount(cursor.getDouble(amountPos) + "", cursor.getDouble(totalLimitPos) + "", cursor.getDouble(monthLimitPos) + "", true);
+        }
+        cursor.close();
+
+        database.execSQL("DELETE FROM " + TransactionDBOpenHelper.ACCOUNT_TABLE);
+        database.close();
     }
 }

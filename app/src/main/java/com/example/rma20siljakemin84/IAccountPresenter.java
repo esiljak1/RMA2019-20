@@ -8,4 +8,5 @@ public interface IAccountPresenter{
     double getBudget();
     double getOverallLimit();
     double getMonthlyLimit();
+    void updateOnlineAccount(Context context, boolean connectedToInternet);
 }

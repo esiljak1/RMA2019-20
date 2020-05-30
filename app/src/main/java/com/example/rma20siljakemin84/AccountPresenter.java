@@ -99,4 +99,11 @@ public class AccountPresenter implements IAccountPresenter, Parcelable {
     public void setContext(Context context) {
         this.context = context;
     }
+
+    @Override
+    public void updateOnlineAccount(Context context, boolean connectedToInternet) {
+        if(!connectedToInternet) return;
+        interactor.setPresenter(this);
+        interactor.updateFromDatabase(context);
+    }
 }

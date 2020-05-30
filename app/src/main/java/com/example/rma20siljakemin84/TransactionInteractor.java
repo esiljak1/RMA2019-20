@@ -1,6 +1,7 @@
 package com.example.rma20siljakemin84;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -30,6 +31,10 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         String query = "SELECT * FROM " + name + " WHERE " + TransactionDBOpenHelper.TRANSACTION_ID + " = " + id;
         Cursor cursor = database.rawQuery(query, null);
         return cursor.getCount() != 0;
+    }
+
+    private String getQueryForTable(String table){
+        return "SELECT * FROM " + table;
     }
 
     private TransactionModel getTransactionFromStrings(String ... strings){
@@ -231,5 +236,61 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
     @Override
     public void OnUpdateDone(TransactionModel transaction) {
         presenter.dodanaTransakcija(transaction);
+    }
+
+    @Override
+    public void updateFromDatabase(Context context) {
+        transactionDBOpenHelper = new TransactionDBOpenHelper(context);
+        database = transactionDBOpenHelper.getWritableDatabase();
+
+        String query = getQueryForTable(TransactionDBOpenHelper.CREATED_TRANSACTIONS_TABLE);
+        Cursor cursor = database.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            int titlePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_TITLE);
+            int amountPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_AMOUNT);
+            int datePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_DATE);
+            int endDatePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_END_DATE);
+            int descriptionPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_ITEM_DESCRIPTION);
+            int intervalPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_INTERVAL);
+            int typePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_TYPE);
+            do{
+                addTransaction(true, cursor.getString(datePos), cursor.getString(titlePos), cursor.getDouble(amountPos) + "",
+                        cursor.getString(endDatePos), cursor.getString(descriptionPos), cursor.getInt(intervalPos) + "", cursor.getInt(typePos) + "");
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+
+        query = getQueryForTable(TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE);
+        cursor = database.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            int idPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_ID);
+            int titlePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_TITLE);
+            int amountPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_AMOUNT);
+            int datePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_DATE);
+            int endDatePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_END_DATE);
+            int descriptionPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_ITEM_DESCRIPTION);
+            int intervalPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_INTERVAL);
+            int typePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_TYPE);
+            do{
+                updateTransaction(true, cursor.getInt(idPos) + "", cursor.getString(datePos), cursor.getString(titlePos),
+                        cursor.getDouble(amountPos) + "", cursor.getString(endDatePos), cursor.getString(descriptionPos),
+                        cursor.getInt(intervalPos) + "", cursor.getInt(typePos) + "");
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        query = getQueryForTable(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE);
+        cursor = database.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            int idPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_ID);
+            do{
+                deleteTransaction(cursor.getInt(idPos), true);
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        database.execSQL("DELETE FROM " + TransactionDBOpenHelper.CREATED_TRANSACTIONS_TABLE);
+        database.execSQL("DELETE FROM " + TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE);
+        database.execSQL("DELETE FROM " + TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE);
+        database.close();
     }
 }

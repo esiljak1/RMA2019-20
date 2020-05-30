@@ -1,5 +1,7 @@
 package com.example.rma20siljakemin84;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 
 public interface ITransactionInteractor {
@@ -13,4 +15,5 @@ public interface ITransactionInteractor {
     void addTransaction(boolean isConnected, String ... strings);
     void updateTransaction(boolean isConnected, String ... strings);
     void deleteTransaction(int id, boolean isConnected);
+    void updateFromDatabase(Context context);
 }
