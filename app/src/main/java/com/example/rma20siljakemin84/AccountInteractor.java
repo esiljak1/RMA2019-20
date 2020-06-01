@@ -74,35 +74,22 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
             database = transactionDBOpenHelper.getWritableDatabase();
 
             ContentValues values = new ContentValues();
+            values.put(TransactionDBOpenHelper.ACCOUNT_ID, TransactionInteractor.getApiKey());
             values.put(TransactionDBOpenHelper.ACCOUNT_AMOUNT, Double.parseDouble(budget));
             values.put(TransactionDBOpenHelper.ACCOUNT_TOTAL_LIMIT, Double.parseDouble(totalLimit));
             values.put(TransactionDBOpenHelper.ACCOUNT_MONTH_LIMIT, Double.parseDouble(monthLimit));
 
-            if(database.rawQuery("SELECT * FROM " + TransactionDBOpenHelper.ACCOUNT_TABLE + " WHERE " + TransactionDBOpenHelper.ACCOUNT_ID + " = ?", new String[] {TransactionInteractor.getApiKey()}).getCount() == 0){
-                System.out.println("Nema se sta update-at");
+            if(isDatabaseEmpty(database)){
+                database.insert(TransactionDBOpenHelper.ACCOUNT_TABLE, null, values);
+            }else{
+                database.update(TransactionDBOpenHelper.ACCOUNT_TABLE, values, TransactionDBOpenHelper.ACCOUNT_ID + " = ?", new String[] {TransactionInteractor.getApiKey()});
             }
-
-            database.update(TransactionDBOpenHelper.ACCOUNT_TABLE, values, TransactionDBOpenHelper.ACCOUNT_ID + " = ?", new String[] {TransactionInteractor.getApiKey()});
-            database.close();
-
             getAccountDetails(false);
         }
     }
 
     @Override
     public void onSearchDone(AccountModel account) {
-        transactionDBOpenHelper = new TransactionDBOpenHelper(presenter.getContext());
-        database = transactionDBOpenHelper.getWritableDatabase();
-        if(isDatabaseEmpty(database)){
-            ContentValues values = new ContentValues();
-            values.put(TransactionDBOpenHelper.ACCOUNT_ID, TransactionInteractor.getApiKey());
-            values.put(TransactionDBOpenHelper.ACCOUNT_AMOUNT, account.getBudget());
-            values.put(TransactionDBOpenHelper.ACCOUNT_TOTAL_LIMIT, account.getTotalLimit());
-            values.put(TransactionDBOpenHelper.ACCOUNT_MONTH_LIMIT, account.getMonthLimit());
-
-            database.insert(TransactionDBOpenHelper.ACCOUNT_TABLE, null, values);
-            database.close();
-        }
         presenter.fetchedAccountDetails(account);
     }
 

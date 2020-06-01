@@ -53,10 +53,10 @@ public class TransactionDBOpenHelper extends SQLiteOpenHelper {
                     + TRANSACTION_END_DATE + " DATE);";
     private static final String UPDATED_TRANSACTIONS_DROP = "DROP TABLE IF EXISTS " + UPDATED_TRANSACTIONS_TABLE;
 
-    public static final String DELETED_TRANSACTIONS_TABLE = "deletedTransactions";
+    public static final String DELETED_TRANSACTIONS_TABLE = "deletedTransactionsTable";
     private static final String DELETED_TRANSACTIONS_TABLE_CREATE =
             "CREATE TABLE IF NOT EXISTS " + DELETED_TRANSACTIONS_TABLE + " (" + TRANSACTION_INTERNAL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + TRANSACTION_ID + "INTEGER UNIQUE);";
+            + TRANSACTION_ID + " INTEGER UNIQUE);";
     private static final String DELETED_TRANSACTIONS_DROP = "DROP TABLE IF EXISTS " + DELETED_TRANSACTIONS_TABLE;
 
     public static final String ACCOUNT_TABLE = "account";

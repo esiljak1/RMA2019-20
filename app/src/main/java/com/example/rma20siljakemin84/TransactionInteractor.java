@@ -32,6 +32,17 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         return cursor.getCount() != 0;
     }
 
+    private boolean isDatabaseEmpty(SQLiteDatabase database, String name){
+        String query = "SELECT * FROM " + name;
+        Cursor cursor = database.rawQuery(query, null);
+        return cursor.getCount() == 0;
+    }
+
+    private boolean existsTable(SQLiteDatabase database){
+        Cursor cursor = database.rawQuery("SELECT DISTINCT tbl_name FROM sqlite_master WHERE tbl_name = '" + TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE + "'", null);
+        return cursor.getCount() != 0;
+    }
+
     private String getQueryForTable(String table){
         return "SELECT * FROM " + table;
     }
@@ -232,8 +243,8 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
             ContentValues values = new ContentValues();
             values.put(TransactionDBOpenHelper.TRANSACTION_ID, id);
 
-            if(isInDatabaseTable(database, TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, id)){
-                database.delete(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, TransactionDBOpenHelper.TRANSACTION_ID + " =?",
+            if(!isDatabaseEmpty(database, TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE) && isInDatabaseTable(database, TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, id)){
+                database.delete(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, TransactionDBOpenHelper.TRANSACTION_ID + " = ?",
                         new String[]{id + ""});
             }else{
                 database.insert(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, null, values);
@@ -251,6 +262,10 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         transactionDBOpenHelper = new TransactionDBOpenHelper(context);
         database = transactionDBOpenHelper.getWritableDatabase();
 
+        if(!existsTable(database)){
+            System.out.println("Delete tabela nije kreirana");
+        }
+
         String query = getQueryForTable(TransactionDBOpenHelper.CREATED_TRANSACTIONS_TABLE);
         Cursor cursor = database.rawQuery(query, null);
         if(cursor.moveToFirst()){
@@ -266,7 +281,6 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
                         cursor.getString(endDatePos), cursor.getString(descriptionPos), cursor.getInt(intervalPos) + "", cursor.getInt(typePos) + "");
             }while(cursor.moveToNext());
         }
-        cursor.close();
 
         query = getQueryForTable(TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE);
         cursor = database.rawQuery(query, null);
@@ -285,7 +299,6 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
                         cursor.getInt(intervalPos) + "", cursor.getInt(typePos) + "");
             }while(cursor.moveToNext());
         }
-        cursor.close();
         query = getQueryForTable(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE);
         cursor = database.rawQuery(query, null);
         if(cursor.moveToFirst()){
