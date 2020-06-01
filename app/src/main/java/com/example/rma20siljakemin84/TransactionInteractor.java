@@ -314,4 +314,14 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         database.execSQL("DELETE FROM " + TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE);
         database.close();
     }
+
+    public boolean isInDatabaseDeletedTable(Context context, int id){
+        transactionDBOpenHelper = new TransactionDBOpenHelper(context);
+        database = transactionDBOpenHelper.getWritableDatabase();
+
+        String query = "SELECT * FROM " + TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE + " WHERE " + TransactionDBOpenHelper.TRANSACTION_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(query, new String[]{id + ""});
+        return cursor.getCount() != 0;
+    }
 }

@@ -190,6 +190,9 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
         if(spinnerType.getSelectedItem().equals(Type.REGULARINCOME) || spinnerType.getSelectedItem().equals(Type.INDIVIDUALINCOME)){
             vrijednost*=-1;
         }
+        if(deleteBtn.getText().toString().equals("Undo delete")){
+            vrijednost*=-1;
+        }
         ((MainActivity) getActivity()).getPresenter().getAccount()
                 .setBudget(((MainActivity) getActivity()).getPresenter().getAccount().getBudget() + vrijednost);
         double d1 = ((MainActivity) getActivity()).getPresenter().getAccount().getBudget();
@@ -418,6 +421,9 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                 endDate.setEnabled(false);
             }
             id = Integer.parseInt(arguments.getString("id"));
+            if(((MainActivity) getActivity()).getPresenter().isDeletedTransaction(getContext(), id)){
+                deleteBtn.setText("Undo delete");
+            }
             onlineText.setText("Offline editing");
         }else{
             spinnerType.setBackgroundColor(Color.GREEN);

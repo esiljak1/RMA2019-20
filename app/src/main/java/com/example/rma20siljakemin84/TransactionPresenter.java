@@ -342,6 +342,11 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
         this.context = context;
     }
 
+    public boolean isDeletedTransaction(Context context, int transactionId){
+        this.interactor.setPresenter(this);
+        return interactor.isInDatabaseDeletedTable(context, transactionId);
+    }
+
     public void pokupiIzBaze(Context context, boolean connectedToInternet){
         if(!connectedToInternet) return;
         interactor.setPresenter(this);
