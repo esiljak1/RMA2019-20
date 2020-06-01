@@ -174,6 +174,7 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
             database.close();
 
             transactions.add(transactionModel);
+            presenter.dodanaTransakcija(transactionModel);
         }
     }
 

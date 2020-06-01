@@ -306,12 +306,12 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             try {
-                                changeTransaction();
                                 int znak = 1;
                                 if(spinnerType.getSelectedItem().equals(Type.REGULARINCOME) || spinnerType.getSelectedItem().equals(Type.INDIVIDUALINCOME)){        //ako je dobit postavljamo znak na -1
                                     znak = -1;                                                                                                                  //jer minus puta minus daju plus
                                 }
                                 ((MainActivity) getActivity()).getPresenter().subtractFromAccountBudget(iznos*znak);
+                                changeTransaction();
                                 budgetEdit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
                             } catch (ParseException e) {
                                 e.printStackTrace();
@@ -327,12 +327,12 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
             }).show();
         }else{
             try {
-                changeTransaction();
                 int znak = 1;
                 if(spinnerType.getSelectedItem().equals(Type.REGULARINCOME) || spinnerType.getSelectedItem().equals(Type.INDIVIDUALINCOME)){
                     znak = -1;
                 }
                 ((MainActivity) getActivity()).getPresenter().subtractFromAccountBudget(iznos*znak);
+                changeTransaction();
                 budgetEdit.setText(String.format("%.2f", ((MainActivity) getActivity()).getPresenter().getAccount().getBudget()));
             } catch (ParseException e) {
                 e.printStackTrace();

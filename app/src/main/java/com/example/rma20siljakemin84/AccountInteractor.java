@@ -78,6 +78,10 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
             values.put(TransactionDBOpenHelper.ACCOUNT_TOTAL_LIMIT, Double.parseDouble(totalLimit));
             values.put(TransactionDBOpenHelper.ACCOUNT_MONTH_LIMIT, Double.parseDouble(monthLimit));
 
+            if(database.rawQuery("SELECT * FROM " + TransactionDBOpenHelper.ACCOUNT_TABLE + " WHERE " + TransactionDBOpenHelper.ACCOUNT_ID + " = ?", new String[] {TransactionInteractor.getApiKey()}).getCount() == 0){
+                System.out.println("Nema se sta update-at");
+            }
+
             database.update(TransactionDBOpenHelper.ACCOUNT_TABLE, values, TransactionDBOpenHelper.ACCOUNT_ID + " = ?", new String[] {TransactionInteractor.getApiKey()});
             database.close();
 
