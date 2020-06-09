@@ -425,8 +425,10 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
             internal_id = Integer.parseInt(arguments.getString("internal_id"));
             if(((MainActivity) getActivity()).getPresenter().isDeletedTransaction(getContext(), id)){
                 deleteBtn.setText("Undo delete");
+                onlineText.setText("Offline delete");
+            }else{
+                onlineText.setText("Offline editing");
             }
-            onlineText.setText("Offline editing");
         }else{
             spinnerType.setBackgroundColor(Color.GREEN);
             spinnerType.setSelection(0);
