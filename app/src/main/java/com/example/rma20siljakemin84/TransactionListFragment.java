@@ -222,7 +222,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
             ((MainActivity) getActivity()).getPresenter().setView(this);
         }
 
-        ((MainActivity) getActivity()).getPresenter().pokupiIzBaze(getContext(), ((MainActivity) getActivity()).isConnectedToTheInternet());
+//        ((MainActivity) getActivity()).getPresenter().pokupiIzBaze(getContext(), ((MainActivity) getActivity()).isConnectedToTheInternet());
 
         listViewTransactions = (ListView)view.findViewById(R.id.listViewTransactions);
         spinnerSort = (Spinner)view.findViewById(R.id.spinnerSort);

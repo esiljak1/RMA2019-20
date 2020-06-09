@@ -1,6 +1,7 @@
 package com.example.rma20siljakemin84;
 
 import android.content.Context;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import androidx.fragment.app.FragmentManager;
 public class MainActivity extends AppCompatActivity implements ITransactionView, IAccountView{
     private boolean twoPaneMode = false;
     private boolean transactionsSet = false;
+    private ConnectivityBroadcastReceiver receiver = new ConnectivityBroadcastReceiver();
+    private IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
     
     private TransactionPresenter presenter;    //presenter drzimo u mainu da mu mozemo pristupati iz svih fragmenata
 
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
         setTitle("RMA Spirala");
 
         presenter = new TransactionPresenter(this, getString(R.string.root), getString(R.string.api_id));
+        updateFromDatabase();
 
         FragmentManager fm = getSupportFragmentManager();
 
@@ -94,5 +98,23 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
         ConnectivityManager cm = ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE));
         return cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED
                 || cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(receiver);
+        super.onPause();
+    }
+
+    public void updateFromDatabase(){
+        if(presenter != null){
+            presenter.pokupiIzBaze(this, isConnectedToTheInternet());
+        }
     }
 }

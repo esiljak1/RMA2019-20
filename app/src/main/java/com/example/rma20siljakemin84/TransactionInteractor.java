@@ -354,7 +354,10 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
                 TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID, TransactionDBOpenHelper.TRANSACTION_ID
         };
 
-        Cursor cursor = cr.query(deletedTransactionsUri, kolone, null, null, null);
+        String where = TransactionDBOpenHelper.TRANSACTION_ID + " = ?";
+        String[] whereArgs = new String[]{id + ""};
+
+        Cursor cursor = cr.query(deletedTransactionsUri, kolone, where, whereArgs, null);
         return cursor.getCount() != 0;
     }
 }

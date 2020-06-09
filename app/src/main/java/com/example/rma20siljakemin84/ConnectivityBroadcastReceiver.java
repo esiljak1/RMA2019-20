@@ -14,6 +14,7 @@ public class ConnectivityBroadcastReceiver extends BroadcastReceiver {
             Toast.makeText(context, "Disconected", Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(context, "Connected", Toast.LENGTH_SHORT).show();
+            ((MainActivity) context).updateFromDatabase();
         }
     }
 }
