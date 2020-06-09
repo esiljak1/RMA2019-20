@@ -1,19 +1,27 @@
 package com.example.rma20siljakemin84;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
 public class AccountInteractor implements IAccountInteractor, GETAccountDetails.OnAccountSearchDone, POSTUpdateAccount.OnAccountUpdateDone {
     private AccountModel model = AccountModel.getInstance();
     private AccountPresenter presenter;
-    private TransactionDBOpenHelper transactionDBOpenHelper;
-    private SQLiteDatabase database;
 
-    private boolean isDatabaseEmpty(SQLiteDatabase database){
-        String query = "SELECT * FROM " + TransactionDBOpenHelper.ACCOUNT_TABLE;
-        Cursor cursor = database.rawQuery(query, null);
+    private Uri getAccountUri(){
+        return Uri.parse("content://rma.provider.account/elements");
+    }
+
+    private boolean isDatabaseEmpty(){
+        ContentResolver cr = presenter.getContext().getApplicationContext().getContentResolver();
+        Uri adresa = getAccountUri();
+        String[] kolone = new String[]{
+                TransactionDBOpenHelper.ACCOUNT_INTERNAL_ID, TransactionDBOpenHelper.ACCOUNT_ID
+        };
+
+        Cursor cursor = cr.query(adresa, kolone, null, null, null);
         return cursor.getCount() == 0;
     }
 
@@ -43,11 +51,15 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
         if(connectedToInternet){
             new GETAccountDetails(this).execute();
         }else{
-            transactionDBOpenHelper = new TransactionDBOpenHelper(presenter.getContext());
-            database = transactionDBOpenHelper.getWritableDatabase();
-            String query = "SELECT *" + " FROM "
-                    + TransactionDBOpenHelper.ACCOUNT_TABLE + " ORDER BY " + TransactionDBOpenHelper.ACCOUNT_INTERNAL_ID;
-            Cursor cursor = database.rawQuery(query, null);
+            ContentResolver cr = presenter.getContext().getApplicationContext().getContentResolver();
+            Uri adresa = getAccountUri();
+            String[] kolone = new String[]{
+                    TransactionDBOpenHelper.ACCOUNT_INTERNAL_ID, TransactionDBOpenHelper.ACCOUNT_ID,
+                    TransactionDBOpenHelper.ACCOUNT_AMOUNT, TransactionDBOpenHelper.ACCOUNT_TOTAL_LIMIT, TransactionDBOpenHelper.ACCOUNT_MONTH_LIMIT
+            };
+            String order = TransactionDBOpenHelper.ACCOUNT_INTERNAL_ID;
+
+            Cursor cursor = cr.query(adresa, kolone, null, null, order);
             if(cursor.moveToFirst()){
                 int idPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.ACCOUNT_ID);
                 int amountPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.ACCOUNT_AMOUNT);
@@ -61,7 +73,6 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
                 }
             }
             cursor.close();
-            database.close();
         }
     }
 
@@ -70,8 +81,9 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
         if(connectedToInternet){
             new POSTUpdateAccount(this).execute(budget, totalLimit, monthLimit);
         }else{
-            transactionDBOpenHelper = new TransactionDBOpenHelper(presenter.getContext());
-            database = transactionDBOpenHelper.getWritableDatabase();
+
+            ContentResolver cr = presenter.getContext().getApplicationContext().getContentResolver();
+            Uri adresa = getAccountUri();
 
             ContentValues values = new ContentValues();
             values.put(TransactionDBOpenHelper.ACCOUNT_ID, TransactionInteractor.getApiKey());
@@ -79,10 +91,10 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
             values.put(TransactionDBOpenHelper.ACCOUNT_TOTAL_LIMIT, Double.parseDouble(totalLimit));
             values.put(TransactionDBOpenHelper.ACCOUNT_MONTH_LIMIT, Double.parseDouble(monthLimit));
 
-            if(isDatabaseEmpty(database)){
-                database.insert(TransactionDBOpenHelper.ACCOUNT_TABLE, null, values);
+            if(isDatabaseEmpty()){
+                cr.insert(adresa, values);
             }else{
-                database.update(TransactionDBOpenHelper.ACCOUNT_TABLE, values, TransactionDBOpenHelper.ACCOUNT_ID + " = ?", new String[] {TransactionInteractor.getApiKey()});
+                cr.update(adresa, values, TransactionDBOpenHelper.ACCOUNT_ID + " = ?", new String[]{TransactionInteractor.getApiKey()});
             }
             getAccountDetails(false);
         }
@@ -99,11 +111,14 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
     }
 
     public void updateFromDatabase(Context context){
-        transactionDBOpenHelper = new TransactionDBOpenHelper(context);
-        database = transactionDBOpenHelper.getWritableDatabase();
+        ContentResolver cr = context.getApplicationContext().getContentResolver();
+        Uri adresa = getAccountUri();
+        String[] kolone = new String[]{
+                TransactionDBOpenHelper.ACCOUNT_INTERNAL_ID, TransactionDBOpenHelper.ACCOUNT_ID, TransactionDBOpenHelper.ACCOUNT_AMOUNT,
+                TransactionDBOpenHelper.ACCOUNT_TOTAL_LIMIT, TransactionDBOpenHelper.ACCOUNT_MONTH_LIMIT
+        };
 
-        String query = "SELECT * FROM " + TransactionDBOpenHelper.ACCOUNT_TABLE;
-        Cursor cursor = database.rawQuery(query, null);
+        Cursor cursor = cr.query(adresa, kolone, null, null, null);
 
         if(cursor.moveToFirst()){
             int amountPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.ACCOUNT_AMOUNT);
@@ -114,7 +129,6 @@ public class AccountInteractor implements IAccountInteractor, GETAccountDetails.
         }
         cursor.close();
 
-        database.execSQL("DELETE FROM " + TransactionDBOpenHelper.ACCOUNT_TABLE);
-        database.close();
+        cr.delete(adresa, null, null);
     }
 }

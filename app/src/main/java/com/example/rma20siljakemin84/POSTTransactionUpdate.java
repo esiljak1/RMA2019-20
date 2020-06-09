@@ -64,14 +64,19 @@ public class POSTTransactionUpdate extends AsyncTask<String, Integer, Void> {
 
 
         } catch (MalformedURLException e) {
+            System.out.println("Izuzetak: " + e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
+            System.out.println("Izuzetak: " + e.getMessage());
             e.printStackTrace();
         } catch (ParseException e) {
+            System.out.println("Izuzetak: " + e.getMessage());
             e.printStackTrace();
         } catch (IllegalTransactionArgumentException e) {
+            System.out.println("Izuzetak: " + e.getMessage());
             e.printStackTrace();
         } catch (JSONException e) {
+            System.out.println("Izuzetak: " + e.getMessage());
             e.printStackTrace();
         }
 

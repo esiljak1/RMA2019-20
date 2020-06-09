@@ -1,9 +1,10 @@
 package com.example.rma20siljakemin84;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,28 +24,66 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
     private ArrayList<TransactionModel> transactions = new ArrayList<>();
     private TransactionPresenter presenter;
 
-    private TransactionDBOpenHelper transactionDBOpenHelper;
-    private SQLiteDatabase database;
+    private Uri getCreatedUri(){
+        return Uri.parse("content://rma.provider.createdTransactions/elements");
+    }
 
-    private boolean isInDatabaseTable(SQLiteDatabase database, String name, Integer id){
-        String query = "SELECT * FROM " + name + " WHERE " + TransactionDBOpenHelper.TRANSACTION_ID + " = " + id;
-        Cursor cursor = database.rawQuery(query, null);
+    private Uri getUpdatedUri(){
+        return Uri.parse("content://rma.provider.updatedTransactions/elements");
+    }
+
+    private Uri getDeletedUri(){
+        return Uri.parse("content://rma.provider.deletedTransactionsTable/elements");
+    }
+
+    private boolean isInDatabaseTable(String name, Integer id){
+        ContentResolver cr = presenter.getContext().getApplicationContext().getContentResolver();
+        Uri adresa = null;
+        if(name.equals(TransactionDBOpenHelper.CREATED_TRANSACTIONS_TABLE)){
+            adresa = getCreatedUri();
+        }else if(name.equals(TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE)){
+            adresa = getUpdatedUri();
+        }else{
+            adresa = getDeletedUri();
+        }
+        String[] kolone = new String[]{
+                TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID, TransactionDBOpenHelper.TRANSACTION_ID
+        };
+
+        String where = TransactionDBOpenHelper.TRANSACTION_ID + " = ?";
+        String[] whereArgs = new String[]{id + ""};
+        Cursor cursor = cr.query(adresa, kolone, where, whereArgs, null);
         return cursor.getCount() != 0;
     }
 
-    private boolean isDatabaseEmpty(SQLiteDatabase database, String name){
-        String query = "SELECT * FROM " + name;
-        Cursor cursor = database.rawQuery(query, null);
-        return cursor.getCount() == 0;
-    }
-
-    private boolean existsTable(SQLiteDatabase database){
-        Cursor cursor = database.rawQuery("SELECT DISTINCT tbl_name FROM sqlite_master WHERE tbl_name = '" + TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE + "'", null);
-        return cursor.getCount() != 0;
-    }
-
-    private String getQueryForTable(String table){
-        return "SELECT * FROM " + table;
+    private Cursor getCursorForTable(String table, Context context){
+        ContentResolver cr = context.getApplicationContext().getContentResolver();
+        if(!table.equals(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE)){
+            String[] kolone = new String[]{
+                    TransactionDBOpenHelper.TRANSACTION_ID, TransactionDBOpenHelper.TRANSACTION_DATE,
+                    TransactionDBOpenHelper.TRANSACTION_AMOUNT, TransactionDBOpenHelper.TRANSACTION_TITLE, TransactionDBOpenHelper.TRANSACTION_TYPE,
+                    TransactionDBOpenHelper.TRANSACTION_ITEM_DESCRIPTION, TransactionDBOpenHelper.TRANSACTION_INTERVAL, TransactionDBOpenHelper.TRANSACTION_END_DATE
+            };
+            Uri adresa = null;
+            if(table.equals(TransactionDBOpenHelper.CREATED_TRANSACTIONS_TABLE)){
+                adresa = getCreatedUri();
+            }else{
+                adresa = getUpdatedUri();
+            }
+            String where = null;
+            String[] whereArgs = null;
+            String order = null;
+            return cr.query(adresa, kolone, where, whereArgs, order);
+        }else{
+            String[] kolone = new String[]{
+                    TransactionDBOpenHelper.TRANSACTION_ID
+            };
+            Uri adresa = getDeletedUri();
+            String where = null;
+            String[] whereArgs = null;
+            String order = null;
+            return cr.query(adresa, kolone, where, whereArgs, order);
+        }
     }
 
     private TransactionModel getTransactionFromStrings(String ... strings){
@@ -163,8 +202,9 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         if(isConnectedToInternet) {
             new POSTTransaction(this).execute(strings);
         }else{
-            transactionDBOpenHelper = new TransactionDBOpenHelper(presenter.getContext());
-            database = transactionDBOpenHelper.getWritableDatabase();
+
+            ContentResolver cr = presenter.getContext().getApplicationContext().getContentResolver();
+            Uri createdTransactionsUri = getCreatedUri();
 
             TransactionModel transactionModel = getTransactionFromStrings(strings);
             ContentValues values = new ContentValues();
@@ -181,8 +221,7 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
             }
             values.put(TransactionDBOpenHelper.TRANSACTION_TYPE, transactionModel.getType().getValue());
 
-            database.insert(TransactionDBOpenHelper.CREATED_TRANSACTIONS_TABLE, null, values);
-            database.close();
+            cr.insert(createdTransactionsUri, values);
 
             transactions.add(transactionModel);
             presenter.dodanaTransakcija(transactionModel);
@@ -199,12 +238,13 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         if(isConnectedToInternet) {
             new POSTTransactionUpdate(this).execute(strings);
         }else{
-            transactionDBOpenHelper = new TransactionDBOpenHelper(presenter.getContext());
-            database = transactionDBOpenHelper.getWritableDatabase();
+            ContentResolver cr = presenter.getContext().getApplicationContext().getContentResolver();
+            Uri updateTransactionUri = getUpdatedUri();
 
             ContentValues values = new ContentValues();
             TransactionModel transactionModel = getTransactionFromStrings(strings);
 
+            values.put(TransactionDBOpenHelper.TRANSACTION_ID, transactionModel.getId());
             values.put(TransactionDBOpenHelper.TRANSACTION_DATE, convertDateToString(transactionModel.getDate()));
             values.put(TransactionDBOpenHelper.TRANSACTION_AMOUNT, transactionModel.getAmount());
             values.put(TransactionDBOpenHelper.TRANSACTION_TITLE, transactionModel.getTitle());
@@ -217,13 +257,12 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
             }
             values.put(TransactionDBOpenHelper.TRANSACTION_TYPE, transactionModel.getType().getValue());
 
-            if(isInDatabaseTable(database, TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE, transactionModel.getId())){
-                database.update(TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE, values, TransactionDBOpenHelper.TRANSACTION_ID + " =?"
+            if(isInDatabaseTable(TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE, transactionModel.getId())){
+                cr.update(updateTransactionUri, values, TransactionDBOpenHelper.TRANSACTION_ID + " = ?"
                         , new String[]{transactionModel.getId() + ""});
-            }else{
-                database.insert(TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE, null, values);
+            }else {
+                cr.insert(updateTransactionUri, values);
             }
-            database.close();
 
             transactions.remove(transactionModel);
             transactions.add(transactionModel);
@@ -237,17 +276,16 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         if(isConnectedToInternet) {
             new DELETETransaction().execute(id);
         }else{
-            transactionDBOpenHelper = new TransactionDBOpenHelper(presenter.getContext());
-            database = transactionDBOpenHelper.getWritableDatabase();
+            ContentResolver cr = presenter.getContext().getApplicationContext().getContentResolver();
+            Uri deletedTransactionsUri = getDeletedUri();
 
             ContentValues values = new ContentValues();
             values.put(TransactionDBOpenHelper.TRANSACTION_ID, id);
 
-            if(!isDatabaseEmpty(database, TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE) && isInDatabaseTable(database, TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, id)){
-                database.delete(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, TransactionDBOpenHelper.TRANSACTION_ID + " = ?",
-                        new String[]{id + ""});
+            if(isInDatabaseTable(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, id)){
+                cr.update(deletedTransactionsUri, values, TransactionDBOpenHelper.TRANSACTION_ID + " = ?", new String[]{id + ""});
             }else{
-                database.insert(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, null, values);
+                cr.insert(deletedTransactionsUri, values);
             }
         }
     }
@@ -259,15 +297,7 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
 
     @Override
     public void updateFromDatabase(Context context) {
-        transactionDBOpenHelper = new TransactionDBOpenHelper(context);
-        database = transactionDBOpenHelper.getWritableDatabase();
-
-        if(!existsTable(database)){
-            System.out.println("Delete tabela nije kreirana");
-        }
-
-        String query = getQueryForTable(TransactionDBOpenHelper.CREATED_TRANSACTIONS_TABLE);
-        Cursor cursor = database.rawQuery(query, null);
+        Cursor cursor = getCursorForTable(TransactionDBOpenHelper.CREATED_TRANSACTIONS_TABLE, context);
         if(cursor.moveToFirst()){
             int titlePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_TITLE);
             int amountPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_AMOUNT);
@@ -282,8 +312,7 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
             }while(cursor.moveToNext());
         }
 
-        query = getQueryForTable(TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE);
-        cursor = database.rawQuery(query, null);
+        cursor = getCursorForTable(TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE, context);
         if(cursor.moveToFirst()){
             int idPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_ID);
             int titlePos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_TITLE);
@@ -299,8 +328,8 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
                         cursor.getInt(intervalPos) + "", cursor.getInt(typePos) + "");
             }while(cursor.moveToNext());
         }
-        query = getQueryForTable(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE);
-        cursor = database.rawQuery(query, null);
+
+        cursor = getCursorForTable(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, context);
         if(cursor.moveToFirst()){
             int idPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_ID);
             do{
@@ -309,19 +338,23 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         }
         cursor.close();
 
-        database.execSQL("DELETE FROM " + TransactionDBOpenHelper.CREATED_TRANSACTIONS_TABLE);
-        database.execSQL("DELETE FROM " + TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE);
-        database.execSQL("DELETE FROM " + TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE);
-        database.close();
+        ContentResolver cr = context.getApplicationContext().getContentResolver();
+        Uri createdTransactionsUri = getCreatedUri(),
+                updatedTransactionsUri = getUpdatedUri(),
+                deletedTransactionsUri = getDeletedUri();
+        cr.delete(createdTransactionsUri, null, null);
+        cr.delete(updatedTransactionsUri, null, null);
+        cr.delete(deletedTransactionsUri, null, null);
     }
 
     public boolean isInDatabaseDeletedTable(Context context, int id){
-        transactionDBOpenHelper = new TransactionDBOpenHelper(context);
-        database = transactionDBOpenHelper.getWritableDatabase();
+        ContentResolver cr = context.getApplicationContext().getContentResolver();
+        Uri deletedTransactionsUri = getDeletedUri();
+        String[] kolone = new String[]{
+                TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID, TransactionDBOpenHelper.TRANSACTION_ID
+        };
 
-        String query = "SELECT * FROM " + TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE + " WHERE " + TransactionDBOpenHelper.TRANSACTION_ID + " = ?";
-
-        Cursor cursor = database.rawQuery(query, new String[]{id + ""});
+        Cursor cursor = cr.query(deletedTransactionsUri, kolone, null, null, null);
         return cursor.getCount() != 0;
     }
 }

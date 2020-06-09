@@ -11,6 +11,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <provider
+            android:authorities="rma.provider.createdTransactions"
+            android:name=".CreatedTransactionsContentProvider"/>
+        <provider
+            android:authorities="rma.provider.updatedTransactions"
+            android:name=".UpdatedTransactionsContentProvider"/>
+        <provider
+            android:authorities="rma.provider.deletedTransactionsTable"
+            android:name=".DeletedTransactionsContentProvider"/>
+        <provider
+            android:authorities="rma.provider.account"
+            android:name=".AccountContentProvider"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
