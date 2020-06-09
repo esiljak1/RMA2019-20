@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import java.io.BufferedReader;
@@ -89,8 +90,12 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
     private TransactionModel getTransactionFromStrings(String ... strings){
         int i = 0;
         int id = 0;
-        if(strings.length == 8){
+        int internal_id = 0;
+        if(strings.length > 8){
             id = Integer.parseInt(strings[i]);
+            if(id == 0){
+                internal_id = Integer.parseInt(strings[8]);
+            }
             i++;
         }
         Calendar date = Calendar.getInstance(), endDate = null;
@@ -116,7 +121,9 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
                 transactionInterval = Integer.parseInt(strings[i]);
             }
             i-=4;
-            return new TransactionModel(id, date, amount, strings[i], Type.fromId(typeId), itemDescription, transactionInterval, endDate);
+            TransactionModel transaction =  new TransactionModel(id, date, amount, strings[i], Type.fromId(typeId), itemDescription, transactionInterval, endDate);
+            transaction.setInternal_id(internal_id);
+            return transaction;
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -197,6 +204,17 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         }
     }
 
+    private void setInternalId(TransactionModel transaction) {
+        TransactionDBOpenHelper transactionDb = new TransactionDBOpenHelper(presenter.getContext());
+        SQLiteDatabase database = transactionDb.getWritableDatabase();
+
+        String query = "SELECT MAX(" + TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID + ") FROM " + TransactionDBOpenHelper.CREATED_TRANSACTIONS_TABLE;
+
+        Cursor cursor = database.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            transaction.setInternal_id(cursor.getInt(cursor.getColumnIndexOrThrow("MAX(" + TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID + ")")));
+        }
+    }
     @Override
     public void addTransaction(boolean isConnectedToInternet, String... strings) {
         if(isConnectedToInternet) {
@@ -223,6 +241,8 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
 
             cr.insert(createdTransactionsUri, values);
 
+            setInternalId(transactionModel);
+
             transactions.add(transactionModel);
             presenter.dodanaTransakcija(transactionModel);
         }
@@ -243,6 +263,11 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
 
             ContentValues values = new ContentValues();
             TransactionModel transactionModel = getTransactionFromStrings(strings);
+
+            if(transactionModel.getId() == 0){
+                updateCreatedTransaction(transactionModel.getInternal_id(), strings[1], strings[2], strings[3], strings[4], strings[5], strings[6], strings[7]);
+                return;
+            }
 
             values.put(TransactionDBOpenHelper.TRANSACTION_ID, transactionModel.getId());
             values.put(TransactionDBOpenHelper.TRANSACTION_DATE, convertDateToString(transactionModel.getDate()));
@@ -271,13 +296,39 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         }
     }
 
+    private void removeCreatedTransaction(int internal_id){
+        for(int i = 0; i < transactions.size(); i++){
+            if(transactions.get(i).getInternal_id() == internal_id){
+                transactions.remove(i);
+                return;
+            }
+        }
+    }
+
+    private void updateCreatedTransaction(int internal_id, String ... strings){
+        ContentResolver cr = presenter.getContext().getApplicationContext().getContentResolver();
+        Uri createdTransactionsUri = getCreatedUri();
+
+        cr.delete(getCreatedUri(), TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID + " = ?", new String[]{internal_id + ""});
+        removeCreatedTransaction(internal_id);
+
+        addTransaction(false, strings);
+    }
+
     @Override
-    public void deleteTransaction(int id, boolean isConnectedToInternet) {
+    public void deleteTransaction(int id, int internal_id, boolean isConnectedToInternet) {
         if(isConnectedToInternet) {
             new DELETETransaction().execute(id);
         }else{
             ContentResolver cr = presenter.getContext().getApplicationContext().getContentResolver();
             Uri deletedTransactionsUri = getDeletedUri();
+
+            if(id == 0){
+                deletedTransactionsUri = getCreatedUri();
+                cr.delete(deletedTransactionsUri, TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID + " = ?", new String[]{internal_id + ""});
+                removeCreatedTransaction(internal_id);
+                return;
+            }
 
             ContentValues values = new ContentValues();
             values.put(TransactionDBOpenHelper.TRANSACTION_ID, id);
@@ -333,7 +384,7 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         if(cursor.moveToFirst()){
             int idPos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_ID);
             do{
-                deleteTransaction(cursor.getInt(idPos), true);
+                deleteTransaction(cursor.getInt(idPos), 0, true);
             }while (cursor.moveToNext());
         }
         cursor.close();

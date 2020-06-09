@@ -15,6 +15,7 @@ public class TransactionModel implements ITransactionModel {
     private String itemDescription = "";
     private int transactionInterval = 0;
     private Calendar endDate;
+    private int internal_id;
 
     private static ArrayList<TransactionModel> transactions = new ArrayList<TransactionModel>(){
         {
@@ -217,5 +218,13 @@ public class TransactionModel implements ITransactionModel {
             return id == ((TransactionModel) obj).id;
         }
         return false;
+    }
+
+    public int getInternal_id() {
+        return internal_id;
+    }
+
+    public void setInternal_id(int internal_id) {
+        this.internal_id = internal_id;
     }
 }

@@ -123,6 +123,7 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
                     args.putString("month", ((MainActivity) getActivity()).getPresenter().getAccount().getMonthlyLimit()+ "");  //monthLimit
                     args.putString("limit", ((MainActivity) getActivity()).getPresenter().getAccount().getOverallLimit() + ""); //overallLimit
                     args.putString("id", t.getId() + "");   //jedinstveni id po kojem se razlikuju transakcije radi lakseg update-a
+                    args.putString("internal_id", t.getInternal_id() + "");
                     if(t.getEndDate() != null) {
                         args.putString("endDate", new SimpleDateFormat("dd.MM.yyyy").format(t.getEndDate().getTime()));
                     }

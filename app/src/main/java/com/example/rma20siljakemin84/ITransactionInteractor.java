@@ -14,7 +14,7 @@ public interface ITransactionInteractor {
     void getFilteredTransactions(String typeId, String sort, String month, String year, boolean isConnected);
     void addTransaction(boolean isConnected, String ... strings);
     void updateTransaction(boolean isConnected, String ... strings);
-    void deleteTransaction(int id, boolean isConnected);
+    void deleteTransaction(int id, int internal_id, boolean isConnected);
     void updateFromDatabase(Context context);
     boolean isInDatabaseDeletedTable(Context context, int id);
 }

@@ -41,6 +41,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
     private TransactionModel transaction;
 
     private int id = -1;
+    private int internal_id;
     private double budget;
     private double monthLimit;
     private double oldAmount = 0;
@@ -132,7 +133,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                                         e.printStackTrace();
                                         errorScreen();
                                     }
-                                    ((MainActivity) getActivity()).getPresenter().deleteTransactionWithId(id, ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
+                                    ((MainActivity) getActivity()).getPresenter().deleteTransactionWithId(id, internal_id, ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
                                     if(getActivity().findViewById(R.id.transaction_details) != null){
                                         TransactionDetailFragment detailFragment = new TransactionDetailFragment();
                                         Bundle bundle = new Bundle();
@@ -246,7 +247,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
 
         if(id != -1){
             ((MainActivity) getActivity()).getPresenter().updateTransaction(id + "", datum, transaction.getTitle(), transaction.getAmount() + "", endDatum,
-                    itemDescription, transactionInterval, transaction.getType().getValue() + "", ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
+                    itemDescription, transactionInterval, transaction.getType().getValue() + "", internal_id + "", ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
 
             if(checkIfOutcome(oldType) && checkIfIncome(((Type) spinnerType.getSelectedItem()))){
                 try {
@@ -421,6 +422,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
                 endDate.setEnabled(false);
             }
             id = Integer.parseInt(arguments.getString("id"));
+            internal_id = Integer.parseInt(arguments.getString("internal_id"));
             if(((MainActivity) getActivity()).getPresenter().isDeletedTransaction(getContext(), id)){
                 deleteBtn.setText("Undo delete");
             }
@@ -588,6 +590,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
     @Override
     public void notifyAddedTransaction(TransactionModel transaction) {
         this.id = transaction.getId();
+        this.internal_id = transaction.getInternal_id();
         this.oldAmount = transaction.getAmount();
     }
 

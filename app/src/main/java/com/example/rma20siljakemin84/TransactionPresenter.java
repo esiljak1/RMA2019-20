@@ -322,16 +322,16 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
         interactor.addTransaction(isConnectedToInternet, strings);
     }
 
-    public void updateTransaction(String id, String date, String title, String amount, String endDate, String itemDescription, String transactionInterval, String typeId, boolean isConnectedToInternet, Context context){
+    public void updateTransaction(String id, String date, String title, String amount, String endDate, String itemDescription, String transactionInterval, String typeId, String internal_id, boolean isConnectedToInternet, Context context){
         this.context = context;
         interactor.setPresenter(this);
-        interactor.updateTransaction(isConnectedToInternet, id, date, title, amount, endDate, itemDescription, transactionInterval, typeId);
+        interactor.updateTransaction(isConnectedToInternet, id, date, title, amount, endDate, itemDescription, transactionInterval, typeId, internal_id);
     }
 
-    public void deleteTransactionWithId(int id, boolean isConnectedToInternet, Context context){
+    public void deleteTransactionWithId(int id, int internal_id, boolean isConnectedToInternet, Context context){
         this.context = context;
         interactor.setPresenter(this);
-        interactor.deleteTransaction(id, isConnectedToInternet);
+        interactor.deleteTransaction(id, internal_id, isConnectedToInternet);
     }
 
     public Context getContext() {
