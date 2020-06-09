@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class TransactionInteractor implements ITransactionInteractor, GETFilteredTransactions.OnTransactionSearchDone,
                                                                       POSTTransaction.OnTransactionPostDone,
@@ -59,8 +60,8 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
 
     private Cursor getCursorForTable(String table, Context context){
         ContentResolver cr = context.getApplicationContext().getContentResolver();
-        if(!table.equals(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE)){
             String[] kolone = new String[]{
+                    TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID,
                     TransactionDBOpenHelper.TRANSACTION_ID, TransactionDBOpenHelper.TRANSACTION_DATE,
                     TransactionDBOpenHelper.TRANSACTION_AMOUNT, TransactionDBOpenHelper.TRANSACTION_TITLE, TransactionDBOpenHelper.TRANSACTION_TYPE,
                     TransactionDBOpenHelper.TRANSACTION_ITEM_DESCRIPTION, TransactionDBOpenHelper.TRANSACTION_INTERVAL, TransactionDBOpenHelper.TRANSACTION_END_DATE
@@ -68,23 +69,15 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
             Uri adresa = null;
             if(table.equals(TransactionDBOpenHelper.CREATED_TRANSACTIONS_TABLE)){
                 adresa = getCreatedUri();
-            }else{
+            }else if(table.equals(TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE)){
                 adresa = getUpdatedUri();
+            }else{
+                adresa = getDeletedUri();
             }
             String where = null;
             String[] whereArgs = null;
             String order = null;
             return cr.query(adresa, kolone, where, whereArgs, order);
-        }else{
-            String[] kolone = new String[]{
-                    TransactionDBOpenHelper.TRANSACTION_ID
-            };
-            Uri adresa = getDeletedUri();
-            String where = null;
-            String[] whereArgs = null;
-            String order = null;
-            return cr.query(adresa, kolone, where, whereArgs, order);
-        }
     }
 
     private TransactionModel getTransactionFromStrings(String ... strings){
@@ -315,6 +308,13 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
         addTransaction(false, strings);
     }
 
+    private TransactionModel getTransactionWithId(int id){
+        for(TransactionModel tm : transactions){
+            if(tm.getId() == id) return tm;
+        }
+        return null;
+    }
+
     @Override
     public void deleteTransaction(int id, int internal_id, boolean isConnectedToInternet) {
         if(isConnectedToInternet) {
@@ -330,14 +330,27 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
                 return;
             }
 
-            ContentValues values = new ContentValues();
-            values.put(TransactionDBOpenHelper.TRANSACTION_ID, id);
-
             if(isInDatabaseTable(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, id)){
-                cr.update(deletedTransactionsUri, values, TransactionDBOpenHelper.TRANSACTION_ID + " = ?", new String[]{id + ""});
-            }else{
-                cr.insert(deletedTransactionsUri, values);
+                cr.delete(deletedTransactionsUri, TransactionDBOpenHelper.TRANSACTION_ID + " = ?", new String[]{id + ""});
+                return;
             }
+
+            ContentValues values = new ContentValues();
+            TransactionModel transactionModel = getTransactionWithId(id);
+
+            values.put(TransactionDBOpenHelper.TRANSACTION_ID, transactionModel.getId());
+            values.put(TransactionDBOpenHelper.TRANSACTION_DATE, convertDateToString(transactionModel.getDate()));
+            values.put(TransactionDBOpenHelper.TRANSACTION_AMOUNT, transactionModel.getAmount());
+            values.put(TransactionDBOpenHelper.TRANSACTION_TITLE, transactionModel.getTitle());
+            if(convertDateToString(transactionModel.getEndDate()) != null){
+                values.put(TransactionDBOpenHelper.TRANSACTION_END_DATE, convertDateToString(transactionModel.getEndDate()));
+            }
+            values.put(TransactionDBOpenHelper.TRANSACTION_INTERVAL, transactionModel.getTransactionInterval());
+            if(transactionModel.getItemDescription() != null) {
+                values.put(TransactionDBOpenHelper.TRANSACTION_ITEM_DESCRIPTION, transactionModel.getItemDescription());
+            }
+            values.put(TransactionDBOpenHelper.TRANSACTION_TYPE, transactionModel.getType().getValue());
+            cr.insert(deletedTransactionsUri, values);
         }
     }
 
@@ -410,5 +423,50 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
 
         Cursor cursor = cr.query(deletedTransactionsUri, kolone, where, whereArgs, null);
         return cursor.getCount() != 0;
+    }
+
+    @Override
+    public void setTransactionsFromDatabase(Context context) {
+        setTransactionsFromCursor(getCursorForTable(TransactionDBOpenHelper.CREATED_TRANSACTIONS_TABLE, context));
+        setTransactionsFromCursor(getCursorForTable(TransactionDBOpenHelper.UPDATED_TRANSACTIONS_TABLE, context));
+        setTransactionsFromCursor(getCursorForTable(TransactionDBOpenHelper.DELETED_TRANSACTIONS_TABLE, context));
+    }
+
+    private Date convertStringToDate(String s){
+        if(s == null) return null;
+        try {
+            return new SimpleDateFormat("dd.MM.yyyy").parse(s);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void setTransactionsFromCursor(Cursor cursor){
+        int internal_id_pos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_INTERNAL_ID);
+        int id_pos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_ID);
+        int title_pos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_TITLE);
+        int amount_pos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_AMOUNT);
+        int date_pos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_DATE);
+        int endDate_pos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_END_DATE);
+        int description_pos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_ITEM_DESCRIPTION);
+        int interval_pos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_INTERVAL);
+        int type_pos = cursor.getColumnIndexOrThrow(TransactionDBOpenHelper.TRANSACTION_TYPE);
+        if(cursor.moveToFirst()){
+            do{
+                Calendar d1 = Calendar.getInstance(), d2 = null;
+                d1.setTime(convertStringToDate(cursor.getString(date_pos)));
+                if(convertStringToDate(cursor.getString(endDate_pos)) != null){
+                    d2 = Calendar.getInstance();
+                    d2.setTime(convertStringToDate(cursor.getString(endDate_pos)));
+                }
+                TransactionModel transactionModel = new TransactionModel(cursor.getInt(id_pos), d1, cursor.getDouble(amount_pos), cursor.getString(title_pos),
+                        Type.fromId(cursor.getInt(type_pos)), cursor.getString(description_pos), cursor.getInt(interval_pos), d2);
+                transactionModel.setInternal_id(cursor.getInt(internal_id_pos));
+
+                transactions.add(transactionModel);
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
     }
 }

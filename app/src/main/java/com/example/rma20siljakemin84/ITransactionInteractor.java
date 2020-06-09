@@ -17,4 +17,5 @@ public interface ITransactionInteractor {
     void deleteTransaction(int id, int internal_id, boolean isConnected);
     void updateFromDatabase(Context context);
     boolean isInDatabaseDeletedTable(Context context, int id);
+    void setTransactionsFromDatabase(Context context);
 }

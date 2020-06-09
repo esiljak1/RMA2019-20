@@ -348,8 +348,11 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
     }
 
     public void pokupiIzBaze(Context context, boolean connectedToInternet){
-        if(!connectedToInternet) return;
         interactor.setPresenter(this);
+        if(!connectedToInternet){
+            interactor.setTransactionsFromDatabase(context);
+            return;
+        }
         interactor.updateFromDatabase(context);
         account.updateOnlineAccount(context, true);
     }
