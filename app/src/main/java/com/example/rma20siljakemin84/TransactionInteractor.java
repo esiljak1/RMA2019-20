@@ -412,6 +412,7 @@ public class TransactionInteractor implements ITransactionInteractor, GETFiltere
     }
 
     public boolean isInDatabaseDeletedTable(Context context, int id){
+        if(id == 0) return false;
         ContentResolver cr = context.getApplicationContext().getContentResolver();
         Uri deletedTransactionsUri = getDeletedUri();
         String[] kolone = new String[]{
