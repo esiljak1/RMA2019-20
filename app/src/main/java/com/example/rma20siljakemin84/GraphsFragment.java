@@ -300,7 +300,7 @@ public class GraphsFragment extends Fragment implements ITransactionView{
     }
 
     @Override
-    public void notifyTransactionsChanged() {
+    public void notifyTransactionsChanged(boolean fromMainActivity) {
         int broj = ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions().size();
         if(spinnerGraphicChooser.getSelectedItem().equals("by day")){
             System.out.println("Velicina: " + broj);

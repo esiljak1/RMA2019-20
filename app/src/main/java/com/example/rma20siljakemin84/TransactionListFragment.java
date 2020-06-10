@@ -223,8 +223,6 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
             ((MainActivity) getActivity()).getPresenter().setView(this);
         }
 
-//        ((MainActivity) getActivity()).getPresenter().pokupiIzBaze(getContext(), ((MainActivity) getActivity()).isConnectedToTheInternet());
-
         listViewTransactions = (ListView)view.findViewById(R.id.listViewTransactions);
         spinnerSort = (Spinner)view.findViewById(R.id.spinnerSort);
         spinnerFilter = (Spinner)view.findViewById(R.id.spinnerFilter);
@@ -273,11 +271,19 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
     }
 
     @Override
-    public void notifyTransactionsChanged() {
+    public void notifyTransactionsChanged(boolean fromMainActivity) {
         if(getActivity() == null || ((MainActivity) getActivity()).getPresenter() == null) return;
+        if(fromMainActivity){
+            ((MainActivity)getActivity()).getPresenter().getTransactions(getTransactionTypeStringKey(((Type) spinnerFilter.getSelectedItem())),
+                    getSortKey(((String) spinnerSort.getSelectedItem())), "", "", ((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
+            return;
+        }
         ((MainActivity) getActivity()).getPresenter().transactionsForCurrentDate(date);
         transactionsAdapter = new TransactionListAdapter(getContext(), R.layout.list_element, ((MainActivity) getActivity()).getPresenter().getCurrentDateTransactions());
         listViewTransactions.setAdapter(transactionsAdapter);
+        if(Double.parseDouble(textBudget.getText().toString()) == 0){
+            ((MainActivity) getActivity()).getPresenter().getAccount().getDetailsForAccount(((MainActivity) getActivity()).isConnectedToTheInternet(), getContext());
+        }
     }
 
     @Override
@@ -311,20 +317,5 @@ public class TransactionListFragment extends Fragment implements ITransactionVie
             ret += "." + arr[1].trim().toLowerCase().split("c")[0] + "c";
             return ret;
         }
-    }
-
-    private String getDoubleDigit(int number){
-        if(number < 10){
-            return "0" + number;
-        }return number + "";
-    }
-
-    private String getMonthKey(){
-        int month = date.get(Calendar.MONTH) + 1;
-        return getDoubleDigit(month);
-    }
-
-    private String getYearKey(){
-        return date.get(Calendar.YEAR) + "";
     }
 }

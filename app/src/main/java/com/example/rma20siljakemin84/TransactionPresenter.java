@@ -305,7 +305,7 @@ public class TransactionPresenter implements ITransactionPresenter, Parcelable{
     public void filtriraneTransakcije(ArrayList<TransactionModel> result) {
         interactor.setTransactions(result);
         currentDateTransactions = new ArrayList<>(result);
-        view.notifyTransactionsChanged();
+        view.notifyTransactionsChanged(false);
     }
     public void getTransactions(String transactionTypeId, String sort, String month, String year, boolean isConnectedToInternet, Context context){
         this.context = context;

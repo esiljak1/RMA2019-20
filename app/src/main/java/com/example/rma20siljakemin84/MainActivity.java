@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
     private boolean transactionsSet = false;
     private ConnectivityBroadcastReceiver receiver = new ConnectivityBroadcastReceiver();
     private IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+
+    private Fragment listFragment;
     
     private TransactionPresenter presenter;    //presenter drzimo u mainu da mu mozemo pristupati iz svih fragmenata
 
@@ -51,11 +53,10 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
         setTitle("RMA Spirala");
 
         presenter = new TransactionPresenter(this, getString(R.string.root), getString(R.string.api_id));
-        updateFromDatabase();
 
         FragmentManager fm = getSupportFragmentManager();
 
-        Fragment listFragment = fm.findFragmentByTag("list");
+        listFragment = fm.findFragmentByTag("list");
 
         if(listFragment == null){
             listFragment = new TransactionListFragment();
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
         }else{
             fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
+        updateFromDatabase();
 
         FrameLayout detail = findViewById(R.id.transaction_details);
 
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
     }
 
     @Override
-    public void notifyTransactionsChanged() {
+    public void notifyTransactionsChanged(boolean fromMainActivity) {
 
     }
 
@@ -115,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements ITransactionView,
     public void updateFromDatabase(){
         if(presenter != null){
             presenter.pokupiIzBaze(this, isConnectedToTheInternet());
+            ((TransactionListFragment) listFragment).notifyTransactionsChanged(true);
         }
     }
 }

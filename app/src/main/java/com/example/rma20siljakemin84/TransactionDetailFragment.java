@@ -586,7 +586,7 @@ public class TransactionDetailFragment extends Fragment implements ITransactionV
     }
 
     @Override
-    public void notifyTransactionsChanged() {
+    public void notifyTransactionsChanged(boolean fromMainActivity) {
     }
 
     @Override
